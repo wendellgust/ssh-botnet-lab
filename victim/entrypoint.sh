@@ -1,13 +1,11 @@
 #!/bin/bash
-# Create /run/sshd — required by OpenSSH privilege separation
+# /run/sshd must exist for OpenSSH privilege separation chroot
 mkdir -p /run/sshd /var/log
 
-# Generate host keys if missing
+# Generate host keys
 ssh-keygen -A 2>/dev/null
 
-# Write sshd config directly — overrides anything in the image
-# UsePAM no  = critical for Podman rootless (PAM breaks without systemd)
-# MaxStartups 50 = prevents throttling during brute-force simulation
+# Write sshd config — all known fixes for Podman rootless
 cat > /etc/ssh/sshd_config << 'CONF'
 Port 22
 PermitRootLogin yes
@@ -23,6 +21,5 @@ CONF
 
 touch /var/log/auth.log
 
-# exec = sshd becomes PID 1, container lives as long as sshd lives
-# -e   = log to stderr, redirected to auth.log
+# exec = sshd is PID 1, logs to stderr -> auth.log
 exec /usr/sbin/sshd -D -e 2>> /var/log/auth.log

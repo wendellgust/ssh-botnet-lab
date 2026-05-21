@@ -37,6 +37,8 @@ services:
         ipv4_address: 10.10.0.20
     environment:
       - LAB_ROLE=pivot-victim
+    cap_add:
+      - NET_ADMIN
 
   victim2:
     build: ./victim
@@ -47,6 +49,8 @@ services:
         ipv4_address: 172.21.0.21
     environment:
       - LAB_ROLE=victim
+    cap_add:
+      - NET_ADMIN
 
   victim3:
     build: ./victim-b
@@ -57,6 +61,8 @@ services:
         ipv4_address: 10.10.0.10
     environment:
       - LAB_ROLE=internal-victim
+    cap_add:
+      - NET_ADMIN
 
   honeypot:
     build: ./victim-b
@@ -67,6 +73,8 @@ services:
         ipv4_address: 10.10.0.50
     environment:
       - LAB_ROLE=honeypot
+    cap_add:
+      - NET_ADMIN
 
   monitor:
     build: ./monitor

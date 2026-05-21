@@ -1,32 +1,16 @@
 FROM ubuntu:22.04
-
-LABEL description="Lab victim — Network A SSH target"
-
 ENV DEBIAN_FRONTEND=noninteractive
-
 RUN apt-get update && apt-get install -y \
-    openssh-server \
-    python3 \
-    net-tools \
-    iproute2 \
-    iputils-ping \
-    iptables \
+    openssh-server python3 \
+    net-tools iproute2 iputils-ping iptables \
   && rm -rf /var/lib/apt/lists/*
-
-# Intentionally weak lab credentials
-RUN useradd -m -s /bin/bash labuser && \
-    echo "labuser:password123" | chpasswd && \
-    useradd -m -s /bin/bash admin && \
-    echo "admin:admin" | chpasswd && \
-    useradd -m -s /bin/bash deploy && \
-    echo "deploy:deploy123" | chpasswd && \
+RUN useradd -m -s /bin/bash labuser && echo "labuser:password123" | chpasswd && \
+    useradd -m -s /bin/bash admin   && echo "admin:admin"         | chpasswd && \
+    useradd -m -s /bin/bash deploy  && echo "deploy:deploy123"    | chpasswd && \
     echo "root:toor" | chpasswd
-
 COPY firewall_setup.sh /lab/firewall_setup.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /lab/firewall_setup.sh /entrypoint.sh
-
 RUN mkdir -p /var/log
-
 EXPOSE 22
 CMD ["/entrypoint.sh"]
