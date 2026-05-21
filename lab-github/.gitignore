@@ -1,0 +1,22 @@
+# Temporary files generated during lab use
+/tmp/
+*.tar.gz
+*.log
+combined_auth.log
+open_ports.txt
+sim.py
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db

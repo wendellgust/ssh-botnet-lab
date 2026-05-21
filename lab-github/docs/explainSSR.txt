@@ -1,0 +1,521 @@
+================================================================================
+  explainSSR.txt — Full explanation of the SSH Botnet Lab
+  SSH Vulnerabilities and Exploitation — FEUP SSR Project
+================================================================================
+
+This document explains every file in the lab, what it does, why it exists,
+what was broken, and how it was fixed.
+
+--------------------------------------------------------------------------------
+  PART 1 — THE BIG PICTURE
+--------------------------------------------------------------------------------
+
+What the lab simulates
+----------------------
+The lab creates 6 fake computers (containers) on your real computer.
+They are connected by two private virtual networks that have no internet access.
+
+  YOUR KALI MACHINE
+  │
+  ├── attack_net (172.21.0.0/24)   ← "corporate network"
+  │     ├── attacker   172.21.0.10  ← the hacker machine
+  │     ├── victim1    172.21.0.20  ← target (also connected to internal_net)
+  │     ├── victim2    172.21.0.21  ← second target
+  │     └── monitor    172.21.0.100 ← analyst/detection machine
+  │
+  └── internal_net (10.10.0.0/24)  ← "internal segmented network"
+        ├── victim1    10.10.0.20   ← SAME machine as above (dual-homed = pivot)
+        ├── victim3    10.10.0.10   ← only reachable via pivot
+        ├── honeypot   10.10.0.50   ← deception trap
+        └── monitor    10.10.0.100  ← also watches internal network
+
+The attack chain works like this:
+  1. Attacker scans attack_net and finds port 22 open on victim1
+  2. Attacker brute-forces victim1 SSH password → gets in
+  3. From inside victim1, attacker can now reach internal_net
+     (victim3 and honeypot are invisible from outside — only via pivot)
+  4. Attacker moves laterally into internal_net using victim1 as stepping stone
+  5. Monitor sees all of this in logs and fires detection alerts
+
+Why Docker/Podman?
+  A real lab would need physical machines or heavy VMs (4GB RAM each).
+  Containers share the host OS kernel — each uses ~50MB RAM instead of 4GB.
+  The internal:true flag means containers cannot reach the internet AT ALL.
+  This makes the lab completely safe to run on your laptop.
+
+--------------------------------------------------------------------------------
+  PART 2 — docker-compose.yml EXPLAINED
+--------------------------------------------------------------------------------
+
+The docker-compose.yml is the "blueprint" of the entire lab.
+It defines networks, containers, IPs, and security constraints.
+
+  networks:
+    attack_net:           ← name of the first virtual network
+      driver: bridge      ← bridge = Docker creates a virtual switch
+      internal: true      ← CRITICAL: blocks all internet access
+      ipam:               ← IP Address Management
+        config:
+          - subnet: 172.21.0.0/24   ← all IPs in this network start with 172.21.0.x
+
+  NOTE: We use 172.21.x instead of 172.20.x because 172.20.x was already
+  used by the old lab from earlier in this project, causing a conflict.
+
+  services:
+    attacker:
+      build: ./attacker    ← build this container from the ./attacker folder
+      container_name: attacker   ← the name you use in "podman exec attacker"
+      networks:
+        attack_net:
+          ipv4_address: 172.21.0.10   ← fixed IP (always the same)
+      cap_drop:
+        - ALL              ← SECURITY: remove ALL Linux capabilities
+      cap_add:
+        - NET_BIND_SERVICE ← add back ONLY what is needed (bind to ports)
+      security_opt:
+        - no-new-privileges:true  ← process cannot gain more privileges
+
+  WHY cap_drop ALL?
+    Linux capabilities control what root can do. Even if a process runs as root
+    inside the container, dropping capabilities means it cannot:
+    - Load kernel modules (CAP_SYS_MODULE)
+    - Change network config (CAP_NET_ADMIN)
+    - Access raw sockets (CAP_NET_RAW)
+    This limits damage if someone escapes the container.
+
+  victim1 is special — it has TWO network connections:
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.20   ← visible from attacker
+      internal_net:
+        ipv4_address: 10.10.0.20    ← visible inside internal network
+    This is called "dual-homed" — one machine with two network interfaces.
+    This is what makes victim1 the PIVOT POINT.
+    The attacker cannot reach 10.10.0.x directly — only via victim1.
+
+--------------------------------------------------------------------------------
+  PART 3 — DOCKERFILES EXPLAINED
+--------------------------------------------------------------------------------
+
+A Dockerfile is a recipe. It tells Docker how to build a container image.
+Think of it like installing an OS and then installing software on it.
+
+  attacker/Dockerfile
+  -------------------
+  FROM ubuntu:22.04              ← start from a clean Ubuntu 22.04 image
+
+  RUN apt-get update && apt-get install -y \
+      python3 \                  ← Python for the simulator scripts
+      python3-paramiko \         ← SSH library for Python (makes real SSH connections)
+      python3-requests \         ← HTTP library (for C2 beacon simulation)
+      openssh-client \           ← SSH client (ssh command)
+      netcat-openbsd \           ← nc command (port probing)
+      ...
+
+  NOTE: We install paramiko via apt (python3-paramiko) NOT via pip.
+  Why? During Docker build, pip tries to download from the internet (PyPI).
+  In Podman rootless, this sometimes fails. apt uses local Ubuntu repos — faster
+  and more reliable.
+
+  COPY simulator.py /lab/simulator.py   ← copy our Python script into the container
+  CMD ["/lab/entrypoint.sh"]             ← run this when the container starts
+
+  victim/Dockerfile
+  -----------------
+  FROM ubuntu:22.04
+
+  RUN apt-get install -y openssh-server ...   ← installs the SSH SERVER (sshd)
+
+  # This creates fake lab users with weak passwords ON PURPOSE
+  # These weak passwords are what the brute-force simulation is designed to find
+  RUN useradd -m -s /bin/bash labuser && \
+      echo "labuser:password123" | chpasswd && \  ← WEAK: for the attack phase
+      useradd -m -s /bin/bash admin && \
+      echo "admin:admin" | chpasswd
+
+  EXPOSE 22     ← document that port 22 is used (informational only)
+  CMD ["/entrypoint.sh"]
+
+--------------------------------------------------------------------------------
+  PART 4 — ENTRYPOINT SCRIPTS EXPLAINED (AND WHAT WAS BROKEN)
+--------------------------------------------------------------------------------
+
+An entrypoint script is the first thing that runs when a container starts.
+It's like the startup script of a machine.
+
+  WHAT WAS BROKEN IN victim/entrypoint.sh:
+  -----------------------------------------
+  The original entrypoint had several problems in Podman rootless:
+
+  PROBLEM 1: rsyslog
+    service rsyslog start
+    → rsyslog needs systemd to run. Podman rootless has NO systemd.
+    → Result: "rsyslog: unrecognized service" error → container crashes
+
+  PROBLEM 2: Banner file timing
+    The sshd_config had: Banner /etc/ssh/banner.txt
+    If this file does not exist when sshd starts, sshd resets every connection.
+    → Result: "Connection reset by peer"
+
+  PROBLEM 3: SyslogFacility AUTH
+    sshd_config had: SyslogFacility AUTH
+    This tells sshd to send logs via syslog. But syslog isn't running.
+    → sshd tries to log auth events → syslog not available → connection closed
+
+  PROBLEM 4: Protocol 2
+    sshd_config had: Protocol 2
+    This directive was REMOVED from OpenSSH 7.4+.
+    Ubuntu 22.04 ships OpenSSH 8.9 → this line is silently problematic.
+
+  PROBLEM 5: sshd running as background process (&)
+    /usr/sbin/sshd -E /var/log/auth.log -D &
+    tail -f /var/log/auth.log
+    → sshd runs in background, tail keeps the container alive
+    → If we "pkill -f sshd", sshd dies but tail keeps running
+    → Container appears alive but SSH is broken
+    → Also, "pkill -f sshd" matches anything with "sshd" in the command
+
+  THE FIXED entrypoint.sh:
+  ------------------------
+  #!/bin/bash
+  mkdir -p /var/log /run/sshd   ← sshd NEEDS /run/sshd to exist
+
+  ssh-keygen -A 2>/dev/null     ← generate host keys if missing
+                                   -A = generate all key types (RSA, ECDSA, Ed25519)
+                                   Without host keys, sshd cannot do the handshake
+
+  # Write a CLEAN sshd_config directly here
+  # This OVERRIDES the file copied during build — guarantees clean state
+  cat > /etc/ssh/sshd_config << 'CONF'
+  Port 22
+  PermitRootLogin yes           ← WEAK on purpose (lab attack phase)
+  PasswordAuthentication yes    ← WEAK on purpose (allows brute-force)
+  UsePAM no                     ← CRITICAL FIX: PAM breaks in rootless Podman
+  ChallengeResponseAuthentication no   ← disable extra auth challenges
+  KbdInteractiveAuthentication no      ← disable keyboard-interactive auth
+  PrintMotd no                  ← don't print message of the day
+  LogLevel VERBOSE              ← log every auth attempt in detail
+  AuthorizedKeysFile .ssh/authorized_keys
+  CONF
+  # NO Banner line (removed: caused connection resets if file missing)
+  # NO SyslogFacility (removed: syslog not available in rootless Podman)
+  # NO Protocol 2 (removed: not valid in modern OpenSSH)
+
+  touch /var/log/auth.log       ← create log file before sshd starts
+
+  exec /usr/sbin/sshd -D -e 2>> /var/log/auth.log
+  #    ↑               ↑  ↑
+  #    exec = sshd becomes PID 1 (container lives as long as sshd lives)
+  #           -D = run in foreground (don't daemonize)
+  #              -e = send logs to stderr instead of syslog
+  #                   stderr is redirected (2>>) to our log file
+
+  WHY exec IS IMPORTANT:
+    Without exec:   entrypoint.sh (PID 1) → sshd (PID 4)
+    With exec:      sshd IS PID 1
+    When PID 1 dies, the container stops.
+    With exec, if sshd crashes, the container stops → we see it in podman ps.
+    Without exec, sshd could die silently while the container appears running.
+
+--------------------------------------------------------------------------------
+  PART 5 — sshd_config EXPLAINED
+--------------------------------------------------------------------------------
+
+sshd_config controls how the SSH server behaves.
+Each setting is explained with its security implication.
+
+  Port 22
+    The port sshd listens on.
+    Port 22 is the standard. Changing it reduces automated scanning noise
+    but is NOT real security (security through obscurity).
+
+  PermitRootLogin yes   ← [WEAK for lab]
+    Allows logging in directly as root via SSH.
+    NEVER do this in production. If the attacker brute-forces root, they
+    immediately have full control of the machine.
+    Hardened value: PermitRootLogin no
+
+  PasswordAuthentication yes   ← [WEAK for lab]
+    Allows logging in with a username + password.
+    This is what makes brute-force possible.
+    Without this, the attacker needs the private key — computationally infeasible.
+    Hardened value: PasswordAuthentication no
+
+  MaxAuthTries 10   ← [WEAK for lab]
+    How many password attempts before sshd disconnects.
+    10 is too many. With 10 tries per connection and multiple parallel connections,
+    Hydra can try thousands of passwords per minute.
+    Hardened value: MaxAuthTries 3
+
+  UsePAM no   ← [CRITICAL for Podman rootless]
+    PAM = Pluggable Authentication Modules.
+    PAM is a Linux framework that handles login, accounting, and session setup.
+    In production: UsePAM yes (PAM handles password hashing, logging, limits)
+    In our Podman rootless containers: UsePAM no
+    WHY: PAM requires /proc filesystem access and certain kernel features
+    that Podman rootless does not provide. With UsePAM yes, every SSH
+    connection is immediately reset. This was the primary cause of our errors.
+
+  LogLevel VERBOSE
+    How much detail sshd writes to the log.
+    VERBOSE writes every auth attempt including the username, source IP, and port.
+    This is what fills /var/log/auth.log with the entries we analyze.
+    Lower level: INFO (less detail). Higher: DEBUG (too much noise).
+
+--------------------------------------------------------------------------------
+  PART 6 — simulator.py EXPLAINED
+--------------------------------------------------------------------------------
+
+The simulator is the "brain" of the attacker container.
+It is written in Python and simulates 6 different attack behaviors.
+It does NOT use real attack tools (no Hydra, no Metasploit).
+All attacks are Python code that generates REALISTIC log entries.
+
+  SAFETY CHECK (first thing the simulator does):
+    ALLOWED_NETWORKS = ["172.21.0.", "10.10.0.", "192.168.100."]
+    def safety_check(target):
+        if not any(target.startswith(net) for net in ALLOWED_NETWORKS):
+            print("Target is outside allowed lab networks. Aborting.")
+            return False
+    This ensures the simulator can NEVER be accidentally pointed at a real target.
+    NOTE: The bug we hit earlier — the original file had "172.20." not "172.21."
+    after the subnet was changed. Fixed with: sed -i 's/172.20./172.21./g' simulator.py
+
+  Module 1: SSHBruteforceSimulator
+    Uses the paramiko library to make REAL SSH connections to victim containers.
+    Tries username/password combinations from a small built-in wordlist.
+    Each failed attempt creates a real "Failed password" entry in victim's auth.log.
+    Each successful attempt creates a real "Accepted password" entry.
+    This is the key: it generates AUTHENTIC log entries, not fake ones.
+
+    paramiko is a Python implementation of SSH.
+    It handles the full SSH handshake, key exchange, and authentication.
+    This is why the victim SSH server must actually work — paramiko makes
+    real connections.
+
+  Module 2: PortScanSimulator
+    Opens TCP connections to each IP:port combination in the network range.
+    Does NOT use raw sockets (which require root/CAP_NET_RAW).
+    Uses socket.create_connection() — a normal TCP connect scan.
+    This generates network traffic visible in Wireshark and firewall logs.
+
+  Module 3: C2HeartbeatSimulator
+    Simulates a bot "phoning home" to its command-and-control server.
+    Sends HTTP POST requests to port 8888 with a JSON payload:
+      { bot_id, type, timestamp, hostname, ip, uptime, tasks_pending }
+    Uses "jitter" — random ±5 seconds variation in the beacon interval.
+    WHY JITTER: a bot that beacons exactly every 30.000 seconds is trivially
+    detectable. Jitter makes the interval look more like human traffic.
+    Detection: look for regular-ish HTTP POSTs to non-standard ports.
+
+  Module 4: LateralMovementSimulator
+    Simulates an attacker using victim1 (the pivot) to reach internal_net.
+    Tries SSH connections to 10.10.0.x addresses.
+    These connections appear in logs as coming from 10.10.0.20 (victim1's
+    internal IP) — NOT from 172.21.0.10 (the real attacker).
+    This is why firewalls that only filter by external source IP miss this.
+
+  Module 5: InfectedHostSimulator
+    Simulates the behavior of a machine already infected with botnet malware.
+    Combines scanning, beaconing, and status reporting in a loop.
+    Runs for a set duration (default 120 seconds).
+    Represents the "persistence" phase — ongoing malicious activity after
+    initial compromise.
+
+  Module 6: Full botnet scenario
+    Runs all 5 modules in sequence:
+    1. Scan → 2. Brute-force → 3. Lateral movement → 4. C2 beacons
+    This is the most useful for the project report — one command shows
+    the entire attack chain.
+
+--------------------------------------------------------------------------------
+  PART 7 — analyzer.py EXPLAINED
+--------------------------------------------------------------------------------
+
+The analyzer is the defender's tool. It runs on the monitor container,
+reads logs from victim containers, and applies detection rules.
+
+  How it reads logs:
+    The monitor container shares a volume (lab-logs) with victim containers.
+    Victim containers write /var/log/auth.log to this shared volume.
+    The analyzer reads this shared log file.
+
+  Detection Rule: SSH-001 (Brute Force)
+    Logic: count failed SSH attempts per source IP.
+    If any IP has >= 5 failures → fire an alert.
+    Why this works: legitimate users mistype passwords 1-2 times maximum.
+    Dozens of failures from the same IP in seconds = automated attack.
+
+  Detection Rule: SSH-002 (Password Spray)
+    Different from brute force. Spray = one password, many usernames.
+    Logic: find IPs that targeted >= 3 different usernames.
+    Why harder to detect: spray stays under per-account lockout thresholds.
+
+  Detection Rule: SSH-003 (Successful Brute Force)
+    Correlates failures + success from the same IP.
+    This is the "smoking gun" — the attacker got in.
+    Fires CRITICAL alert. Immediate response required.
+
+  Detection Rule: LATERAL-001 (East-West Movement)
+    Logic: SSH connections where the SOURCE IP is also an internal IP.
+    Normal SSH: external admin → internal server (north-south traffic).
+    Lateral movement: internal machine → another internal machine (east-west).
+    Any east-west SSH is suspicious by definition in this lab.
+
+  Detection Rule: HONEYPOT-001
+    ANY connection to honeypot IP (10.10.0.50) = alert.
+    Zero false positives — no legitimate user knows the honeypot exists.
+    If the attacker reaches the honeypot, they successfully pivoted into
+    internal_net. This confirms the lateral movement succeeded.
+
+  Detection Rule: C2-001
+    Looks for beacon events in the honeypot JSONL log.
+    Fires when >= 3 beacon events are seen from the same source.
+
+--------------------------------------------------------------------------------
+  PART 8 — NETWORK CONCEPTS DEMONSTRATED
+--------------------------------------------------------------------------------
+
+  Network Segmentation
+    attack_net (172.21.0.0/24) and internal_net (10.10.0.0/24) are completely
+    separate. A container in attack_net CANNOT reach internal_net directly.
+    Only victim1, which has an IP in BOTH networks, can bridge them.
+    This models VLANs in a real enterprise network.
+
+  The Pivot / Dual-homed machine
+    victim1 has:
+      eth0: 172.21.0.20 (attack_net)
+      eth1: 10.10.0.20  (internal_net)
+    From attacker (172.21.0.10), we can reach 172.21.0.20.
+    From victim1's shell, we can reach 10.10.0.x.
+    So: attacker → victim1 → victim3 is the attack chain.
+    This is called "pivoting" — using a compromised machine as a bridge.
+
+  The 10.10.0.0/24 subnet explained
+    10.10.0.0   = network address (not usable as a host)
+    10.10.0.1   = first usable host
+    10.10.0.254 = last usable host
+    10.10.0.255 = broadcast address (not usable)
+    /24 means the first 24 bits are the network part:
+      10.10.0 = network (24 bits)
+      .x      = host    (8 bits = 256 addresses, 254 usable)
+
+  internal: true in docker-compose
+    This flag prevents any container from accessing the internet.
+    During an attack simulation, a container must NEVER accidentally
+    send traffic to real systems. internal: true is the hard guarantee.
+
+  Firewall concepts (firewall_setup.sh)
+    WEAK phase:     no rules, everything allowed (simulates misconfigured server)
+    MODERATE phase: rate-limiting + logging (detection without blocking)
+    HARDENED phase: default-deny, whitelist only monitor network for SSH
+
+    iptables rule anatomy:
+      iptables -A INPUT -s 172.21.0.10 -p tcp --dport 22 -j DROP
+               │         │              │      │           │
+               append    source IP      proto  dest port   action
+      -A = append to chain
+      -s = source IP (who is sending)
+      -p tcp = TCP protocol
+      --dport 22 = destination port 22 (SSH)
+      -j DROP = silently discard (attacker gets no error feedback)
+      -j REJECT = discard + send error back (attacker knows they're blocked)
+      -j LOG = write to syslog and continue evaluating rules
+      -j ACCEPT = let it through
+
+--------------------------------------------------------------------------------
+  PART 9 — CURRENT STATUS AND WHAT TO RUN
+--------------------------------------------------------------------------------
+
+  What works right now:
+    - All 6 containers start and stay running
+    - attacker container is up and has the simulator
+    - monitor container is up and has the analyzer
+    - Networks are properly segmented
+
+  What needs the fix (victim SSH):
+    The victim containers start but sshd rejects connections due to the
+    PAM + Banner + SyslogFacility issues described in Part 4.
+
+  THE FIX — run this once:
+
+    cd ~/Downloads/files/ssh-botnet-lab
+
+    cat > victim/entrypoint.sh << 'EOF'
+    #!/bin/bash
+    mkdir -p /var/log /run/sshd
+    ssh-keygen -A 2>/dev/null
+    cat > /etc/ssh/sshd_config << 'CONF'
+    Port 22
+    PermitRootLogin yes
+    PasswordAuthentication yes
+    UsePAM no
+    ChallengeResponseAuthentication no
+    KbdInteractiveAuthentication no
+    PrintMotd no
+    LogLevel VERBOSE
+    AuthorizedKeysFile .ssh/authorized_keys
+    CONF
+    touch /var/log/auth.log
+    exec /usr/sbin/sshd -D -e 2>> /var/log/auth.log
+    EOF
+
+    cat > victim-b/entrypoint.sh << 'EOF'
+    #!/bin/bash
+    mkdir -p /var/log /run/sshd /var/log/lab
+    ssh-keygen -A 2>/dev/null
+    cat > /etc/ssh/sshd_config << 'CONF'
+    Port 22
+    PermitRootLogin yes
+    PasswordAuthentication yes
+    UsePAM no
+    ChallengeResponseAuthentication no
+    KbdInteractiveAuthentication no
+    PrintMotd no
+    LogLevel VERBOSE
+    AuthorizedKeysFile .ssh/authorized_keys
+    CONF
+    touch /var/log/auth.log /var/log/lab/honeypot_events.jsonl
+    python3 /lab/honeypot_logger.py &
+    exec /usr/sbin/sshd -D -e 2>> /var/log/auth.log
+    EOF
+
+    podman rm -f victim1 victim2 victim3 honeypot
+    podman compose up -d --build victim1 victim2 victim3 honeypot
+
+  After the fix, test with:
+    podman exec -it attacker ssh labuser@172.21.0.20
+    (password: password123)
+
+  Then run the full lab:
+    Terminal 1: podman exec -it victim1 tail -f /var/log/auth.log
+    Terminal 2: podman exec -it attacker python3 /lab/simulator.py botnet
+    Terminal 3: podman exec -it monitor python3 /lab/monitor/analyzer.py
+
+--------------------------------------------------------------------------------
+  PART 10 — FILE SUMMARY TABLE
+--------------------------------------------------------------------------------
+
+  FILE                          WHAT IT DOES
+  ─────────────────────────────────────────────────────────────────────────────
+  docker-compose.yml            Defines all containers, networks, IPs
+  attacker/Dockerfile           Builds attacker: Ubuntu + Python + paramiko
+  attacker/entrypoint.sh        Prints safety banner, opens bash shell
+  attacker/simulator.py         6 attack simulation modules
+  victim/Dockerfile             Builds victim: Ubuntu + OpenSSH + weak users
+  victim/entrypoint.sh          Starts sshd with correct flags (FIXED)
+  victim/sshd_config            SSH server settings (weak on purpose for lab)
+  victim/firewall_setup.sh      iptables demo: 3 phases of hardening
+  victim-b/Dockerfile           Builds internal victims + honeypot
+  victim-b/entrypoint.sh        Starts sshd + honeypot logger (FIXED)
+  victim-b/honeypot_logger.py   Watches auth.log, emits JSON alert events
+  monitor/Dockerfile            Builds monitor: Ubuntu + Python3
+  monitor/entrypoint.sh         Welcome banner, opens bash shell
+  monitor/analyzer.py           Log analyzer with 6 detection rules
+  monitor/rules/ssh_botnet.rules  Suricata/Snort IDS detection rules
+  docs/NOTES.md                 Deep-dive theory notes on all concepts
+  README.md                     Full project documentation
+
+================================================================================
+  END OF explainSSR.txt
+================================================================================

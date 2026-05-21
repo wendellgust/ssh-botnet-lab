@@ -1,0 +1,155 @@
+# =============================================================================
+# Suricata / Snort Detection Rules — SSH Botnet Lab
+# =============================================================================
+# How to use:
+#   suricata -i br-<id> -S /lab/monitor/rules/ssh_botnet.rules
+#   snort -i br-<id> -c /etc/snort/snort.conf --rule-path /lab/monitor/rules/
+#
+# Rule syntax:
+#   action proto src_ip src_port direction dst_ip dst_port (options)
+#
+# Variables (set these in your suricata.yaml or snort.conf):
+#   $HOME_NET  = your protected network (e.g., 172.21.0.0/24,10.10.0.0/24)
+#   $ATTACK_NET = expected attacker network (e.g., 172.21.0.10/32)
+# =============================================================================
+
+# ---------------------------------------------------------------------------
+# SSH Brute-Force Detection
+# ---------------------------------------------------------------------------
+
+# Detect rapid new SSH connections from a single source
+# threshold: 5 connections in 60 seconds
+alert tcp any any -> $HOME_NET 22 (
+    msg:"SSH-001 Brute-force: Rapid new SSH connections";
+    flow:to_server,not_established;
+    threshold: type threshold, track by_src, count 5, seconds 60;
+    classtype:attempted-admin;
+    sid:1000001; rev:2;
+)
+
+# Detect SSH connection from known attacker IP
+alert tcp 172.21.0.10 any -> $HOME_NET 22 (
+    msg:"SSH-002 SSH connection from attacker container";
+    flow:to_server;
+    classtype:attempted-admin;
+    sid:1000002; rev:1;
+)
+
+# Detect very high rate brute-force (>20 attempts per minute)
+alert tcp any any -> $HOME_NET 22 (
+    msg:"SSH-003 HIGH-RATE Brute-force: >20 connections/min";
+    flow:to_server,not_established;
+    threshold: type threshold, track by_src, count 20, seconds 60;
+    classtype:attempted-admin;
+    priority:1;
+    sid:1000003; rev:2;
+)
+
+# ---------------------------------------------------------------------------
+# C2 Heartbeat / Beaconing Detection
+# ---------------------------------------------------------------------------
+
+# Detect HTTP POST to port 8888 (lab C2 port)
+alert tcp any any -> any 8888 (
+    msg:"C2-001 C2 beacon: HTTP POST to port 8888";
+    flow:to_server,established;
+    content:"POST";
+    content:"/beacon";
+    classtype:trojan-activity;
+    sid:1000010; rev:1;
+)
+
+# Detect the custom bot User-Agent string
+alert http any any -> any any (
+    msg:"C2-002 C2 beacon: suspicious bot User-Agent";
+    flow:to_server,established;
+    content:"User-Agent|3a 20|Mozilla/5.0 (compatible; updater/1.0)";
+    classtype:trojan-activity;
+    sid:1000011; rev:1;
+)
+
+# Detect X-Bot-ID header (lab-specific C2 header)
+alert http any any -> any any (
+    msg:"C2-003 C2 beacon: X-Bot-ID header present";
+    flow:to_server,established;
+    content:"X-Bot-ID:";
+    classtype:trojan-activity;
+    priority:1;
+    sid:1000012; rev:1;
+)
+
+# Detect JSON payload with 'bot_id' field (C2 registration/heartbeat)
+alert tcp any any -> any any (
+    msg:"C2-004 C2 beacon: JSON bot_id field in payload";
+    flow:established;
+    content:"bot_id";
+    content:"HEARTBEAT";
+    classtype:trojan-activity;
+    sid:1000013; rev:1;
+)
+
+# ---------------------------------------------------------------------------
+# Lateral Movement Detection
+# ---------------------------------------------------------------------------
+
+# Detect SSH originating FROM an internal host (east-west traffic)
+alert tcp $HOME_NET any -> $HOME_NET 22 (
+    msg:"LATERAL-001 Lateral movement: internal host initiating SSH";
+    flow:to_server,not_established;
+    threshold: type threshold, track by_src, count 2, seconds 120;
+    classtype:policy-violation;
+    priority:2;
+    sid:1000020; rev:2;
+)
+
+# Detect SSH to Network B from Network A (cross-segment pivot)
+alert tcp 172.21.0.0/24 any -> 10.10.0.0/24 22 (
+    msg:"LATERAL-002 Pivot: SSH from Network A to Network B";
+    flow:to_server;
+    classtype:policy-violation;
+    priority:1;
+    sid:1000021; rev:1;
+)
+
+# ---------------------------------------------------------------------------
+# Network Scanning Detection
+# ---------------------------------------------------------------------------
+
+# Detect port scanning (many ports from one source)
+alert tcp any any -> $HOME_NET any (
+    msg:"SCAN-001 Port scan: many connections to different ports";
+    flow:to_server,not_established;
+    threshold: type threshold, track by_src, count 10, seconds 30;
+    classtype:network-scan;
+    sid:1000030; rev:1;
+)
+
+# Detect host sweep (same port, many hosts)
+alert tcp any any -> $HOME_NET 22 (
+    msg:"SCAN-002 Host sweep: SSH probe across multiple hosts";
+    flow:to_server,not_established;
+    threshold: type threshold, track by_src, count 5, seconds 30;
+    classtype:network-scan;
+    sid:1000031; rev:1;
+)
+
+# ---------------------------------------------------------------------------
+# Honeypot Interaction Detection
+# ---------------------------------------------------------------------------
+
+# ANY traffic to the honeypot IP is suspicious
+alert ip any any -> 10.10.0.50 any (
+    msg:"HONEYPOT-001 CRITICAL: Traffic to honeypot IP 10.10.0.50";
+    classtype:policy-violation;
+    priority:1;
+    sid:1000040; rev:1;
+)
+
+# SSH specifically to honeypot
+alert tcp any any -> 10.10.0.50 22 (
+    msg:"HONEYPOT-002 CRITICAL: SSH connection attempt to honeypot";
+    flow:to_server;
+    classtype:attempted-admin;
+    priority:1;
+    sid:1000041; rev:1;
+)

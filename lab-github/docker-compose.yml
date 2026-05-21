@@ -1,0 +1,125 @@
+networks:
+  attack_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+
+  internal_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+services:
+
+  attacker:
+    build: ./attacker
+    container_name: attacker
+    hostname: attacker
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.10
+    stdin_open: true
+    tty: true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    security_opt:
+      - no-new-privileges:true
+    restart: "no"
+
+  victim1:
+    build: ./victim
+    container_name: victim1
+    hostname: victim1
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.20
+      internal_net:
+        ipv4_address: 10.10.0.20
+    environment:
+      - LAB_ROLE=pivot-victim
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+
+  victim2:
+    build: ./victim
+    container_name: victim2
+    hostname: victim2
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.21
+    environment:
+      - LAB_ROLE=victim
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+
+  victim3:
+    build: ./victim-b
+    container_name: victim3
+    hostname: victim3
+    networks:
+      internal_net:
+        ipv4_address: 10.10.0.10
+    environment:
+      - LAB_ROLE=internal-victim
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+
+  honeypot:
+    build: ./victim-b
+    container_name: honeypot
+    hostname: prod-server-01
+    networks:
+      internal_net:
+        ipv4_address: 10.10.0.50
+    environment:
+      - LAB_ROLE=honeypot
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+      - SETUID
+      - SETGID
+    security_opt:
+      - no-new-privileges:true
+
+  monitor:
+    build: ./monitor
+    container_name: monitor
+    hostname: monitor
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.100
+      internal_net:
+        ipv4_address: 10.10.0.100
+    stdin_open: true
+    tty: true
+    environment:
+      - LAB_ROLE=monitor
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
