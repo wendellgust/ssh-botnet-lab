@@ -65,17 +65,12 @@ INTERNAL_NETS = ["172.21.", "10.10.", "192.168.100."]
 # ---------------------------------------------------------------------------
 
 FAILED_RE = re.compile(
-    r"(?P<ts>\w+ +\d+ [\d:]+) .*sshd.* "
-    r"Failed password for (?:invalid user )?(?P<user>\S+) "
-    r"from (?P<src_ip>[\d.]+) port (?P<src_port>\d+)"
+    r"Failed password for (?:invalid user )?(?P<user>\S+) from (?P<src_ip>[\d.]+) port (?P<src_port>\d+)"
 )
 ACCEPT_RE = re.compile(
-    r"(?P<ts>\w+ +\d+ [\d:]+) .*sshd.* "
-    r"Accepted password for (?P<user>\S+) "
-    r"from (?P<src_ip>[\d.]+) port (?P<src_port>\d+)"
+    r"Accepted password for (?P<user>\S+) from (?P<src_ip>[\d.]+) port (?P<src_port>\d+)"
 )
 INVALID_RE = re.compile(
-    r"(?P<ts>\w+ +\d+ [\d:]+) .*sshd.* "
     r"Invalid user (?P<user>\S+) from (?P<src_ip>[\d.]+)"
 )
 DISCONNECT_RE = re.compile(

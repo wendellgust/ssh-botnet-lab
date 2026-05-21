@@ -24,12 +24,6 @@ services:
         ipv4_address: 172.21.0.10
     stdin_open: true
     tty: true
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-    security_opt:
-      - no-new-privileges:true
     restart: "no"
 
   victim1:
@@ -43,14 +37,6 @@ services:
         ipv4_address: 10.10.0.20
     environment:
       - LAB_ROLE=pivot-victim
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-      - SETUID
-      - SETGID
-    security_opt:
-      - no-new-privileges:true
 
   victim2:
     build: ./victim
@@ -61,14 +47,6 @@ services:
         ipv4_address: 172.21.0.21
     environment:
       - LAB_ROLE=victim
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-      - SETUID
-      - SETGID
-    security_opt:
-      - no-new-privileges:true
 
   victim3:
     build: ./victim-b
@@ -79,14 +57,6 @@ services:
         ipv4_address: 10.10.0.10
     environment:
       - LAB_ROLE=internal-victim
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-      - SETUID
-      - SETGID
-    security_opt:
-      - no-new-privileges:true
 
   honeypot:
     build: ./victim-b
@@ -97,14 +67,6 @@ services:
         ipv4_address: 10.10.0.50
     environment:
       - LAB_ROLE=honeypot
-    cap_drop:
-      - ALL
-    cap_add:
-      - NET_BIND_SERVICE
-      - SETUID
-      - SETGID
-    security_opt:
-      - no-new-privileges:true
 
   monitor:
     build: ./monitor
@@ -117,9 +79,3 @@ services:
         ipv4_address: 10.10.0.100
     stdin_open: true
     tty: true
-    environment:
-      - LAB_ROLE=monitor
-    cap_drop:
-      - ALL
-    security_opt:
-      - no-new-privileges:true

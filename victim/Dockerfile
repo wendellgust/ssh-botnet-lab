@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-LABEL description="Lab victim container — SSH server with intentional weaknesses"
+LABEL description="Lab victim — Network A SSH target"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -13,6 +13,7 @@ RUN apt-get update && apt-get install -y \
     iptables \
   && rm -rf /var/lib/apt/lists/*
 
+# Intentionally weak lab credentials
 RUN useradd -m -s /bin/bash labuser && \
     echo "labuser:password123" | chpasswd && \
     useradd -m -s /bin/bash admin && \
@@ -25,7 +26,7 @@ COPY firewall_setup.sh /lab/firewall_setup.sh
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /lab/firewall_setup.sh /entrypoint.sh
 
-RUN mkdir -p /run/sshd /var/log
+RUN mkdir -p /var/log
 
 EXPOSE 22
 CMD ["/entrypoint.sh"]

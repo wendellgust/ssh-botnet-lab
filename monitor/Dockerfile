@@ -1,6 +1,6 @@
 FROM ubuntu:22.04
 
-LABEL description="Lab monitor — log collection and detection analysis"
+LABEL description="Lab monitor — log collection and detection"
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -20,5 +20,4 @@ RUN chmod +x /entrypoint.sh
 RUN mkdir -p /var/log/lab
 
 WORKDIR /lab/monitor
-
 CMD ["/entrypoint.sh"]
