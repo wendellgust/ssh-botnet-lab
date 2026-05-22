@@ -1,210 +1,118 @@
 #!/bin/bash
-# =============================================================================
-# SSH Botnet Lab — Full Dependency Installer
-# Supports: Kali Linux, Ubuntu 22.04/24.04, Debian 11/12
-# Run with: chmod +x install.sh && sudo bash install.sh
-# =============================================================================
+# install.sh – Install dependencies for SSH Brute-Force & Botnet Lab on Kali
+# Usage: sudo bash install.sh
 
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
-BLUE='\033[0;34m'; CYAN='\033[0;36m'; NC='\033[0m'
-ok()   { echo -e "${GREEN}[OK]${NC}  $1"; }
-info() { echo -e "${BLUE}[--]${NC}  $1"; }
-warn() { echo -e "${YELLOW}[!!]${NC}  $1"; }
-fail() { echo -e "${RED}[ERR]${NC} $1"; exit 1; }
-step() { echo -e "\n${CYAN}══ $1 ══${NC}"; }
+set -e
+trap 'echo "[ERROR] Failed at line $LINENO. Check output above."' ERR
 
-# Must run as root
-[ "$EUID" -ne 0 ] && fail "Run as root: sudo bash install.sh"
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NC='\033[0m'
 
-# Detect the real user (person who called sudo)
-REAL_USER="${SUDO_USER:-$USER}"
-REAL_HOME=$(eval echo "~$REAL_USER")
+log_info()  { echo -e "${GREEN}[INFO]${NC} $1"; }
+log_warn()  { echo -e "${YELLOW}[WARN]${NC} $1"; }
+log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
-echo -e "${CYAN}"
-cat <<'BANNER'
-  ╔═══════════════════════════════════════════════════╗
-  ║   SSH Botnet Lab — Full Dependency Installer     ║
-  ║   FEUP SSR · Educational Use Only               ║
-  ╚═══════════════════════════════════════════════════╝
-BANNER
-echo -e "${NC}"
+# Check root
+if [ "$EUID" -ne 0 ]; then
+    log_error "Please run as root (use sudo)."
+    exit 1
+fi
 
-# Detect OS
-OS_ID=$(grep -oP '(?<=^ID=).+' /etc/os-release 2>/dev/null | tr -d '"' || echo "unknown")
-OS_VER=$(grep -oP '(?<=^VERSION_ID=).+' /etc/os-release 2>/dev/null | tr -d '"' || echo "")
-info "Detected OS: $OS_ID $OS_VER"
-info "Installing for user: $REAL_USER"
-
-# ── Step 1: system update ─────────────────────────────────────────────────────
-step "Step 1 — Update package lists"
-apt-get update -qq && ok "Package lists updated" || warn "apt update had warnings"
-
-# ── Step 2: install core tools ────────────────────────────────────────────────
-step "Step 2 — Install core tools"
-apt-get install -y -qq \
-  curl wget git ca-certificates gnupg lsb-release \
-  python3 python3-pip \
-  >/dev/null 2>&1 && ok "Core tools installed" || warn "Some core tools failed"
-
-# ── Step 3: install Docker ────────────────────────────────────────────────────
-step "Step 3 — Install Docker"
-
-if command -v docker >/dev/null 2>&1; then
-  ok "Docker already installed: $(docker --version)"
+# Get original user
+if [ -n "$SUDO_USER" ]; then
+    USER_HOME=$(eval echo ~$SUDO_USER)
+    REAL_USER=$SUDO_USER
 else
-  info "Installing Docker..."
-
-  # Remove old conflicting packages
-  for pkg in docker docker-engine docker.io containerd runc docker-doc docker-compose podman-docker; do
-    apt-get remove -y -qq $pkg 2>/dev/null || true
-  done
-
-  # Try direct install first (works on most Debian/Ubuntu/Kali)
-  if apt-get install -y -qq docker.io 2>/dev/null; then
-    ok "docker.io installed"
-  else
-    # Official Docker repo
-    info "Adding official Docker repository..."
-    install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/$(. /etc/os-release && echo "$ID")/gpg \
-      | gpg --dearmor -o /etc/apt/keyrings/docker.gpg 2>/dev/null || true
-    chmod a+r /etc/apt/keyrings/docker.gpg 2>/dev/null || true
-
-    ARCH=$(dpkg --print-architecture)
-    # Kali uses debian repos
-    DIST="debian"
-    [ "$OS_ID" = "ubuntu" ] && DIST="ubuntu"
-
-    echo "deb [arch=$ARCH signed-by=/etc/apt/keyrings/docker.gpg] \
-      https://download.docker.com/linux/$DIST \
-      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" \
-      | tee /etc/apt/sources.list.d/docker.list >/dev/null
-
-    apt-get update -qq 2>/dev/null || true
-    apt-get install -y -qq docker-ce docker-ce-cli containerd.io 2>/dev/null || \
-      warn "Docker CE install failed — trying docker.io fallback"
-    apt-get install -y -qq docker.io 2>/dev/null || true
-  fi
-
-  if command -v docker >/dev/null 2>&1; then
-    ok "Docker installed: $(docker --version)"
-  else
-    fail "Docker installation failed. Install manually: https://docs.docker.com/engine/install/"
-  fi
+    log_error "Cannot determine original user. Run with sudo."
+    exit 1
 fi
 
-# ── Step 4: install Docker Compose ───────────────────────────────────────────
-step "Step 4 — Install Docker Compose"
+log_info "Updating package list..."
+apt update -y
 
-if docker compose version >/dev/null 2>&1; then
-  ok "docker compose (plugin) already available"
-elif command -v docker-compose >/dev/null 2>&1; then
-  ok "docker-compose already installed: $(docker-compose --version)"
+log_info "Installing core packages: podman, podman-compose, git, tools..."
+apt install -y \
+    podman \
+    podman-compose \
+    git \
+    openssh-client \
+    netcat-openbsd \
+    tcpdump \
+    iptables \
+    dnsutils \
+    curl \
+    vim \
+    htop
+
+# Install podman-docker (provides /usr/bin/docker shim for podman)
+log_info "Installing podman-docker for Docker compatibility..."
+apt install -y podman-docker
+
+# Install pipx and use it to install docker-compose (safe, no system Python conflict)
+if ! command -v docker-compose &> /dev/null; then
+    log_info "Installing docker-compose via pipx..."
+    apt install -y pipx
+    pipx ensurepath
+    pipx install docker-compose
+    # Force PATH update for current session
+    export PATH="$USER_HOME/.local/bin:$PATH"
+    # Also add to bashrc for future sessions
+    sudo -u "$REAL_USER" bash -c "grep -q '.local/bin' ~/.bashrc || echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.bashrc"
+fi
+
+# Verify docker-compose is available
+if ! command -v docker-compose &> /dev/null; then
+    log_error "docker-compose still not found. Try logging out and back in, then rerun."
+    exit 1
+fi
+log_info "docker-compose version: $(docker-compose --version)"
+
+# Verify podman + docker shim
+if ! command -v docker &> /dev/null; then
+    log_warn "'docker' command not found. podman-docker may not be linked correctly."
+    log_warn "Create symlink: ln -s /usr/bin/podman /usr/local/bin/docker"
+    ln -sf /usr/bin/podman /usr/local/bin/docker
+fi
+log_info "podman version: $(podman --version)"
+
+# Setup rootless podman for the real user
+log_info "Configuring rootless podman for $REAL_USER..."
+sudo -u "$REAL_USER" podman system migrate 2>/dev/null || true
+
+# Clone lab repo if not present
+LAB_DIR="$USER_HOME/Documents/ssh-botnet-lab"
+if [ ! -d "$LAB_DIR" ]; then
+    log_info "Cloning lab repository..."
+    sudo -u "$REAL_USER" mkdir -p "$USER_HOME/Documents"
+    sudo -u "$REAL_USER" git clone https://github.com/your-org/ssh-botnet-lab.git "$LAB_DIR" || {
+        log_warn "Git clone failed. Please manually place lab files in $LAB_DIR"
+    }
 else
-  info "Installing docker-compose..."
-
-  # Try apt first
-  apt-get install -y -qq docker-compose-plugin 2>/dev/null || true
-  apt-get install -y -qq docker-compose       2>/dev/null || true
-
-  # If still not found, install binary directly
-  if ! docker compose version >/dev/null 2>&1 && ! command -v docker-compose >/dev/null 2>&1; then
-    info "Downloading docker-compose binary..."
-    COMPOSE_VERSION="2.24.5"
-    curl -SL "https://github.com/docker/compose/releases/download/v${COMPOSE_VERSION}/docker-compose-linux-$(uname -m)" \
-      -o /usr/local/bin/docker-compose 2>/dev/null || true
-    chmod +x /usr/local/bin/docker-compose 2>/dev/null || true
-  fi
-
-  if docker compose version >/dev/null 2>&1; then
-    ok "docker compose plugin ready"
-  elif command -v docker-compose >/dev/null 2>&1; then
-    ok "docker-compose ready: $(docker-compose --version)"
-  else
-    warn "Compose not found — lab may not start. Try: sudo apt install docker-compose"
-  fi
+    log_info "Lab directory already exists at $LAB_DIR"
 fi
 
-# ── Step 5: start and enable Docker ──────────────────────────────────────────
-step "Step 5 — Start Docker service"
-
-systemctl enable docker 2>/dev/null || true
-systemctl start  docker 2>/dev/null || true
-sleep 2
-
-if systemctl is-active docker >/dev/null 2>&1; then
-  ok "Docker service running"
-elif docker info >/dev/null 2>&1; then
-  ok "Docker is responding"
+if [ -f "$LAB_DIR/setup.sh" ]; then
+    chmod +x "$LAB_DIR/setup.sh"
+    log_info "setup.sh is now executable"
 else
-  warn "Docker service may not be running. Try: sudo systemctl start docker"
+    log_warn "setup.sh not found in $LAB_DIR. The lab may be incomplete."
 fi
 
-# ── Step 6: add user to docker group ─────────────────────────────────────────
-step "Step 6 — Add $REAL_USER to docker group"
-
-if getent group docker >/dev/null 2>&1; then
-  usermod -aG docker "$REAL_USER" 2>/dev/null || true
-  ok "$REAL_USER added to docker group"
-  info "You may need to log out and back in for group changes to take effect"
-  info "Or run: newgrp docker"
+# Final checks
+log_info "Verifying compose command detection:"
+if sudo -u "$REAL_USER" bash -c "cd $LAB_DIR; command -v docker-compose &>/dev/null || command -v podman-compose &>/dev/null"; then
+    log_info "✓ Compose command is available"
 else
-  warn "docker group not found — skipping"
+    log_warn "Neither docker-compose nor podman-compose found in user's PATH. Try logging out and back in."
 fi
 
-# ── Step 7: install Python packages ──────────────────────────────────────────
-step "Step 7 — Install Python packages"
-
-apt-get install -y -qq python3-paramiko python3-requests 2>/dev/null || \
-  pip3 install paramiko requests --break-system-packages 2>/dev/null || true
-ok "Python packages ready"
-
-# ── Step 8: verify everything ─────────────────────────────────────────────────
-step "Step 8 — Verify installation"
-
-echo ""
-DOCKER_OK=false
-COMPOSE_OK=false
-
-if docker --version >/dev/null 2>&1; then
-  ok "docker: $(docker --version)"
-  DOCKER_OK=true
-else
-  warn "docker: NOT FOUND"
-fi
-
-if docker compose version >/dev/null 2>&1; then
-  ok "compose: $(docker compose version)"
-  COMPOSE_OK=true
-elif docker-compose --version >/dev/null 2>&1; then
-  ok "compose: $(docker-compose --version)"
-  COMPOSE_OK=true
-else
-  warn "compose: NOT FOUND"
-fi
-
-if python3 --version >/dev/null 2>&1; then
-  ok "python3: $(python3 --version)"
-fi
-
-# ── Done ──────────────────────────────────────────────────────────────────────
-echo ""
-echo -e "${CYAN}══ Done ══${NC}"
-echo ""
-
-if [ "$DOCKER_OK" = true ] && [ "$COMPOSE_OK" = true ]; then
-  echo -e "${GREEN}All dependencies installed. Next steps:${NC}"
-  echo ""
-  echo "  1. Apply docker group (no re-login needed with this):"
-  echo "     newgrp docker"
-  echo ""
-  echo "  2. Start the lab:"
-  echo "     cd ~/Documents/ssh-botnet-lab"
-  echo "     chmod +x setup.sh && ./setup.sh"
-else
-  echo -e "${YELLOW}Some dependencies may be missing. Check warnings above.${NC}"
-  echo ""
-  echo "  Manual install if needed:"
-  echo "    sudo apt install docker.io docker-compose"
-fi
-echo ""
+log_info "All dependencies installed successfully."
+log_info "Next steps:"
+echo "  1. Log out and back in (or source ~/.bashrc) to update PATH."
+echo "  2. cd $LAB_DIR"
+echo "  3. ./setup.sh"
+echo "  4. Follow the lab guide."
+exit 0
