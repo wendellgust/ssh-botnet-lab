@@ -69,7 +69,7 @@ ok "Cleanup done"
 # ── Step 3: build and start ───────────────────────────────────────────────────
 step "Step 3 — Build and start containers (3-5 min first run)"
 
-$COMPOSE up -d --build
+$podman-compose up -d --build
 
 info "Waiting 8 seconds for containers to initialise..."
 sleep 8
@@ -186,7 +186,7 @@ echo ""
 echo -e "${GREEN}"
 cat <<'DONE'
   ╔═══════════════════════════════════════════════════╗
-  ║              LAB READY                           ║
+  ║              LAB READY                            ║
   ╚═══════════════════════════════════════════════════╝
 DONE
 echo -e "${NC}"
