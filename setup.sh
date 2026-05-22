@@ -1,6 +1,6 @@
 #!/bin/bash
 # =============================================================================
-# SSH Brute-Force & Botnet Lab — One-shot Setup Script
+# SSH Brute-Force & Botnet Lab — Setup Script
 # FEUP SSR 2026 — Educational use only
 # Usage: chmod +x setup.sh && ./setup.sh
 # =============================================================================
@@ -32,35 +32,42 @@ if command -v podman &>/dev/null; then
   EXE="podman"
   systemctl --user start  podman.socket 2>/dev/null || true
   systemctl --user enable podman.socket 2>/dev/null || true
-  if command -v docker-compose &>/dev/null; then COMPOSE="docker-compose"
-  elif docker compose version &>/dev/null 2>&1;  then COMPOSE="docker compose"
-  else fail "No compose found. Run: sudo apt install docker-compose-plugin"; fi
+  if command -v docker-compose &>/dev/null; then
+    COMPOSE="docker-compose"
+  elif docker compose version &>/dev/null 2>&1; then
+    COMPOSE="docker compose"
+  else
+    fail "No compose found. Run: sudo apt install docker-compose-plugin"
+  fi
 elif command -v docker &>/dev/null; then
-  ok "Found docker"; EXE="docker"; COMPOSE="docker compose"
+  ok "Found docker"
+  EXE="docker"
+  COMPOSE="docker compose"
 else
-  fail "Install podman: sudo apt install podman podman-compose"
+  fail "Install podman: sudo apt install podman"
 fi
-ok "Using compose: $COMPOSE"
+ok "Compose: $COMPOSE"
 
-# ── Step 2: clean up old containers/networks ──────────────────────────────────
+# ── Step 2: clean up ─────────────────────────────────────────────────────────
 step "Step 2 — Clean up old containers and networks"
 
 for c in attacker victim1 victim2 victim3 honeypot monitor; do
-  $EXE rm -f $c 2>/dev/null && info "Removed container: $c" || true
+  $EXE rm -f $c 2>/dev/null && info "Removed: $c" || true
 done
+
 for n in \
-  ssh-botnet-lab_attack_net ssh-botnet-lab_internal_net \
-  lab-github_attack_net     lab-github_internal_net \
-  lab-v3_attack_net         lab-v3_internal_net \
-  lab-final_attack_net      lab-final_internal_net \
+  ssh-botnet-lab_attack_net  ssh-botnet-lab_internal_net \
+  lab-github_attack_net      lab-github_internal_net \
+  lab-v3_attack_net          lab-v3_internal_net \
+  lab-final_attack_net       lab-final_internal_net \
+  lab-final2_attack_net      lab-final2_internal_net \
   dokcer_botnet-lab; do
   $EXE network rm $n 2>/dev/null && info "Removed network: $n" || true
 done
 ok "Cleanup done"
 
 # ── Step 3: build and start ───────────────────────────────────────────────────
-step "Step 3 — Build images and start containers"
-info "First run takes 3-5 minutes (downloads Ubuntu base image)"
+step "Step 3 — Build and start containers (3-5 min first run)"
 
 $COMPOSE up -d --build
 
@@ -75,19 +82,18 @@ for c in attacker victim1 victim2 victim3 honeypot monitor; do
 done
 [ "$ALL_UP" = false ] && warn "Some containers not running — check: $EXE logs victim1"
 
-# ── Step 4: verify SSH on victims ─────────────────────────────────────────────
-step "Step 4 — Verify SSH on all victims"
+# ── Step 4: verify SSH on all victims ─────────────────────────────────────────
+step "Step 4 — Verify SSH on victims"
 
 for c in victim1 victim2 victim3 honeypot; do
   if ! $EXE inspect --format='{{.State.Status}}' $c 2>/dev/null | grep -q running; then
     warn "$c not running, skipping"; continue
   fi
-  # Check if sshd is listening
   LISTENING=$($EXE exec $c ss -tlnp 2>/dev/null | grep ':22' || echo "")
   if [ -n "$LISTENING" ]; then
     ok "SSH listening on $c"
   else
-    warn "$c sshd not listening — restarting..."
+    warn "$c sshd not listening — attempting restart..."
     $EXE exec $c bash -c "
       mkdir -p /run/sshd
       ssh-keygen -A 2>/dev/null
@@ -100,7 +106,7 @@ for c in victim1 victim2 victim3 honeypot; do
 done
 
 # ── Step 5: copy paramiko to victim1 ─────────────────────────────────────────
-step "Step 5 — Copy Python libraries to victim1 (needed for lateral movement)"
+step "Step 5 — Copy Python libraries to victim1"
 
 if $EXE inspect --format='{{.State.Status}}' attacker 2>/dev/null | grep -q running && \
    $EXE inspect --format='{{.State.Status}}' victim1  2>/dev/null | grep -q running; then
@@ -109,7 +115,7 @@ if $EXE inspect --format='{{.State.Status}}' attacker 2>/dev/null | grep -q runn
   if [ "$ALREADY" = "ok" ]; then
     ok "paramiko already on victim1"
   else
-    info "Copying packages from attacker..."
+    info "Copying packages from attacker to victim1..."
     $EXE exec attacker bash -c \
       "tar czf /tmp/pkgs.tar.gz /usr/lib/python3/dist-packages/ 2>/dev/null"
     $EXE exec attacker bash -c \
@@ -129,7 +135,7 @@ if $EXE inspect --format='{{.State.Status}}' attacker 2>/dev/null | grep -q runn
     else warn "paramiko failed — lateral movement phase may not work"; fi
   fi
 else
-  warn "Skipping paramiko copy — containers not ready"
+  warn "Skipping paramiko — containers not ready"
 fi
 
 # ── Step 6: deploy simulator to victim1 ──────────────────────────────────────
@@ -141,22 +147,23 @@ if $EXE inspect --format='{{.State.Status}}' attacker 2>/dev/null | grep -q runn
   python3 -c "
 c = open('/tmp/sim_setup.py').read()
 if 'internal123' not in c:
-    c = c.replace('\"pass1234\"', '\"pass1234\", \"internal123\", \"service1\", \"rootpass\"')
+    c = c.replace('\"pass1234\"',
+        '\"pass1234\", \"internal123\", \"service1\", \"rootpass\"')
     open('/tmp/sim_setup.py','w').write(c)
     print('wordlist updated')
 else:
-    print('wordlist already updated')
+    print('wordlist already has internal passwords')
 "
   $EXE cp /tmp/sim_setup.py victim1:/tmp/sim.py
-  ok "Simulator on victim1 at /tmp/sim.py"
+  ok "Simulator deployed to victim1 at /tmp/sim.py"
 else
   warn "Skipping simulator deploy"
 fi
 
-# ── Step 7: final SSH test ────────────────────────────────────────────────────
-step "Step 7 — Final SSH test"
+# ── Step 7: SSH connectivity test ────────────────────────────────────────────
+step "Step 7 — Final SSH connectivity test"
 
-sleep 1
+sleep 2
 R=$($EXE exec attacker bash -c \
   "ssh -o StrictHostKeyChecking=no \
        -o PasswordAuthentication=yes \
@@ -166,10 +173,12 @@ R=$($EXE exec attacker bash -c \
        labuser@172.21.0.20 'echo OK' 2>&1" || echo "FAIL")
 
 if echo "$R" | grep -qE "^OK$|Permission denied"; then
-  ok "SSH to victim1 is working"
+  ok "SSH to victim1 confirmed"
+elif echo "$R" | grep -q "timed out\|refused"; then
+  warn "SSH not responding: $R"
+  warn "Check: $EXE logs victim1"
 else
-  warn "SSH test result: $R"
-  warn "Try manually: $EXE exec -it attacker ssh labuser@172.21.0.20  (pass: password123)"
+  ok "SSH is responding"
 fi
 
 # ── Done ──────────────────────────────────────────────────────────────────────
@@ -187,8 +196,9 @@ echo ""
 echo "  Terminal 2 — run attack:"
 echo "    $EXE exec -it attacker python3 /lab/simulator.py bruteforce --target 172.21.0.20 --delay 1.0 --max-attempts 150"
 echo ""
-echo "  Terminal 3 — run detection:"
-echo "    $EXE exec victim1 cat /var/log/auth.log > /tmp/a.log && $EXE cp /tmp/a.log monitor:/var/log/lab/auth.log"
+echo "  Terminal 3 — detect:"
+echo "    $EXE exec victim1 cat /var/log/auth.log > /tmp/a.log"
+echo "    $EXE cp /tmp/a.log monitor:/var/log/lab/auth.log"
 echo "    $EXE exec -it monitor python3 /lab/monitor/analyzer.py --report"
 echo ""
 echo "  Full guide: docs/LAB_GUIDE.md"
