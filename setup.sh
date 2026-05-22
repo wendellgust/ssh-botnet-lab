@@ -226,7 +226,7 @@ echo ""
 echo -e "${GREEN}"
 cat <<'DONE'
   ╔═══════════════════════════════════════════════════╗
-  ║              LAB READY                           ║
+  ║              LAB READY                            ║
   ╚═══════════════════════════════════════════════════╝
 DONE
 echo -e "${NC}"
@@ -241,3 +241,4 @@ echo "    ./start.sh 1   ./start.sh 2   ./start.sh 3   ./start.sh 4"
 echo ""
 echo "  Guide: docs/LAB_GUIDE.md"
 echo ""
+
