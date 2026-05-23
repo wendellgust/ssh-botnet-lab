@@ -319,7 +319,9 @@ phase_prepare_pivot() {
         $RT exec victim2 bash -c "cd / && tar xzf /tmp/pkgs.tar.gz 2>/dev/null || true"
         $RT cp /tmp/libs.tar.gz victim2:/tmp/libs.tar.gz
         $RT exec victim2 bash -c "cd / && tar xzf /tmp/libs.tar.gz 2>/dev/null || true; ldconfig 2>/dev/null || true"
-        $RT cp /tmp/sim.py victim2:/tmp/sim.py
+        $RT cp victim1:/tmp/sim.py /tmp/sim_v1.py 2>/dev/null && \
+            $RT cp /tmp/sim_v1.py victim2:/tmp/sim.py 2>/dev/null || \
+            warn "Could not copy sim.py to victim2 — deep lateral in S3 may not work"
         if $RT exec victim2 python3 -c "import paramiko; print('paramiko ok')" 2>/dev/null; then
             ok "victim2 pivot2 ready"
         else

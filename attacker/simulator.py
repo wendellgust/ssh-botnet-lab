@@ -37,7 +37,7 @@ SAFETY_BANNER = """
 """
 
 ALLOWED_NETWORKS = [
-    "172.21.0.", "10.10.0.", "10.20.0.", "192.168.100."
+    "172.21.0.", "10.10.0.", "10.20.0.", "10.30.0.", "192.168.100."
 ]
 
 SSH_USERNAMES = ["labuser", "admin", "root", "ubuntu", "test", "pi", "user",
