@@ -262,7 +262,7 @@ phase_setup() {
             local net=""
             while IFS= read -r netname; do
                 if $RT network inspect "$netname" 2>/dev/null \
-                        | grep -q '"10.20.0.0/24"'; then
+                        | grep -q '10\.20\.0\.0/24'; then
                     net="$netname"
                     break
                 fi
