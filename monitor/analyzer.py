@@ -56,8 +56,8 @@ SCAN_PORT_THRESHOLD     = 5    # connections to >5 ports = scan
 BEACON_REGULARITY_SEC   = 5    # max variance in beacon interval (seconds)
 LATERAL_MOVE_THRESHOLD  = 2    # internal-to-internal SSH attempts
 
-# CIDR ranges for east-west detection
-INTERNAL_NETS = ["172.21.", "10.10.", "192.168.100."]
+# CIDR ranges for east-west detection (attack_net excluded — attacker lives there)
+INTERNAL_NETS = ["10.10.", "10.20.", "10.30.", "192.168.100."]
 
 
 # ---------------------------------------------------------------------------
@@ -266,30 +266,31 @@ def rule_successful_auth_from_suspicious(events: list) -> list[Alert]:
     """
     alerts = []
     ip_failed = Counter()
-    ip_success = []
+    ip_success = defaultdict(list)
 
     for ev in events:
         if ev["type"] == "ssh_failed":
             ip_failed[ev["src_ip"]] += 1
         elif ev["type"] == "ssh_accepted":
-            ip_success.append(ev)
+            ip_success[ev["src_ip"]].append(ev)
 
-    for ev in ip_success:
-        ip = ev.get("src_ip", "?")
+    for ip, successes in ip_success.items():
         failures_before = ip_failed.get(ip, 0)
         if failures_before >= 3:
+            users = set(ev.get("user", "?") for ev in successes)
             alerts.append(Alert(
                 severity=CRITICAL,
                 rule_id="SSH-003",
                 title="Successful Login After Brute-Force",
                 description=(
                     f"IP {ip} succeeded after {failures_before} failures. "
-                    f"User {ev.get('user','?')} is now logged in. "
+                    f"User(s) {', '.join(users)} logged in. "
                     f"SYSTEM MAY BE COMPROMISED."
                 ),
                 evidence=(
-                    f"Accepted: user={ev.get('user')} from={ip}. "
-                    f"Prior failures from same IP: {failures_before}"
+                    f"Accepted: user(s)={', '.join(users)} from={ip}. "
+                    f"Prior failures: {failures_before}. "
+                    f"Successful logins: {len(successes)}"
                 ),
                 response=(
                     "IMMEDIATE ACTION:  "

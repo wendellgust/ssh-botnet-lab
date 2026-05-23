@@ -1,0 +1,122 @@
+{
+  "/home/person/Downloads/SSR/ssh-botnet-lab/setup.sh": {
+    "mtime": 1779455685.0,
+    "ast_hash": "fa92ed0f0704f79a4915ed0c354d66f3",
+    "semantic_hash": "fa92ed0f0704f79a4915ed0c354d66f3"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/start.sh": {
+    "mtime": 1779439809.0,
+    "ast_hash": "799bad2e4656f35b6b40d3dad8243252",
+    "semantic_hash": "799bad2e4656f35b6b40d3dad8243252"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/auto_run.sh": {
+    "mtime": 1779457786.0889945,
+    "ast_hash": "81ddbd7382f3ec757e59094cc813fe13",
+    "semantic_hash": "81ddbd7382f3ec757e59094cc813fe13"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/install.sh": {
+    "mtime": 1779455684.0,
+    "ast_hash": "81496697f1816c958bfeb6fada0f866f",
+    "semantic_hash": "81496697f1816c958bfeb6fada0f866f"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/attacker/botnet.py": {
+    "mtime": 1779439787.0,
+    "ast_hash": "ed0e88f38483657059f5bab25aec6be3",
+    "semantic_hash": "ed0e88f38483657059f5bab25aec6be3"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/attacker/entrypoint.sh": {
+    "mtime": 1779439678.0,
+    "ast_hash": "e8e749e0491e11e47d8f7b5c1fe2245f",
+    "semantic_hash": "e8e749e0491e11e47d8f7b5c1fe2245f"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/attacker/simulator.py": {
+    "mtime": 1779439680.0,
+    "ast_hash": "b488fbc6aa7f0976bc4bd81dc5366b49",
+    "semantic_hash": "b488fbc6aa7f0976bc4bd81dc5366b49"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/monitor/entrypoint.sh": {
+    "mtime": 1779439680.0,
+    "ast_hash": "a52800c6ebad07a7b54d82faec61e05d",
+    "semantic_hash": "a52800c6ebad07a7b54d82faec61e05d"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/monitor/analyzer.py": {
+    "mtime": 1779439680.0,
+    "ast_hash": "82c341e0941843a443929a0eab186cb0",
+    "semantic_hash": "82c341e0941843a443929a0eab186cb0"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/victim/entrypoint.sh": {
+    "mtime": 1779439678.0,
+    "ast_hash": "90171f2894dcf4e860ca5589874f3a78",
+    "semantic_hash": "90171f2894dcf4e860ca5589874f3a78"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/victim/firewall_setup.sh": {
+    "mtime": 1779439679.0,
+    "ast_hash": "1d2804e23297bce637e84a1e3735fd8f",
+    "semantic_hash": "1d2804e23297bce637e84a1e3735fd8f"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/victim-b/entrypoint.sh": {
+    "mtime": 1779439679.0,
+    "ast_hash": "8c150cec1cb0fa34f4aad28948dcc8a3",
+    "semantic_hash": "8c150cec1cb0fa34f4aad28948dcc8a3"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/victim-b/honeypot_logger.py": {
+    "mtime": 1779439679.0,
+    "ast_hash": "77ca5e1bbaf153f7ec84e59a751053d1",
+    "semantic_hash": "77ca5e1bbaf153f7ec84e59a751053d1"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/victim-c/entrypoint.sh": {
+    "mtime": 1779439692.0,
+    "ast_hash": "e26d2e2be40f17bf6d53a706b3ddb234",
+    "semantic_hash": "e26d2e2be40f17bf6d53a706b3ddb234"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/README.md": {
+    "mtime": 1779403787.0,
+    "ast_hash": "e86257cc62ccc197cdf6045635b91c7b",
+    "semantic_hash": "e86257cc62ccc197cdf6045635b91c7b"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/docker-compose.yml": {
+    "mtime": 1779409627.0,
+    "ast_hash": "456eaab1335380e03dda6ac39b6a2b25",
+    "semantic_hash": "456eaab1335380e03dda6ac39b6a2b25"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/docs/LAB_GUIDE.md": {
+    "mtime": 1779439680.0,
+    "ast_hash": "5384822cb3ed9d7afaa97cb4bef3d3e8",
+    "semantic_hash": "5384822cb3ed9d7afaa97cb4bef3d3e8"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/docs/explainSSR.txt": {
+    "mtime": 1779439680.0,
+    "ast_hash": "e1ccd98c002d25cb1c881f6a1cf7dc52",
+    "semantic_hash": "e1ccd98c002d25cb1c881f6a1cf7dc52"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/docs/attack_visualizer.html": {
+    "mtime": 1779397548.0,
+    "ast_hash": "b216eabae0b55c948d412e2cf77f05df",
+    "semantic_hash": "b216eabae0b55c948d412e2cf77f05df"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/scenarios/scenario3.yml": {
+    "mtime": 1779439722.0,
+    "ast_hash": "bd6a721b5a29cb97d3e752005a685d35",
+    "semantic_hash": "bd6a721b5a29cb97d3e752005a685d35"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/scenarios/scenario4.yml": {
+    "mtime": 1779439734.0,
+    "ast_hash": "3fcf323d96b1d3ef5944dc93c38b58e5",
+    "semantic_hash": "3fcf323d96b1d3ef5944dc93c38b58e5"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/scenarios/scenario1.yml": {
+    "mtime": 1779439701.0,
+    "ast_hash": "b2b586e7eb51e25a8770da3f01dcf0fb",
+    "semantic_hash": "b2b586e7eb51e25a8770da3f01dcf0fb"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/scenarios/scenario2.yml": {
+    "mtime": 1779439711.0,
+    "ast_hash": "2f220d90cc7be6cb27ee5e5724a0cee4",
+    "semantic_hash": "2f220d90cc7be6cb27ee5e5724a0cee4"
+  },
+  "/home/person/Downloads/SSR/ssh-botnet-lab/docs/scenarios_diagram.svg": {
+    "mtime": 1779455685.0,
+    "ast_hash": "b16565d6b6289b806ac406d6d235fd1b",
+    "semantic_hash": "b16565d6b6289b806ac406d6d235fd1b"
+  }
+}

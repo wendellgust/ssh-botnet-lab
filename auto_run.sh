@@ -71,8 +71,16 @@ VICTIM1_INT=10.10.0.20
 VICTIM3_INT=10.10.0.10
 HONEYPOT_INT=10.10.0.50
 
-VICTIM4_DEEP=10.20.0.10
+# Scenario 3: victim2 is pivot2 into extra_net (10.20.0.0/24)
+VICTIM2_DEEP_INT=10.20.0.20  # victim2's extra_net IP
+VICTIM4_DEEP=10.20.0.10      # extra_net — scenario 3 parallel pivot via victim2
 VICTIM5_DEEP=10.20.0.11
+
+# Scenario 4: deep_net uses a different subnet (10.30.0.0/24)
+if [[ "$SCENARIO" == "4" ]]; then
+    VICTIM4_DEEP=10.30.0.10
+    VICTIM5_DEEP=10.30.0.11
+fi
 
 # Background PIDs to clean up on exit
 BG_PIDS=()
@@ -303,6 +311,21 @@ phase_prepare_pivot() {
     else
         warn "paramiko import failed on victim1 — lateral movement may not work"
     fi
+
+    # Scenario 3: also prepare victim2 as the extra_net pivot
+    if [[ "$SCENARIO" == "3" ]]; then
+        log "Scenario 3 — also preparing victim2 as pivot2 (extra_net)..."
+        $RT cp /tmp/pkgs.tar.gz victim2:/tmp/pkgs.tar.gz
+        $RT exec victim2 bash -c "cd / && tar xzf /tmp/pkgs.tar.gz 2>/dev/null || true"
+        $RT cp /tmp/libs.tar.gz victim2:/tmp/libs.tar.gz
+        $RT exec victim2 bash -c "cd / && tar xzf /tmp/libs.tar.gz 2>/dev/null || true; ldconfig 2>/dev/null || true"
+        $RT cp /tmp/sim.py victim2:/tmp/sim.py
+        if $RT exec victim2 python3 -c "import paramiko; print('paramiko ok')" 2>/dev/null; then
+            ok "victim2 pivot2 ready"
+        else
+            warn "paramiko import failed on victim2 — deep lateral in S3 may not work"
+        fi
+    fi
 }
 
 # =============================================================================
@@ -347,11 +370,12 @@ phase_lateral_deep() {
         warn "Could not copy sim.py to victim3"
 
     if [[ "$SCENARIO" == "3" ]]; then
-        log "Scenario 3 — victim1 → victim4 ($VICTIM4_DEEP) and victim5 ($VICTIM5_DEEP) in parallel..."
-        $RT exec victim1 python3 /tmp/sim.py bruteforce \
+        wait_for_ssh victim2 "$VICTIM4_DEEP"
+        log "Scenario 3 — victim2 → victim4 ($VICTIM4_DEEP) and victim5 ($VICTIM5_DEEP) in parallel..."
+        $RT exec victim2 python3 /tmp/sim.py bruteforce \
             --target "$VICTIM4_DEEP" --delay 1.0 --max-attempts 120 &
         BG_PIDS+=($!)
-        $RT exec victim1 python3 /tmp/sim.py bruteforce \
+        $RT exec victim2 python3 /tmp/sim.py bruteforce \
             --target "$VICTIM5_DEEP" --delay 1.0 --max-attempts 120 &
         BG_PIDS+=($!)
         wait "${BG_PIDS[@]}" 2>/dev/null || true
@@ -482,6 +506,8 @@ phase_detect() {
     if [[ $SCENARIO -ge 2 ]]; then
         $RT exec victim3   cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true
         $RT exec honeypot  cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true
+        $RT exec honeypot  cat /var/log/lab/honeypot_events.jsonl > /tmp/honeypot.jsonl 2>/dev/null || true
+        $RT cp /tmp/honeypot.jsonl monitor:/var/log/lab/honeypot_events.jsonl 2>/dev/null || true
     fi
     if [[ $SCENARIO -ge 3 ]]; then
         $RT exec victim4 cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true

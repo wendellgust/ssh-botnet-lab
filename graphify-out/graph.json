@@ -1,0 +1,5979 @@
+{
+  "directed": false,
+  "multigraph": false,
+  "graph": {
+    "hyperedges": [
+      {
+        "id": "attack_detect_cycle",
+        "label": "Attack-Detect Feedback Loop: Simulator/Botnet generate auth.log entries consumed by Analyzer detection rules",
+        "nodes": [
+          "attacker_simulator_sshbruteforcesimulator",
+          "concept_auth_log",
+          "monitor_analyzer_rule_ssh_brute_force"
+        ],
+        "relation": "participate_in",
+        "confidence": "INFERRED",
+        "confidence_score": 0.95,
+        "source_file": "monitor/analyzer.py"
+      },
+      {
+        "id": "honeypot_pipeline",
+        "label": "Honeypot Event Pipeline: victim-b sshd writes auth.log, honeypot_logger reads it and emits JSONL, analyzer ingests JSONL for HONEYPOT-001 and C2-001 rules",
+        "nodes": [
+          "victim_b_entrypoint_sh",
+          "victim_b_honeypot_logger_emit_event",
+          "concept_honeypot_events_jsonl",
+          "monitor_analyzer_parse_honeypot_log",
+          "monitor_analyzer_rule_honeypot_hit"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 0.95,
+        "source_file": "victim-b/honeypot_logger.py"
+      },
+      {
+        "id": "botnet_propagation_loop",
+        "label": "Autonomous Botnet Propagation Loop: scan \u2192 brute-force \u2192 compromise \u2192 discover new networks \u2192 scan",
+        "nodes": [
+          "attacker_botnet_scan_network",
+          "attacker_botnet_brute_force",
+          "attacker_botnet_get_networks_from_host",
+          "attacker_botnet_propagate"
+        ],
+        "relation": "form",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "attacker/botnet.py"
+      },
+      {
+        "id": "attack_chain_flow",
+        "label": "Full Attack Chain: Recon \u2192 Brute-force \u2192 Lateral Movement \u2192 C2 Beaconing",
+        "nodes": [
+          "docs_lab_guide_phase1_recon",
+          "docs_lab_guide_phase2_bruteforce",
+          "docs_lab_guide_phase4_lateral",
+          "docs_lab_guide_phase5_c2"
+        ],
+        "relation": "implement",
+        "confidence": "EXTRACTED",
+        "confidence_score": 1.0,
+        "source_file": "docs/LAB_GUIDE.md"
+      },
+      {
+        "id": "scenario_topology_progression",
+        "label": "Scenario Network Topology Progression (1\u21922\u21923\u21924 increasing complexity)",
+        "nodes": [
+          "scenarios_scenario1_single_network",
+          "scenarios_scenario2_two_networks",
+          "scenarios_scenario3_three_networks",
+          "scenarios_scenario4_deep_chain"
+        ],
+        "relation": "form",
+        "confidence": "INFERRED",
+        "confidence_score": 0.95,
+        "source_file": "docs/scenarios_diagram.svg"
+      },
+      {
+        "id": "lab_documentation_corpus",
+        "label": "Lab Documentation Corpus (README, LAB_GUIDE, explainSSR)",
+        "nodes": [
+          "readme_project_overview",
+          "docs_lab_guide_ssh_botnet_attack",
+          "docs_explainssr_full_explanation"
+        ],
+        "relation": "form",
+        "confidence": "INFERRED",
+        "confidence_score": 0.85,
+        "source_file": "README.md"
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "label": "setup.sh",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "setup_sh",
+      "community": 10,
+      "norm_label": "setup.sh"
+    },
+    {
+      "label": "setup.sh script",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "community": 10,
+      "norm_label": "setup.sh script"
+    },
+    {
+      "label": "ok()",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L11",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_setup_ok",
+      "community": 10,
+      "norm_label": "ok()"
+    },
+    {
+      "label": "info()",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L12",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_setup_info",
+      "community": 10,
+      "norm_label": "info()"
+    },
+    {
+      "label": "warn()",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L13",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_setup_warn",
+      "community": 10,
+      "norm_label": "warn()"
+    },
+    {
+      "label": "fail()",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L14",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_setup_fail",
+      "community": 10,
+      "norm_label": "fail()"
+    },
+    {
+      "label": "step()",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": "L15",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_setup_step",
+      "community": 10,
+      "norm_label": "step()"
+    },
+    {
+      "label": "start.sh",
+      "file_type": "code",
+      "source_file": "start.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "start_sh",
+      "community": 14,
+      "norm_label": "start.sh"
+    },
+    {
+      "label": "start.sh script",
+      "file_type": "code",
+      "source_file": "start.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_start_sh__entry",
+      "community": 14,
+      "norm_label": "start.sh script"
+    },
+    {
+      "label": "auto_run.sh",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "auto_run_sh",
+      "community": 3,
+      "norm_label": "auto_run.sh"
+    },
+    {
+      "label": "auto_run.sh script",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "community": 3,
+      "norm_label": "auto_run.sh script"
+    },
+    {
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L19",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_log",
+      "community": 3,
+      "norm_label": "log()"
+    },
+    {
+      "label": "ok()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L20",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_ok",
+      "community": 3,
+      "norm_label": "ok()"
+    },
+    {
+      "label": "warn()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L21",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_warn",
+      "community": 3,
+      "norm_label": "warn()"
+    },
+    {
+      "label": "fail()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L22",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_fail",
+      "community": 3,
+      "norm_label": "fail()"
+    },
+    {
+      "label": "banner()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L23",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_banner",
+      "community": 3,
+      "norm_label": "banner()"
+    },
+    {
+      "label": "cleanup()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L59",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_cleanup",
+      "community": 3,
+      "norm_label": "cleanup()"
+    },
+    {
+      "label": "wait_for_container()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L67",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_wait_for_container",
+      "community": 3,
+      "norm_label": "wait_for_container()"
+    },
+    {
+      "label": "wait_for_ssh()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L81",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "community": 3,
+      "norm_label": "wait_for_ssh()"
+    },
+    {
+      "label": "phase_setup()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L95",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_setup",
+      "community": 3,
+      "norm_label": "phase_setup()"
+    },
+    {
+      "label": "phase_recon()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L132",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_recon",
+      "community": 3,
+      "norm_label": "phase_recon()"
+    },
+    {
+      "label": "phase_bruteforce()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L147",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_bruteforce",
+      "community": 3,
+      "norm_label": "phase_bruteforce()"
+    },
+    {
+      "label": "phase_prepare_pivot()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L169",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "community": 3,
+      "norm_label": "phase_prepare_pivot()"
+    },
+    {
+      "label": "phase_lateral()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L215",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_lateral",
+      "community": 3,
+      "norm_label": "phase_lateral()"
+    },
+    {
+      "label": "phase_lateral_deep()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L235",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "community": 3,
+      "norm_label": "phase_lateral_deep()"
+    },
+    {
+      "label": "phase_c2()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L273",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_c2",
+      "community": 3,
+      "norm_label": "phase_c2()"
+    },
+    {
+      "label": "phase_detect()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L379",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_phase_detect",
+      "community": 3,
+      "norm_label": "phase_detect()"
+    },
+    {
+      "label": "print_summary()",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": "L410",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_auto_run_print_summary",
+      "community": 3,
+      "norm_label": "print_summary()"
+    },
+    {
+      "label": "install.sh",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "install_sh",
+      "community": 11,
+      "norm_label": "install.sh"
+    },
+    {
+      "label": "install.sh script",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "community": 11,
+      "norm_label": "install.sh script"
+    },
+    {
+      "label": "ok()",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L10",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_install_ok",
+      "community": 11,
+      "norm_label": "ok()"
+    },
+    {
+      "label": "info()",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L11",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_install_info",
+      "community": 11,
+      "norm_label": "info()"
+    },
+    {
+      "label": "warn()",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L12",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_install_warn",
+      "community": 11,
+      "norm_label": "warn()"
+    },
+    {
+      "label": "fail()",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L13",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_install_fail",
+      "community": 11,
+      "norm_label": "fail()"
+    },
+    {
+      "label": "step()",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": "L14",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "id": "ssh_botnet_lab_install_step",
+      "community": 11,
+      "norm_label": "step()"
+    },
+    {
+      "label": "botnet.py",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L1",
+      "id": "attacker_botnet_py",
+      "community": 2,
+      "norm_label": "botnet.py"
+    },
+    {
+      "label": "is_safe_target()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L66",
+      "id": "attacker_botnet_is_safe_target",
+      "community": 2,
+      "norm_label": "is_safe_target()"
+    },
+    {
+      "label": "log()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L73",
+      "id": "attacker_botnet_log",
+      "community": 2,
+      "norm_label": "log()"
+    },
+    {
+      "label": "get_local_networks()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L79",
+      "id": "attacker_botnet_get_local_networks",
+      "community": 2,
+      "norm_label": "get_local_networks()"
+    },
+    {
+      "label": "get_networks_from_host()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L95",
+      "id": "attacker_botnet_get_networks_from_host",
+      "community": 2,
+      "norm_label": "get_networks_from_host()"
+    },
+    {
+      "label": "probe_ssh()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L119",
+      "id": "attacker_botnet_probe_ssh",
+      "community": 2,
+      "norm_label": "probe_ssh()"
+    },
+    {
+      "label": "scan_network()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L128",
+      "id": "attacker_botnet_scan_network",
+      "community": 2,
+      "norm_label": "scan_network()"
+    },
+    {
+      "label": "brute_force()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L146",
+      "id": "attacker_botnet_brute_force",
+      "community": 2,
+      "norm_label": "brute_force()"
+    },
+    {
+      "label": "propagate()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L194",
+      "id": "attacker_botnet_propagate",
+      "community": 2,
+      "norm_label": "propagate()"
+    },
+    {
+      "label": "print_report()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L222",
+      "id": "attacker_botnet_print_report",
+      "community": 2,
+      "norm_label": "print_report()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L259",
+      "id": "attacker_botnet_main",
+      "community": 2,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Return all /24 network prefixes visible from this machine.",
+      "file_type": "rationale",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L80",
+      "id": "attacker_botnet_rationale_80",
+      "community": 2,
+      "norm_label": "return all /24 network prefixes visible from this machine."
+    },
+    {
+      "label": "SSH to a compromised host and discover its network interfaces.",
+      "file_type": "rationale",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L96",
+      "id": "attacker_botnet_rationale_96",
+      "community": 2,
+      "norm_label": "ssh to a compromised host and discover its network interfaces."
+    },
+    {
+      "label": "Check if port 22 is open on an IP.",
+      "file_type": "rationale",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L120",
+      "id": "attacker_botnet_rationale_120",
+      "community": 2,
+      "norm_label": "check if port 22 is open on an ip."
+    },
+    {
+      "label": "Scan a /24 network for SSH targets. Returns list of live IPs.",
+      "file_type": "rationale",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L129",
+      "id": "attacker_botnet_rationale_129",
+      "community": 2,
+      "norm_label": "scan a /24 network for ssh targets. returns list of live ips."
+    },
+    {
+      "label": "Try all username/password combinations against an SSH target.     Returns creden",
+      "file_type": "rationale",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L147",
+      "id": "attacker_botnet_rationale_147",
+      "community": 2,
+      "norm_label": "try all username/password combinations against an ssh target.     returns creden"
+    },
+    {
+      "label": "Process a queue of (ip, via_host) pairs.     For each: brute-force, then discove",
+      "file_type": "rationale",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L195",
+      "id": "attacker_botnet_rationale_195",
+      "community": 2,
+      "norm_label": "process a queue of (ip, via_host) pairs.     for each: brute-force, then discove"
+    },
+    {
+      "label": "entrypoint.sh",
+      "file_type": "code",
+      "source_file": "attacker/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "attacker_entrypoint_sh",
+      "community": 13,
+      "norm_label": "entrypoint.sh"
+    },
+    {
+      "label": "entrypoint.sh script",
+      "file_type": "code",
+      "source_file": "attacker/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_attacker_entrypoint_sh__entry",
+      "community": 13,
+      "norm_label": "entrypoint.sh script"
+    },
+    {
+      "label": "simulator.py",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L1",
+      "id": "attacker_simulator_py",
+      "community": 5,
+      "norm_label": "simulator.py"
+    },
+    {
+      "label": "safety_check()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L101",
+      "id": "attacker_simulator_safety_check",
+      "community": 5,
+      "norm_label": "safety_check()"
+    },
+    {
+      "label": "setup_logging()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L116",
+      "id": "attacker_simulator_setup_logging",
+      "community": 5,
+      "norm_label": "setup_logging()"
+    },
+    {
+      "label": "SSHBruteforceSimulator",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L132",
+      "id": "attacker_simulator_sshbruteforcesimulator",
+      "community": 9,
+      "norm_label": "sshbruteforcesimulator"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L144",
+      "id": "attacker_simulator_sshbruteforcesimulator_init",
+      "community": 9,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".attempt_login()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L153",
+      "id": "attacker_simulator_sshbruteforcesimulator_attempt_login",
+      "community": 9,
+      "norm_label": ".attempt_login()"
+    },
+    {
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L198",
+      "id": "attacker_simulator_sshbruteforcesimulator_run",
+      "community": 9,
+      "norm_label": ".run()"
+    },
+    {
+      "label": "PortScanSimulator",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L233",
+      "id": "attacker_simulator_portscansimulator",
+      "community": 7,
+      "norm_label": "portscansimulator"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L246",
+      "id": "attacker_simulator_portscansimulator_init",
+      "community": 7,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".probe_port()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L251",
+      "id": "attacker_simulator_portscansimulator_probe_port",
+      "community": 7,
+      "norm_label": ".probe_port()"
+    },
+    {
+      "label": ".scan_host()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L265",
+      "id": "attacker_simulator_portscansimulator_scan_host",
+      "community": 7,
+      "norm_label": ".scan_host()"
+    },
+    {
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L275",
+      "id": "attacker_simulator_portscansimulator_run",
+      "community": 7,
+      "norm_label": ".run()"
+    },
+    {
+      "label": "C2HeartbeatSimulator",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L293",
+      "id": "attacker_simulator_c2heartbeatsimulator",
+      "community": 6,
+      "norm_label": "c2heartbeatsimulator"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L308",
+      "id": "attacker_simulator_c2heartbeatsimulator_init",
+      "community": 5,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".build_beacon()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L318",
+      "id": "attacker_simulator_c2heartbeatsimulator_build_beacon",
+      "community": 6,
+      "norm_label": ".build_beacon()"
+    },
+    {
+      "label": ".send_beacon()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L332",
+      "id": "attacker_simulator_c2heartbeatsimulator_send_beacon",
+      "community": 6,
+      "norm_label": ".send_beacon()"
+    },
+    {
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L358",
+      "id": "attacker_simulator_c2heartbeatsimulator_run",
+      "community": 6,
+      "norm_label": ".run()"
+    },
+    {
+      "label": "LateralMovementSimulator",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L383",
+      "id": "attacker_simulator_lateralmovementsimulator",
+      "community": 5,
+      "norm_label": "lateralmovementsimulator"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L407",
+      "id": "attacker_simulator_lateralmovementsimulator_init",
+      "community": 5,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".attempt_pivot()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L413",
+      "id": "attacker_simulator_lateralmovementsimulator_attempt_pivot",
+      "community": 5,
+      "norm_label": ".attempt_pivot()"
+    },
+    {
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L454",
+      "id": "attacker_simulator_lateralmovementsimulator_run",
+      "community": 5,
+      "norm_label": ".run()"
+    },
+    {
+      "label": "InfectedHostSimulator",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L477",
+      "id": "attacker_simulator_infectedhostsimulator",
+      "community": 8,
+      "norm_label": "infectedhostsimulator"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L493",
+      "id": "attacker_simulator_infectedhostsimulator_init",
+      "community": 8,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".report_status()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L501",
+      "id": "attacker_simulator_infectedhostsimulator_report_status",
+      "community": 8,
+      "norm_label": ".report_status()"
+    },
+    {
+      "label": ".run()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L521",
+      "id": "attacker_simulator_infectedhostsimulator_run",
+      "community": 8,
+      "norm_label": ".run()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L565",
+      "id": "attacker_simulator_main",
+      "community": 12,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Verify target is within allowed lab networks.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L102",
+      "id": "attacker_simulator_rationale_102",
+      "community": 5,
+      "norm_label": "verify target is within allowed lab networks."
+    },
+    {
+      "label": "Simulates an SSH brute-force attack by attempting real SSH connections     with",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L133",
+      "id": "attacker_simulator_rationale_133",
+      "community": 9,
+      "norm_label": "simulates an ssh brute-force attack by attempting real ssh connections     with"
+    },
+    {
+      "label": "Try a single SSH login. Returns True if successful.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L154",
+      "id": "attacker_simulator_rationale_154",
+      "community": 9,
+      "norm_label": "try a single ssh login. returns true if successful."
+    },
+    {
+      "label": "Run the brute-force simulation.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L199",
+      "id": "attacker_simulator_rationale_199",
+      "community": 9,
+      "norm_label": "run the brute-force simulation."
+    },
+    {
+      "label": "Simulates network reconnaissance by probing TCP ports.     Uses real TCP connect",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L234",
+      "id": "attacker_simulator_rationale_234",
+      "community": 7,
+      "norm_label": "simulates network reconnaissance by probing tcp ports.     uses real tcp connect"
+    },
+    {
+      "label": "Try a TCP connection to host:port. Returns True if open.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L252",
+      "id": "attacker_simulator_rationale_252",
+      "community": 7,
+      "norm_label": "try a tcp connection to host:port. returns true if open."
+    },
+    {
+      "label": "Scan common ports on a single host.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L266",
+      "id": "attacker_simulator_rationale_266",
+      "community": 7,
+      "norm_label": "scan common ports on a single host."
+    },
+    {
+      "label": "Scan a range of hosts in the lab network.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L276",
+      "id": "attacker_simulator_rationale_276",
+      "community": 7,
+      "norm_label": "scan a range of hosts in the lab network."
+    },
+    {
+      "label": "Simulates a botnet C2 (Command and Control) beacon protocol.     Bots periodical",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L294",
+      "id": "attacker_simulator_rationale_294",
+      "community": 6,
+      "norm_label": "simulates a botnet c2 (command and control) beacon protocol.     bots periodical"
+    },
+    {
+      "label": "Build a realistic beacon payload.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L319",
+      "id": "attacker_simulator_rationale_319",
+      "community": 6,
+      "norm_label": "build a realistic beacon payload."
+    },
+    {
+      "label": "Send a single beacon to the C2 server via raw TCP.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L333",
+      "id": "attacker_simulator_rationale_333",
+      "community": 6,
+      "norm_label": "send a single beacon to the c2 server via raw tcp."
+    },
+    {
+      "label": "Send beacons with jitter at regular intervals.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L359",
+      "id": "attacker_simulator_rationale_359",
+      "community": 6,
+      "norm_label": "send beacons with jitter at regular intervals."
+    },
+    {
+      "label": "Simulates an attacker using a compromised pivot machine to reach     machines in",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L384",
+      "id": "attacker_simulator_rationale_384",
+      "community": 5,
+      "norm_label": "simulates an attacker using a compromised pivot machine to reach     machines in"
+    },
+    {
+      "label": "Attempt SSH connection to an internal target.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L414",
+      "id": "attacker_simulator_rationale_414",
+      "community": 5,
+      "norm_label": "attempt ssh connection to an internal target."
+    },
+    {
+      "label": "Simulate lateral movement from pivot to internal targets.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L455",
+      "id": "attacker_simulator_rationale_455",
+      "community": 5,
+      "norm_label": "simulate lateral movement from pivot to internal targets."
+    },
+    {
+      "label": "Simulates behaviors of a machine that has already been compromised     and is ru",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L478",
+      "id": "attacker_simulator_rationale_478",
+      "community": 8,
+      "norm_label": "simulates behaviors of a machine that has already been compromised     and is ru"
+    },
+    {
+      "label": "Build and log a status report (as if sending to C2).",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L502",
+      "id": "attacker_simulator_rationale_502",
+      "community": 8,
+      "norm_label": "build and log a status report (as if sending to c2)."
+    },
+    {
+      "label": "Run the infected host simulation for a set duration.",
+      "file_type": "rationale",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L522",
+      "id": "attacker_simulator_rationale_522",
+      "community": 8,
+      "norm_label": "run the infected host simulation for a set duration."
+    },
+    {
+      "label": "entrypoint.sh",
+      "file_type": "code",
+      "source_file": "monitor/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "monitor_entrypoint_sh",
+      "community": 15,
+      "norm_label": "entrypoint.sh"
+    },
+    {
+      "label": "entrypoint.sh script",
+      "file_type": "code",
+      "source_file": "monitor/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_monitor_entrypoint_sh__entry",
+      "community": 15,
+      "norm_label": "entrypoint.sh script"
+    },
+    {
+      "label": "analyzer.py",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L1",
+      "id": "monitor_analyzer_py",
+      "community": 1,
+      "norm_label": "analyzer.py"
+    },
+    {
+      "label": "parse_auth_log()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L86",
+      "id": "monitor_analyzer_parse_auth_log",
+      "community": 1,
+      "norm_label": "parse_auth_log()"
+    },
+    {
+      "label": "parse_honeypot_log()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L108",
+      "id": "monitor_analyzer_parse_honeypot_log",
+      "community": 1,
+      "norm_label": "parse_honeypot_log()"
+    },
+    {
+      "label": "Alert",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L126",
+      "id": "monitor_analyzer_alert",
+      "community": 1,
+      "norm_label": "alert"
+    },
+    {
+      "label": ".__init__()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L127",
+      "id": "monitor_analyzer_alert_init",
+      "community": 1,
+      "norm_label": ".__init__()"
+    },
+    {
+      "label": ".__str__()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L138",
+      "id": "monitor_analyzer_alert_str",
+      "community": 1,
+      "norm_label": ".__str__()"
+    },
+    {
+      "label": ".to_dict()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L156",
+      "id": "monitor_analyzer_alert_to_dict",
+      "community": 1,
+      "norm_label": ".to_dict()"
+    },
+    {
+      "label": "rule_ssh_brute_force()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L168",
+      "id": "monitor_analyzer_rule_ssh_brute_force",
+      "community": 1,
+      "norm_label": "rule_ssh_brute_force()"
+    },
+    {
+      "label": "rule_password_spray()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L213",
+      "id": "monitor_analyzer_rule_password_spray",
+      "community": 1,
+      "norm_label": "rule_password_spray()"
+    },
+    {
+      "label": "rule_successful_auth_from_suspicious()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L257",
+      "id": "monitor_analyzer_rule_successful_auth_from_suspicious",
+      "community": 1,
+      "norm_label": "rule_successful_auth_from_suspicious()"
+    },
+    {
+      "label": "rule_lateral_movement()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L307",
+      "id": "monitor_analyzer_rule_lateral_movement",
+      "community": 1,
+      "norm_label": "rule_lateral_movement()"
+    },
+    {
+      "label": "rule_honeypot_hit()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L354",
+      "id": "monitor_analyzer_rule_honeypot_hit",
+      "community": 1,
+      "norm_label": "rule_honeypot_hit()"
+    },
+    {
+      "label": "rule_c2_beaconing()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L400",
+      "id": "monitor_analyzer_rule_c2_beaconing",
+      "community": 1,
+      "norm_label": "rule_c2_beaconing()"
+    },
+    {
+      "label": "run_analysis()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L499",
+      "id": "monitor_analyzer_run_analysis",
+      "community": 1,
+      "norm_label": "run_analysis()"
+    },
+    {
+      "label": "print_report()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L527",
+      "id": "monitor_analyzer_print_report",
+      "community": 1,
+      "norm_label": "print_report()"
+    },
+    {
+      "label": "live_monitor()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L550",
+      "id": "monitor_analyzer_live_monitor",
+      "community": 1,
+      "norm_label": "live_monitor()"
+    },
+    {
+      "label": "list_rules()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L564",
+      "id": "monitor_analyzer_list_rules",
+      "community": 1,
+      "norm_label": "list_rules()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L577",
+      "id": "monitor_analyzer_main",
+      "community": 1,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Parse /var/log/auth.log into structured events.",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L87",
+      "id": "monitor_analyzer_rationale_87",
+      "community": 1,
+      "norm_label": "parse /var/log/auth.log into structured events."
+    },
+    {
+      "label": "Parse structured honeypot JSONL log.",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L109",
+      "id": "monitor_analyzer_rationale_109",
+      "community": 1,
+      "norm_label": "parse structured honeypot jsonl log."
+    },
+    {
+      "label": "RULE: SSH-001 \u2014 SSH Brute-Force Attack          Logic: Count failed auth attempt",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L169",
+      "id": "monitor_analyzer_rationale_169",
+      "community": 1,
+      "norm_label": "rule: ssh-001 \u2014 ssh brute-force attack          logic: count failed auth attempt"
+    },
+    {
+      "label": "RULE: SSH-002 \u2014 Password Spray Attack          Logic: A spray attack uses ONE pa",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L214",
+      "id": "monitor_analyzer_rationale_214",
+      "community": 1,
+      "norm_label": "rule: ssh-002 \u2014 password spray attack          logic: a spray attack uses one pa"
+    },
+    {
+      "label": "RULE: SSH-003 \u2014 Successful Login After Multiple Failures          Logic: Find IP",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L258",
+      "id": "monitor_analyzer_rationale_258",
+      "community": 1,
+      "norm_label": "rule: ssh-003 \u2014 successful login after multiple failures          logic: find ip"
+    },
+    {
+      "label": "RULE: LATERAL-001 \u2014 East-West SSH (Lateral Movement)          Logic: SSH connect",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L308",
+      "id": "monitor_analyzer_rationale_308",
+      "community": 1,
+      "norm_label": "rule: lateral-001 \u2014 east-west ssh (lateral movement)          logic: ssh connect"
+    },
+    {
+      "label": "RULE: HONEYPOT-001 \u2014 Honeypot Interaction          Logic: ANY connection to the",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L355",
+      "id": "monitor_analyzer_rationale_355",
+      "community": 1,
+      "norm_label": "rule: honeypot-001 \u2014 honeypot interaction          logic: any connection to the"
+    },
+    {
+      "label": "RULE: C2-001 \u2014 C2 Heartbeat / Beaconing          Logic: Look for structured beac",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L401",
+      "id": "monitor_analyzer_rationale_401",
+      "community": 1,
+      "norm_label": "rule: c2-001 \u2014 c2 heartbeat / beaconing          logic: look for structured beac"
+    },
+    {
+      "label": "Watch logs in real time and alert on new events.",
+      "file_type": "rationale",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L551",
+      "id": "monitor_analyzer_rationale_551",
+      "community": 1,
+      "norm_label": "watch logs in real time and alert on new events."
+    },
+    {
+      "label": "entrypoint.sh",
+      "file_type": "code",
+      "source_file": "victim/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "victim_entrypoint_sh",
+      "community": 4,
+      "norm_label": "entrypoint.sh"
+    },
+    {
+      "label": "entrypoint.sh script",
+      "file_type": "code",
+      "source_file": "victim/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_victim_entrypoint_sh__entry",
+      "community": 4,
+      "norm_label": "entrypoint.sh script"
+    },
+    {
+      "label": "firewall_setup.sh",
+      "file_type": "code",
+      "source_file": "victim/firewall_setup.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "victim_firewall_setup_sh",
+      "community": 4,
+      "norm_label": "firewall_setup.sh"
+    },
+    {
+      "label": "firewall_setup.sh script",
+      "file_type": "code",
+      "source_file": "victim/firewall_setup.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_victim_firewall_setup_sh__entry",
+      "community": 4,
+      "norm_label": "firewall_setup.sh script"
+    },
+    {
+      "label": "entrypoint.sh",
+      "file_type": "code",
+      "source_file": "victim-b/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "victim_b_entrypoint_sh",
+      "community": 4,
+      "norm_label": "entrypoint.sh"
+    },
+    {
+      "label": "entrypoint.sh script",
+      "file_type": "code",
+      "source_file": "victim-b/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_victim_b_entrypoint_sh__entry",
+      "community": 4,
+      "norm_label": "entrypoint.sh script"
+    },
+    {
+      "label": "honeypot_logger.py",
+      "file_type": "code",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L1",
+      "id": "victim_b_honeypot_logger_py",
+      "community": 4,
+      "norm_label": "honeypot_logger.py"
+    },
+    {
+      "label": "tail_log()",
+      "file_type": "code",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L29",
+      "id": "victim_b_honeypot_logger_tail_log",
+      "community": 4,
+      "norm_label": "tail_log()"
+    },
+    {
+      "label": "emit_event()",
+      "file_type": "code",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L44",
+      "id": "victim_b_honeypot_logger_emit_event",
+      "community": 4,
+      "norm_label": "emit_event()"
+    },
+    {
+      "label": "main()",
+      "file_type": "code",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L58",
+      "id": "victim_b_honeypot_logger_main",
+      "community": 4,
+      "norm_label": "main()"
+    },
+    {
+      "label": "Yield new lines from a log file as they appear.",
+      "file_type": "rationale",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L30",
+      "id": "victim_b_honeypot_logger_rationale_30",
+      "community": 4,
+      "norm_label": "yield new lines from a log file as they appear."
+    },
+    {
+      "label": "entrypoint.sh",
+      "file_type": "code",
+      "source_file": "victim-c/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "id": "victim_c_entrypoint_sh",
+      "community": 4,
+      "norm_label": "entrypoint.sh"
+    },
+    {
+      "label": "entrypoint.sh script",
+      "file_type": "code",
+      "source_file": "victim-c/entrypoint.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "id": "home_person_downloads_ssr_ssh_botnet_lab_victim_c_entrypoint_sh__entry",
+      "community": 4,
+      "norm_label": "entrypoint.sh script"
+    },
+    {
+      "label": "setup.sh \u2014 Lab Setup Script",
+      "file_type": "code",
+      "source_file": "setup.sh",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "setup_setup_sh",
+      "community": 12,
+      "norm_label": "setup.sh \u2014 lab setup script"
+    },
+    {
+      "label": "start.sh \u2014 Scenario Launcher",
+      "file_type": "code",
+      "source_file": "start.sh",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "start_start_sh",
+      "community": 12,
+      "norm_label": "start.sh \u2014 scenario launcher"
+    },
+    {
+      "label": "auto_run.sh \u2014 Fully Automatic Scenario Runner",
+      "file_type": "code",
+      "source_file": "auto_run.sh",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "auto_run_auto_run_sh",
+      "community": 12,
+      "norm_label": "auto_run.sh \u2014 fully automatic scenario runner"
+    },
+    {
+      "label": "install.sh \u2014 Full Dependency Installer",
+      "file_type": "code",
+      "source_file": "install.sh",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "install_install_sh",
+      "community": 12,
+      "norm_label": "install.sh \u2014 full dependency installer"
+    },
+    {
+      "label": "botnet.py \u2014 compromised{} \u2014 Global Infection State Dict",
+      "file_type": "code",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 70",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "attacker_botnet_compromised",
+      "community": 2,
+      "norm_label": "botnet.py \u2014 compromised{} \u2014 global infection state dict"
+    },
+    {
+      "label": "Concept: /var/log/auth.log \u2014 Shared SSH Log Artifact",
+      "file_type": "concept",
+      "source_file": null,
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_auth_log",
+      "community": 4,
+      "norm_label": "concept: /var/log/auth.log \u2014 shared ssh log artifact"
+    },
+    {
+      "label": "Concept: /var/log/lab/honeypot_events.jsonl \u2014 Structured Honeypot Event Log",
+      "file_type": "concept",
+      "source_file": null,
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_honeypot_events_jsonl",
+      "community": 1,
+      "norm_label": "concept: /var/log/lab/honeypot_events.jsonl \u2014 structured honeypot event log"
+    },
+    {
+      "label": "Concept: Lateral Movement / Pivot Attack Pattern",
+      "file_type": "concept",
+      "source_file": null,
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_lateral_movement",
+      "community": 2,
+      "norm_label": "concept: lateral movement / pivot attack pattern"
+    },
+    {
+      "label": "Concept: C2 Beaconing / Heartbeat Protocol",
+      "file_type": "concept",
+      "source_file": null,
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "concept_c2_beaconing",
+      "community": 6,
+      "norm_label": "concept: c2 beaconing / heartbeat protocol"
+    },
+    {
+      "label": "SSH Brute-Force & Botnet Simulation Lab",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_project_overview",
+      "community": 0,
+      "norm_label": "ssh brute-force & botnet simulation lab"
+    },
+    {
+      "label": "Attack Chain: Brute-force \u2192 Lateral Movement \u2192 C2 Beaconing",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "line 88-94",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_attack_chain",
+      "community": 0,
+      "norm_label": "attack chain: brute-force \u2192 lateral movement \u2192 c2 beaconing"
+    },
+    {
+      "label": "Lab Safety Boundaries",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": "line 46-55",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_safety_boundaries",
+      "community": 0,
+      "norm_label": "lab safety boundaries"
+    },
+    {
+      "label": "Network Segmentation Concept",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": "line 264-266",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_network_segmentation_concept",
+      "community": 0,
+      "norm_label": "network segmentation concept"
+    },
+    {
+      "label": "Detection Techniques (Threshold, Behavioral, Correlation, Topology, Deception, Protocol)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "line 308-331",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_detection_techniques",
+      "community": 0,
+      "norm_label": "detection techniques (threshold, behavioral, correlation, topology, deception, protocol)"
+    },
+    {
+      "label": "Botnet Concepts (C2, Lateral Movement, Persistence, Architectures)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "line 283-304",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_botnet_concepts",
+      "community": 0,
+      "norm_label": "botnet concepts (c2, lateral movement, persistence, architectures)"
+    },
+    {
+      "label": "Firewall Concepts (Default-deny, Rate-limiting, Logging, Allowlisting)",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": "line 262-276",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_firewall_concepts",
+      "community": 0,
+      "norm_label": "firewall concepts (default-deny, rate-limiting, logging, allowlisting)"
+    },
+    {
+      "label": "Docker Compose Lab Definition",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_lab_definition",
+      "community": 0,
+      "norm_label": "docker compose lab definition"
+    },
+    {
+      "label": "attack_net Network (172.21.0.0/24)",
+      "file_type": "concept",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 2-7",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_attack_net",
+      "community": 0,
+      "norm_label": "attack_net network (172.21.0.0/24)"
+    },
+    {
+      "label": "internal_net Network (10.10.0.0/24)",
+      "file_type": "concept",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 9-14",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_internal_net",
+      "community": 0,
+      "norm_label": "internal_net network (10.10.0.0/24)"
+    },
+    {
+      "label": "Attacker Container Service",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 18-27",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_attacker_service",
+      "community": 0,
+      "norm_label": "attacker container service"
+    },
+    {
+      "label": "Victim1 Container Service (Dual-homed Pivot)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 29-41",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_victim1_service",
+      "community": 0,
+      "norm_label": "victim1 container service (dual-homed pivot)"
+    },
+    {
+      "label": "Victim2 Container Service",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 43-53",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_victim2_service",
+      "community": 0,
+      "norm_label": "victim2 container service"
+    },
+    {
+      "label": "Victim3 Container Service (Internal Network)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 55-65",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_victim3_service",
+      "community": 0,
+      "norm_label": "victim3 container service (internal network)"
+    },
+    {
+      "label": "Honeypot Container Service (prod-server-01)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 67-77",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_honeypot_service",
+      "community": 0,
+      "norm_label": "honeypot container service (prod-server-01)"
+    },
+    {
+      "label": "Monitor Container Service (Dual-homed IDS)",
+      "file_type": "code",
+      "source_file": "docker-compose.yml",
+      "source_location": "line 79-90",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docker_compose_monitor_service",
+      "community": 0,
+      "norm_label": "monitor container service (dual-homed ids)"
+    },
+    {
+      "label": "SSH Botnet Lab Step-by-Step Guide",
+      "file_type": "document",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_ssh_botnet_attack",
+      "community": 0,
+      "norm_label": "ssh botnet lab step-by-step guide"
+    },
+    {
+      "label": "Phase 1: Reconnaissance (Port Scanning)",
+      "file_type": "concept",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 77-115",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_phase1_recon",
+      "community": 0,
+      "norm_label": "phase 1: reconnaissance (port scanning)"
+    },
+    {
+      "label": "Phase 2: SSH Brute-Force Attack",
+      "file_type": "concept",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 119-159",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_phase2_bruteforce",
+      "community": 0,
+      "norm_label": "phase 2: ssh brute-force attack"
+    },
+    {
+      "label": "Phase 4: Lateral Movement via Pivot",
+      "file_type": "concept",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 198-284",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_phase4_lateral",
+      "community": 0,
+      "norm_label": "phase 4: lateral movement via pivot"
+    },
+    {
+      "label": "Phase 5: C2 Beaconing",
+      "file_type": "concept",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 288-378",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_phase5_c2",
+      "community": 0,
+      "norm_label": "phase 5: c2 beaconing"
+    },
+    {
+      "label": "Phase 8: Firewall Demo (weak/moderate/hardened)",
+      "file_type": "concept",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 449-498",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_phase8_firewall",
+      "community": 0,
+      "norm_label": "phase 8: firewall demo (weak/moderate/hardened)"
+    },
+    {
+      "label": "Phase 10: Hardening (SSH keys, fail2ban, PasswordAuthentication no)",
+      "file_type": "concept",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 524-608",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_phase10_hardening",
+      "community": 0,
+      "norm_label": "phase 10: hardening (ssh keys, fail2ban, passwordauthentication no)"
+    },
+    {
+      "label": "Dual-homed Machine as Pivot Point",
+      "file_type": "rationale",
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 29-33",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_lab_guide_dual_homed_pivot",
+      "community": 0,
+      "norm_label": "dual-homed machine as pivot point"
+    },
+    {
+      "label": "Full Lab Explanation Document (explainSSR.txt)",
+      "file_type": "document",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_full_explanation",
+      "community": 0,
+      "norm_label": "full lab explanation document (explainssr.txt)"
+    },
+    {
+      "label": "Victim Entrypoint Fix (PAM, Banner, SyslogFacility, exec)",
+      "file_type": "rationale",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 146-218",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_entrypoint_fixes",
+      "community": 0,
+      "norm_label": "victim entrypoint fix (pam, banner, syslogfacility, exec)"
+    },
+    {
+      "label": "sshd_config Settings Explanation",
+      "file_type": "rationale",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 224-265",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_sshd_config_explained",
+      "community": 0,
+      "norm_label": "sshd_config settings explanation"
+    },
+    {
+      "label": "Simulator.py 6 Attack Modules Explanation",
+      "file_type": "rationale",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 269-329",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_simulator_modules",
+      "community": 0,
+      "norm_label": "simulator.py 6 attack modules explanation"
+    },
+    {
+      "label": "Analyzer.py Detection Rules Explanation",
+      "file_type": "rationale",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 332-370",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_analyzer_rules",
+      "community": 0,
+      "norm_label": "analyzer.py detection rules explanation"
+    },
+    {
+      "label": "Network Concepts (Segmentation, Pivoting, Subnetting, internal:true)",
+      "file_type": "rationale",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 376-424",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_network_concepts",
+      "community": 0,
+      "norm_label": "network concepts (segmentation, pivoting, subnetting, internal:true)"
+    },
+    {
+      "label": "Linux Capabilities (cap_drop ALL) Rationale",
+      "file_type": "rationale",
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 74-84",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_explainssr_cap_drop_rationale",
+      "community": 0,
+      "norm_label": "linux capabilities (cap_drop all) rationale"
+    },
+    {
+      "label": "SSH Botnet Lab Live Attack Visualizer",
+      "file_type": "document",
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_attack_visualizer_html",
+      "community": 0,
+      "norm_label": "ssh botnet lab live attack visualizer"
+    },
+    {
+      "label": "Attack Visualizer Particle Animation System",
+      "file_type": "code",
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 114-149",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_attack_visualizer_particle_system",
+      "community": 0,
+      "norm_label": "attack visualizer particle animation system"
+    },
+    {
+      "label": "Attack Phase Animations (Recon, Brute-force, Lateral, C2, Full)",
+      "file_type": "concept",
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 297-434",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_attack_visualizer_phases",
+      "community": 0,
+      "norm_label": "attack phase animations (recon, brute-force, lateral, c2, full)"
+    },
+    {
+      "label": "Scenario 1: Single Network (No Segmentation)",
+      "file_type": "code",
+      "source_file": "scenarios/scenario1.yml",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "scenarios_scenario1_single_network",
+      "community": 0,
+      "norm_label": "scenario 1: single network (no segmentation)"
+    },
+    {
+      "label": "Scenario 2: Two Segmented Networks with Pivot",
+      "file_type": "code",
+      "source_file": "scenarios/scenario2.yml",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "scenarios_scenario2_two_networks",
+      "community": 0,
+      "norm_label": "scenario 2: two segmented networks with pivot"
+    },
+    {
+      "label": "Scenario 3: Three Networks with Two Pivots",
+      "file_type": "code",
+      "source_file": "scenarios/scenario3.yml",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "scenarios_scenario3_three_networks",
+      "community": 0,
+      "norm_label": "scenario 3: three networks with two pivots"
+    },
+    {
+      "label": "Scenario 4: Deep Network Chain (3 Hops)",
+      "file_type": "code",
+      "source_file": "scenarios/scenario4.yml",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "scenarios_scenario4_deep_chain",
+      "community": 0,
+      "norm_label": "scenario 4: deep network chain (3 hops)"
+    },
+    {
+      "label": "Scenarios Network Topology Diagram (All 4 Scenarios)",
+      "file_type": "image",
+      "source_file": "docs/scenarios_diagram.svg",
+      "source_location": "line 1",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "docs_scenarios_diagram_svg",
+      "community": 0,
+      "norm_label": "scenarios network topology diagram (all 4 scenarios)"
+    },
+    {
+      "label": "C2 Beacon Jitter (Anti-detection randomization)",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": "line 288-290",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_c2_jitter_concept",
+      "community": 0,
+      "norm_label": "c2 beacon jitter (anti-detection randomization)"
+    },
+    {
+      "label": "Honeypot Zero False Positive Property",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": "line 380-382",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_honeypot_zero_false_positives",
+      "community": 0,
+      "norm_label": "honeypot zero false positive property"
+    },
+    {
+      "label": "Fail2ban Detection-Response Loop Principle",
+      "file_type": "rationale",
+      "source_file": "README.md",
+      "source_location": "line 386-388",
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "id": "readme_fail2ban_principle",
+      "community": 0,
+      "norm_label": "fail2ban detection-response loop principle"
+    }
+  ],
+  "links": [
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "setup_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "setup_sh",
+      "target": "ssh_botnet_lab_setup_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "setup_sh",
+      "target": "ssh_botnet_lab_setup_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "setup_sh",
+      "target": "ssh_botnet_lab_setup_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "setup_sh",
+      "target": "ssh_botnet_lab_setup_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "setup_sh",
+      "target": "ssh_botnet_lab_setup_step",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L27",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "target": "ssh_botnet_lab_setup_step",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L47",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "target": "ssh_botnet_lab_setup_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L49",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "target": "ssh_botnet_lab_setup_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L69",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "target": "ssh_botnet_lab_setup_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "setup.sh",
+      "source_location": "L90",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_setup_sh__entry",
+      "target": "ssh_botnet_lab_setup_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "start.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "start_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_start_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_cleanup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_wait_for_container",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_recon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_bruteforce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L169",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_lateral",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L235",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L273",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_c2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L379",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_phase_detect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L410",
+      "weight": 1.0,
+      "source": "auto_run_sh",
+      "target": "ssh_botnet_lab_auto_run_print_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L31",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L43",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L440",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L443",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_setup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L444",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_recon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L445",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_bruteforce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L448",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L449",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_lateral",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L453",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L456",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_c2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L457",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_phase_detect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L458",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_auto_run_sh__entry",
+      "target": "ssh_botnet_lab_auto_run_print_summary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L70",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_wait_for_container",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L84",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L98",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_setup",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L135",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_recon",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L150",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_bruteforce",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L172",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L220",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L239",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L277",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_c2",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L382",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_detect",
+      "target": "ssh_botnet_lab_auto_run_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L78",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_wait_for_container",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L89",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L126",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_setup",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L138",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_recon",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L163",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_bruteforce",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L206",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L223",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L258",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L373",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_c2",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L400",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_detect",
+      "target": "ssh_botnet_lab_auto_run_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L74",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_wait_for_container",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L87",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L202",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L228",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L242",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L367",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_c2",
+      "target": "ssh_botnet_lab_auto_run_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L103",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_setup",
+      "target": "ssh_botnet_lab_auto_run_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L96",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_setup",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L133",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_recon",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L148",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_bruteforce",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L170",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_prepare_pivot",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L216",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L236",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral_deep",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L274",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_c2",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L380",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_detect",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L411",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_print_summary",
+      "target": "ssh_botnet_lab_auto_run_banner",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L111",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_setup",
+      "target": "ssh_botnet_lab_auto_run_wait_for_container",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L140",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_recon",
+      "target": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "auto_run.sh",
+      "source_location": "L218",
+      "weight": 1.0,
+      "context": "call",
+      "source": "ssh_botnet_lab_auto_run_phase_lateral",
+      "target": "ssh_botnet_lab_auto_run_wait_for_ssh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "install_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "install_sh",
+      "target": "ssh_botnet_lab_install_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "install_sh",
+      "target": "ssh_botnet_lab_install_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "install_sh",
+      "target": "ssh_botnet_lab_install_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "install_sh",
+      "target": "ssh_botnet_lab_install_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "install_sh",
+      "target": "ssh_botnet_lab_install_step",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L17",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "target": "ssh_botnet_lab_install_fail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L35",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "target": "ssh_botnet_lab_install_info",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L39",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "target": "ssh_botnet_lab_install_step",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L40",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "target": "ssh_botnet_lab_install_ok",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "install.sh",
+      "source_location": "L40",
+      "weight": 1.0,
+      "context": "call",
+      "source": "home_person_downloads_ssr_ssh_botnet_lab_install_sh__entry",
+      "target": "ssh_botnet_lab_install_warn",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L66",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_is_safe_target",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_get_local_networks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_get_networks_from_host",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L119",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_probe_ssh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L128",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_scan_network",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_brute_force",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L194",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_propagate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L222",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_print_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L259",
+      "weight": 1.0,
+      "source": "attacker_botnet_py",
+      "target": "attacker_botnet_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "attacker_botnet_get_local_networks",
+      "target": "attacker_botnet_is_safe_target",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "attacker_botnet_get_networks_from_host",
+      "target": "attacker_botnet_is_safe_target",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "attacker_botnet_scan_network",
+      "target": "attacker_botnet_is_safe_target",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L155",
+      "weight": 1.0,
+      "source": "attacker_botnet_brute_force",
+      "target": "attacker_botnet_is_safe_target",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L92",
+      "weight": 1.0,
+      "source": "attacker_botnet_get_local_networks",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L115",
+      "weight": 1.0,
+      "source": "attacker_botnet_get_networks_from_host",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "attacker_botnet_scan_network",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L152",
+      "weight": 1.0,
+      "source": "attacker_botnet_brute_force",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L210",
+      "weight": 1.0,
+      "source": "attacker_botnet_propagate",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L280",
+      "weight": 1.0,
+      "source": "attacker_botnet_main",
+      "target": "attacker_botnet_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "attacker_botnet_main",
+      "target": "attacker_botnet_get_local_networks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L80",
+      "weight": 1.0,
+      "source": "attacker_botnet_rationale_80",
+      "target": "attacker_botnet_get_local_networks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 211",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_botnet_propagate",
+      "target": "attacker_botnet_get_networks_from_host"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "attacker_botnet_rationale_96",
+      "target": "attacker_botnet_get_networks_from_host",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 95",
+      "weight": 1.0,
+      "source": "attacker_botnet_get_networks_from_host",
+      "target": "concept_lateral_movement"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "attacker_botnet_scan_network",
+      "target": "attacker_botnet_probe_ssh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "attacker_botnet_rationale_120",
+      "target": "attacker_botnet_probe_ssh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 216",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_botnet_propagate",
+      "target": "attacker_botnet_scan_network"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 291",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_botnet_main",
+      "target": "attacker_botnet_scan_network"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "attacker_botnet_rationale_129",
+      "target": "attacker_botnet_scan_network",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 128",
+      "weight": 1.0,
+      "source": "attacker_botnet_scan_network",
+      "target": "attacker_simulator_portscansimulator"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 205",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_botnet_propagate",
+      "target": "attacker_botnet_brute_force"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "attacker_botnet_rationale_147",
+      "target": "attacker_botnet_brute_force",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 159",
+      "weight": 1.0,
+      "source": "attacker_botnet_brute_force",
+      "target": "attacker_botnet_compromised"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 146",
+      "weight": 1.0,
+      "source": "attacker_botnet_brute_force",
+      "target": "attacker_simulator_sshbruteforcesimulator"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 303",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_botnet_main",
+      "target": "attacker_botnet_propagate"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "attacker_botnet_rationale_195",
+      "target": "attacker_botnet_propagate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 202",
+      "weight": 1.0,
+      "source": "attacker_botnet_propagate",
+      "target": "attacker_botnet_compromised"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 194",
+      "weight": 1.0,
+      "source": "attacker_botnet_propagate",
+      "target": "concept_lateral_movement"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 306",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_botnet_main",
+      "target": "attacker_botnet_print_report"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "attacker/botnet.py",
+      "source_location": "line 229",
+      "weight": 1.0,
+      "source": "attacker_botnet_print_report",
+      "target": "attacker_botnet_compromised"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "setup.sh",
+      "source_location": "line 199",
+      "weight": 1.0,
+      "source": "setup_setup_sh",
+      "target": "attacker_botnet_main"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/entrypoint.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "attacker_entrypoint_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_attacker_entrypoint_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_setup_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_sshbruteforcesimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L233",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_portscansimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L293",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_c2heartbeatsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L383",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_lateralmovementsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L477",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_infectedhostsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L565",
+      "weight": 1.0,
+      "source": "attacker_simulator_py",
+      "target": "attacker_simulator_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L200",
+      "weight": 1.0,
+      "source": "attacker_simulator_sshbruteforcesimulator_run",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L283",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator_run",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L360",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator_run",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L415",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator_attempt_pivot",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L523",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_run",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L102",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_102",
+      "target": "attacker_simulator_safety_check",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "attacker_simulator_sshbruteforcesimulator_init",
+      "target": "attacker_simulator_setup_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L249",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator_init",
+      "target": "attacker_simulator_setup_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L314",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator_init",
+      "target": "attacker_simulator_setup_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L410",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator_init",
+      "target": "attacker_simulator_setup_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L496",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_init",
+      "target": "attacker_simulator_setup_logging",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "attacker_simulator_sshbruteforcesimulator",
+      "target": "attacker_simulator_sshbruteforcesimulator_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "attacker_simulator_sshbruteforcesimulator",
+      "target": "attacker_simulator_sshbruteforcesimulator_attempt_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "attacker_simulator_sshbruteforcesimulator",
+      "target": "attacker_simulator_sshbruteforcesimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 616",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_simulator_main",
+      "target": "attacker_simulator_sshbruteforcesimulator"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L133",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_133",
+      "target": "attacker_simulator_sshbruteforcesimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "attacker_simulator_sshbruteforcesimulator_run",
+      "target": "attacker_simulator_sshbruteforcesimulator_attempt_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L154",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_154",
+      "target": "attacker_simulator_sshbruteforcesimulator_attempt_login",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L199",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_199",
+      "target": "attacker_simulator_sshbruteforcesimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L246",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator",
+      "target": "attacker_simulator_portscansimulator_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L251",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator",
+      "target": "attacker_simulator_portscansimulator_probe_port",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L265",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator",
+      "target": "attacker_simulator_portscansimulator_scan_host",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L275",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator",
+      "target": "attacker_simulator_portscansimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L543",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_run",
+      "target": "attacker_simulator_portscansimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 621",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_simulator_main",
+      "target": "attacker_simulator_portscansimulator"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L234",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_234",
+      "target": "attacker_simulator_portscansimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 543",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator",
+      "target": "attacker_simulator_portscansimulator"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L270",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator_scan_host",
+      "target": "attacker_simulator_portscansimulator_probe_port",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L546",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_run",
+      "target": "attacker_simulator_portscansimulator_probe_port",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L252",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_252",
+      "target": "attacker_simulator_portscansimulator_probe_port",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L285",
+      "weight": 1.0,
+      "source": "attacker_simulator_portscansimulator_run",
+      "target": "attacker_simulator_portscansimulator_scan_host",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L266",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_266",
+      "target": "attacker_simulator_portscansimulator_scan_host",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L276",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_276",
+      "target": "attacker_simulator_portscansimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator",
+      "target": "attacker_simulator_c2heartbeatsimulator_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L318",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator",
+      "target": "attacker_simulator_c2heartbeatsimulator_build_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L332",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator",
+      "target": "attacker_simulator_c2heartbeatsimulator_send_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L358",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator",
+      "target": "attacker_simulator_c2heartbeatsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L550",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_run",
+      "target": "attacker_simulator_c2heartbeatsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 625",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_simulator_main",
+      "target": "attacker_simulator_c2heartbeatsimulator"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L294",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_294",
+      "target": "attacker_simulator_c2heartbeatsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 550",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator",
+      "target": "attacker_simulator_c2heartbeatsimulator"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 293",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator",
+      "target": "concept_c2_beaconing"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L334",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator_send_beacon",
+      "target": "attacker_simulator_c2heartbeatsimulator_build_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L319",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_319",
+      "target": "attacker_simulator_c2heartbeatsimulator_build_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L371",
+      "weight": 1.0,
+      "source": "attacker_simulator_c2heartbeatsimulator_run",
+      "target": "attacker_simulator_c2heartbeatsimulator_send_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L553",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_run",
+      "target": "attacker_simulator_c2heartbeatsimulator_send_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L333",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_333",
+      "target": "attacker_simulator_c2heartbeatsimulator_send_beacon",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L359",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_359",
+      "target": "attacker_simulator_c2heartbeatsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L407",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator",
+      "target": "attacker_simulator_lateralmovementsimulator_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L413",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator",
+      "target": "attacker_simulator_lateralmovementsimulator_attempt_pivot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L454",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator",
+      "target": "attacker_simulator_lateralmovementsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 629",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_simulator_main",
+      "target": "attacker_simulator_lateralmovementsimulator"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L384",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_384",
+      "target": "attacker_simulator_lateralmovementsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 383",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator",
+      "target": "concept_lateral_movement"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L469",
+      "weight": 1.0,
+      "source": "attacker_simulator_lateralmovementsimulator_run",
+      "target": "attacker_simulator_lateralmovementsimulator_attempt_pivot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L414",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_414",
+      "target": "attacker_simulator_lateralmovementsimulator_attempt_pivot",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L455",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_455",
+      "target": "attacker_simulator_lateralmovementsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L493",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator",
+      "target": "attacker_simulator_infectedhostsimulator_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L501",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator",
+      "target": "attacker_simulator_infectedhostsimulator_report_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L521",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator",
+      "target": "attacker_simulator_infectedhostsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "line 633",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "attacker_simulator_main",
+      "target": "attacker_simulator_infectedhostsimulator"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L478",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_478",
+      "target": "attacker_simulator_infectedhostsimulator",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L538",
+      "weight": 1.0,
+      "source": "attacker_simulator_infectedhostsimulator_run",
+      "target": "attacker_simulator_infectedhostsimulator_report_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L502",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_502",
+      "target": "attacker_simulator_infectedhostsimulator_report_status",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L617",
+      "weight": 1.0,
+      "source": "attacker_simulator_main",
+      "target": "attacker_simulator_infectedhostsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "attacker/simulator.py",
+      "source_location": "L522",
+      "weight": 1.0,
+      "source": "attacker_simulator_rationale_522",
+      "target": "attacker_simulator_infectedhostsimulator_run",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "auto_run.sh",
+      "source_location": "line 136",
+      "weight": 1.0,
+      "source": "auto_run_auto_run_sh",
+      "target": "attacker_simulator_main"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "setup.sh",
+      "source_location": "line 202",
+      "weight": 1.0,
+      "source": "setup_setup_sh",
+      "target": "attacker_simulator_main"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/entrypoint.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "monitor_entrypoint_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_monitor_entrypoint_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L86",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_parse_auth_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_parse_honeypot_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_alert",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_rule_ssh_brute_force",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L213",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_rule_password_spray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L257",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_rule_successful_auth_from_suspicious",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L307",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_rule_lateral_movement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L354",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_rule_honeypot_hit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L400",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_rule_c2_beaconing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L499",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_run_analysis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L527",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_print_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L550",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_live_monitor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L564",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_list_rules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L577",
+      "weight": 1.0,
+      "source": "monitor_analyzer_py",
+      "target": "monitor_analyzer_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 501",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_parse_auth_log"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L87",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_87",
+      "target": "monitor_analyzer_parse_auth_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 41",
+      "weight": 1.0,
+      "source": "monitor_analyzer_parse_auth_log",
+      "target": "concept_auth_log"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 502",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_parse_honeypot_log"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_109",
+      "target": "monitor_analyzer_parse_honeypot_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 41",
+      "weight": 1.0,
+      "source": "monitor_analyzer_parse_honeypot_log",
+      "target": "concept_honeypot_events_jsonl"
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L127",
+      "weight": 1.0,
+      "source": "monitor_analyzer_alert",
+      "target": "monitor_analyzer_alert_init",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "monitor_analyzer_alert",
+      "target": "monitor_analyzer_alert_str",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L156",
+      "weight": 1.0,
+      "source": "monitor_analyzer_alert",
+      "target": "monitor_analyzer_alert_to_dict",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 190",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_rule_ssh_brute_force",
+      "target": "monitor_analyzer_alert"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 237",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_rule_password_spray",
+      "target": "monitor_analyzer_alert"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 281",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_rule_successful_auth_from_suspicious",
+      "target": "monitor_analyzer_alert"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 330",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_rule_lateral_movement",
+      "target": "monitor_analyzer_alert"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 374",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_rule_honeypot_hit",
+      "target": "monitor_analyzer_alert"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 421",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_rule_c2_beaconing",
+      "target": "monitor_analyzer_alert"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 509",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_rule_ssh_brute_force"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L169",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_169",
+      "target": "monitor_analyzer_rule_ssh_brute_force",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 510",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_rule_password_spray"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L214",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_214",
+      "target": "monitor_analyzer_rule_password_spray",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 511",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_rule_successful_auth_from_suspicious"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L258",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_258",
+      "target": "monitor_analyzer_rule_successful_auth_from_suspicious",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 512",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_rule_lateral_movement"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_308",
+      "target": "monitor_analyzer_rule_lateral_movement",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 307",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rule_lateral_movement",
+      "target": "concept_lateral_movement"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 513",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_rule_honeypot_hit"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L355",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_355",
+      "target": "monitor_analyzer_rule_honeypot_hit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 514",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "monitor_analyzer_run_analysis",
+      "target": "monitor_analyzer_rule_c2_beaconing"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L401",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_401",
+      "target": "monitor_analyzer_rule_c2_beaconing",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "monitor/analyzer.py",
+      "source_location": "line 400",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rule_c2_beaconing",
+      "target": "concept_c2_beaconing"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L555",
+      "weight": 1.0,
+      "source": "monitor_analyzer_live_monitor",
+      "target": "monitor_analyzer_run_analysis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L594",
+      "weight": 1.0,
+      "source": "monitor_analyzer_main",
+      "target": "monitor_analyzer_run_analysis",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "auto_run.sh",
+      "source_location": "line 403",
+      "weight": 1.0,
+      "source": "auto_run_auto_run_sh",
+      "target": "monitor_analyzer_run_analysis"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L597",
+      "weight": 1.0,
+      "source": "monitor_analyzer_main",
+      "target": "monitor_analyzer_print_report",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L591",
+      "weight": 1.0,
+      "source": "monitor_analyzer_main",
+      "target": "monitor_analyzer_live_monitor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L551",
+      "weight": 1.0,
+      "source": "monitor_analyzer_rationale_551",
+      "target": "monitor_analyzer_live_monitor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "monitor/analyzer.py",
+      "source_location": "L587",
+      "weight": 1.0,
+      "source": "monitor_analyzer_main",
+      "target": "monitor_analyzer_list_rules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim/entrypoint.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "victim_entrypoint_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_victim_entrypoint_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "victim/entrypoint.sh",
+      "source_location": "line 25",
+      "weight": 1.0,
+      "source": "victim_entrypoint_sh",
+      "target": "concept_auth_log"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "victim/entrypoint.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "victim_entrypoint_sh",
+      "target": "victim_b_entrypoint_sh"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.75,
+      "source_file": "victim/firewall_setup.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "victim_firewall_setup_sh",
+      "target": "victim_entrypoint_sh"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim/firewall_setup.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "victim_firewall_setup_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_victim_firewall_setup_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/entrypoint.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "victim_b_entrypoint_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_victim_b_entrypoint_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "victim-b/entrypoint.sh",
+      "source_location": "line 20",
+      "weight": 1.0,
+      "source": "victim_b_entrypoint_sh",
+      "target": "victim_b_honeypot_logger_main"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "victim-b/entrypoint.sh",
+      "source_location": "line 22",
+      "weight": 1.0,
+      "source": "victim_b_entrypoint_sh",
+      "target": "concept_auth_log"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "victim-b/entrypoint.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "victim_b_entrypoint_sh",
+      "target": "victim_c_entrypoint_sh"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_py",
+      "target": "victim_b_honeypot_logger_tail_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_py",
+      "target": "victim_b_honeypot_logger_emit_event",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L58",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_py",
+      "target": "victim_b_honeypot_logger_main",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_main",
+      "target": "victim_b_honeypot_logger_tail_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_rationale_30",
+      "target": "victim_b_honeypot_logger_tail_log",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "line 63",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "victim_b_honeypot_logger_main",
+      "target": "victim_b_honeypot_logger_emit_event"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "line 56",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_emit_event",
+      "target": "concept_honeypot_events_jsonl"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "victim-b/honeypot_logger.py",
+      "source_location": "line 15",
+      "weight": 1.0,
+      "source": "victim_b_honeypot_logger_main",
+      "target": "concept_auth_log"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "victim-c/entrypoint.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "victim_c_entrypoint_sh",
+      "target": "home_person_downloads_ssr_ssh_botnet_lab_victim_c_entrypoint_sh__entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "victim-c/entrypoint.sh",
+      "source_location": "line 17",
+      "weight": 1.0,
+      "source": "victim_c_entrypoint_sh",
+      "target": "concept_auth_log"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "setup.sh",
+      "source_location": "line 6",
+      "weight": 1.0,
+      "source": "install_install_sh",
+      "target": "setup_setup_sh"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "start.sh",
+      "source_location": "line 78",
+      "weight": 1.0,
+      "source": "start_start_sh",
+      "target": "setup_setup_sh"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "setup.sh",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "setup_setup_sh",
+      "target": "auto_run_auto_run_sh"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "auto_run.sh",
+      "source_location": "line 383",
+      "weight": 1.0,
+      "source": "auto_run_auto_run_sh",
+      "target": "concept_auth_log"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 103",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "docker_compose_lab_definition"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 88-94",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "readme_attack_chain"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 46-55",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "readme_safety_boundaries"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 308-331",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "readme_detection_techniques"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 283-304",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "readme_botnet_concepts"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 262-276",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "readme_firewall_concepts"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 386-388",
+      "weight": 1.0,
+      "source": "readme_project_overview",
+      "target": "readme_fail2ban_principle"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 1",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "readme_project_overview"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 515",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "readme_project_overview"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 62-67",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_phases",
+      "target": "readme_attack_chain"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 74-84",
+      "weight": 1.0,
+      "source": "docs_explainssr_cap_drop_rationale",
+      "target": "readme_safety_boundaries"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 376-384",
+      "weight": 1.0,
+      "source": "docs_explainssr_network_concepts",
+      "target": "readme_network_segmentation_concept"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "scenarios/scenario2.yml",
+      "source_location": "line 1-4",
+      "weight": 1.0,
+      "source": "scenarios_scenario2_two_networks",
+      "target": "readme_network_segmentation_concept"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md",
+      "source_location": "line 264-266",
+      "weight": 1.0,
+      "source": "readme_network_segmentation_concept",
+      "target": "docs_lab_guide_dual_homed_pivot"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 325-328",
+      "weight": 1.0,
+      "source": "readme_detection_techniques",
+      "target": "readme_honeypot_zero_false_positives"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 332-370",
+      "weight": 1.0,
+      "source": "docs_explainssr_analyzer_rules",
+      "target": "readme_detection_techniques"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "README.md",
+      "source_location": "line 288-290",
+      "weight": 1.0,
+      "source": "readme_botnet_concepts",
+      "target": "readme_c2_jitter_concept"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 269-329",
+      "weight": 1.0,
+      "source": "docs_explainssr_simulator_modules",
+      "target": "readme_botnet_concepts"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "README.md",
+      "source_location": "line 262-276",
+      "weight": 1.0,
+      "source": "readme_firewall_concepts",
+      "target": "docs_lab_guide_phase8_firewall"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 2-7",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_attack_net"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 9-14",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_internal_net"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 18-27",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_attacker_service"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 29-41",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_victim1_service"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 43-53",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_victim2_service"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 55-65",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_victim3_service"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 67-77",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_honeypot_service"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 79-90",
+      "weight": 1.0,
+      "source": "docker_compose_lab_definition",
+      "target": "docker_compose_monitor_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 49",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docker_compose_lab_definition"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "scenarios/scenario1.yml",
+      "source_location": "line 1",
+      "weight": 1.0,
+      "source": "scenarios_scenario1_single_network",
+      "target": "docker_compose_lab_definition"
+    },
+    {
+      "relation": "semantically_similar_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "scenarios/scenario2.yml",
+      "source_location": "line 1-2",
+      "weight": 1.0,
+      "source": "scenarios_scenario2_two_networks",
+      "target": "docker_compose_lab_definition"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 22-24",
+      "weight": 1.0,
+      "source": "docker_compose_attacker_service",
+      "target": "docker_compose_attack_net"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 34-36",
+      "weight": 1.0,
+      "source": "docker_compose_victim1_service",
+      "target": "docker_compose_attack_net"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 84-86",
+      "weight": 1.0,
+      "source": "docker_compose_monitor_service",
+      "target": "docker_compose_attack_net"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 73",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_html",
+      "target": "docker_compose_attack_net"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 37-39",
+      "weight": 1.0,
+      "source": "docker_compose_victim1_service",
+      "target": "docker_compose_internal_net"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 59-61",
+      "weight": 1.0,
+      "source": "docker_compose_victim3_service",
+      "target": "docker_compose_internal_net"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 72-74",
+      "weight": 1.0,
+      "source": "docker_compose_honeypot_service",
+      "target": "docker_compose_internal_net"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docker-compose.yml",
+      "source_location": "line 87-89",
+      "weight": 1.0,
+      "source": "docker_compose_monitor_service",
+      "target": "docker_compose_internal_net"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 73",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_html",
+      "target": "docker_compose_internal_net"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 146-218",
+      "weight": 1.0,
+      "source": "docs_explainssr_entrypoint_fixes",
+      "target": "docker_compose_victim1_service"
+    },
+    {
+      "relation": "rationale_for",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "README.md",
+      "source_location": "line 380-382",
+      "weight": 1.0,
+      "source": "readme_honeypot_zero_false_positives",
+      "target": "docker_compose_honeypot_service"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 77",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_phase1_recon"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 119",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_phase2_bruteforce"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 198",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_phase4_lateral"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 288",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_phase5_c2"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 449",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_phase8_firewall"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 524",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_phase10_hardening"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 29-33",
+      "weight": 1.0,
+      "source": "docs_lab_guide_ssh_botnet_attack",
+      "target": "docs_lab_guide_dual_homed_pivot"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 298-310",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_phases",
+      "target": "docs_lab_guide_phase1_recon"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 313-358",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_phases",
+      "target": "docs_lab_guide_phase2_bruteforce"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 198-205",
+      "weight": 1.0,
+      "source": "docs_lab_guide_phase4_lateral",
+      "target": "docs_lab_guide_dual_homed_pivot"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 362-393",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_phases",
+      "target": "docs_lab_guide_phase4_lateral"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 397-416",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_phases",
+      "target": "docs_lab_guide_phase5_c2"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "README.md",
+      "source_location": "line 288-290",
+      "weight": 1.0,
+      "source": "readme_c2_jitter_concept",
+      "target": "docs_lab_guide_phase5_c2"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/LAB_GUIDE.md",
+      "source_location": "line 572-608",
+      "weight": 1.0,
+      "source": "docs_lab_guide_phase10_hardening",
+      "target": "readme_fail2ban_principle"
+    },
+    {
+      "relation": "implements",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "scenarios/scenario4.yml",
+      "source_location": "line 1-4",
+      "weight": 1.0,
+      "source": "scenarios_scenario4_deep_chain",
+      "target": "docs_lab_guide_dual_homed_pivot"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 146",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docs_explainssr_entrypoint_fixes"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 224",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docs_explainssr_sshd_config_explained"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 269",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docs_explainssr_simulator_modules"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 332",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docs_explainssr_analyzer_rules"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 376",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docs_explainssr_network_concepts"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/explainSSR.txt",
+      "source_location": "line 74",
+      "weight": 1.0,
+      "source": "docs_explainssr_full_explanation",
+      "target": "docs_explainssr_cap_drop_rationale"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 114-149",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_html",
+      "target": "docs_attack_visualizer_particle_system"
+    },
+    {
+      "relation": "implements",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/attack_visualizer.html",
+      "source_location": "line 297-434",
+      "weight": 1.0,
+      "source": "docs_attack_visualizer_html",
+      "target": "docs_attack_visualizer_phases"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/scenarios_diagram.svg",
+      "source_location": "line 29",
+      "weight": 1.0,
+      "source": "docs_scenarios_diagram_svg",
+      "target": "scenarios_scenario1_single_network"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "scenarios/scenario1.yml",
+      "source_location": "line 1",
+      "weight": 1.0,
+      "source": "scenarios_scenario1_single_network",
+      "target": "scenarios_scenario2_two_networks"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "scenarios/scenario3.yml",
+      "source_location": "line 1",
+      "weight": 1.0,
+      "source": "scenarios_scenario3_three_networks",
+      "target": "scenarios_scenario2_two_networks"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/scenarios_diagram.svg",
+      "source_location": "line 74",
+      "weight": 1.0,
+      "source": "docs_scenarios_diagram_svg",
+      "target": "scenarios_scenario2_two_networks"
+    },
+    {
+      "relation": "conceptually_related_to",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "scenarios/scenario4.yml",
+      "source_location": "line 1",
+      "weight": 1.0,
+      "source": "scenarios_scenario4_deep_chain",
+      "target": "scenarios_scenario3_three_networks"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/scenarios_diagram.svg",
+      "source_location": "line 130",
+      "weight": 1.0,
+      "source": "docs_scenarios_diagram_svg",
+      "target": "scenarios_scenario3_three_networks"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/scenarios_diagram.svg",
+      "source_location": "line 204",
+      "weight": 1.0,
+      "source": "docs_scenarios_diagram_svg",
+      "target": "scenarios_scenario4_deep_chain"
+    }
+  ],
+  "hyperedges": [
+    {
+      "id": "attack_detect_cycle",
+      "label": "Attack-Detect Feedback Loop: Simulator/Botnet generate auth.log entries consumed by Analyzer detection rules",
+      "nodes": [
+        "attacker_simulator_sshbruteforcesimulator",
+        "concept_auth_log",
+        "monitor_analyzer_rule_ssh_brute_force"
+      ],
+      "relation": "participate_in",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "monitor/analyzer.py"
+    },
+    {
+      "id": "honeypot_pipeline",
+      "label": "Honeypot Event Pipeline: victim-b sshd writes auth.log, honeypot_logger reads it and emits JSONL, analyzer ingests JSONL for HONEYPOT-001 and C2-001 rules",
+      "nodes": [
+        "victim_b_entrypoint_sh",
+        "victim_b_honeypot_logger_emit_event",
+        "concept_honeypot_events_jsonl",
+        "monitor_analyzer_parse_honeypot_log",
+        "monitor_analyzer_rule_honeypot_hit"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 0.95,
+      "source_file": "victim-b/honeypot_logger.py"
+    },
+    {
+      "id": "botnet_propagation_loop",
+      "label": "Autonomous Botnet Propagation Loop: scan \u2192 brute-force \u2192 compromise \u2192 discover new networks \u2192 scan",
+      "nodes": [
+        "attacker_botnet_scan_network",
+        "attacker_botnet_brute_force",
+        "attacker_botnet_get_networks_from_host",
+        "attacker_botnet_propagate"
+      ],
+      "relation": "form",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "attacker/botnet.py"
+    },
+    {
+      "id": "attack_chain_flow",
+      "label": "Full Attack Chain: Recon \u2192 Brute-force \u2192 Lateral Movement \u2192 C2 Beaconing",
+      "nodes": [
+        "docs_lab_guide_phase1_recon",
+        "docs_lab_guide_phase2_bruteforce",
+        "docs_lab_guide_phase4_lateral",
+        "docs_lab_guide_phase5_c2"
+      ],
+      "relation": "implement",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/LAB_GUIDE.md"
+    },
+    {
+      "id": "scenario_topology_progression",
+      "label": "Scenario Network Topology Progression (1\u21922\u21923\u21924 increasing complexity)",
+      "nodes": [
+        "scenarios_scenario1_single_network",
+        "scenarios_scenario2_two_networks",
+        "scenarios_scenario3_three_networks",
+        "scenarios_scenario4_deep_chain"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.95,
+      "source_file": "docs/scenarios_diagram.svg"
+    },
+    {
+      "id": "lab_documentation_corpus",
+      "label": "Lab Documentation Corpus (README, LAB_GUIDE, explainSSR)",
+      "nodes": [
+        "readme_project_overview",
+        "docs_lab_guide_ssh_botnet_attack",
+        "docs_explainssr_full_explanation"
+      ],
+      "relation": "form",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "README.md"
+    }
+  ],
+  "built_at_commit": "a2a667b7c74e5af74642b89fb92fd89094188933"
+}
