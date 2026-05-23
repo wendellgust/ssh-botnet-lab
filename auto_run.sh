@@ -255,14 +255,16 @@ phase_setup() {
         if [[ -n "$v2_extra" ]]; then
             ok "victim2 extra_net interface present ($v2_extra)"
         else
-            log "Interface missing — trying network connect (no disconnect)..."
-            # Find extra_net by its subnet (10.20.0.0/24) — more reliable than
-            # name guessing or container inspection, which can pick up stale
-            # containers from previous scenario4 runs using deep_net.
+            log "Interface missing — trying network connect..."
+            # Find extra_net by its subnet using Podman's own Go-template formatter.
+            # grep on 'network inspect' JSON is unreliable (field quoting varies by
+            # Podman version); --format with .Subnets is always correct.
             local net=""
             while IFS= read -r netname; do
-                if $RT network inspect "$netname" 2>/dev/null \
-                        | grep -q '10\.20\.0\.0/24'; then
+                local subnet
+                subnet=$($RT network inspect "$netname" \
+                    --format '{{range .Subnets}}{{.Subnet}} {{end}}' 2>/dev/null || true)
+                if [[ "$subnet" == *"10.20."* ]]; then
                     net="$netname"
                     break
                 fi
