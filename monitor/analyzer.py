@@ -226,7 +226,10 @@ def rule_password_spray(events: list) -> list[Alert]:
     ip_failures = defaultdict(int)
 
     for ev in events:
-        if ev["type"] in ("ssh_failed", "ssh_invalid_user"):
+        if ev["type"] == "ssh_failed":
+            # Only count ssh_failed — sshd logs both "Invalid user X" and
+            # "Failed password for invalid user X" for non-existent accounts,
+            # so including ssh_invalid_user would double-count those attempts.
             ip = ev.get("src_ip", "?")
             user = ev.get("user", "?")
             ip_users[ip].add(user)

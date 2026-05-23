@@ -176,7 +176,15 @@ phase_setup() {
 
     log "Stopping any running containers..."
     compose_down_all
-    sleep 3
+    sleep 2
+    # Force-remove any stale lab containers by name. compose_down_all can miss
+    # cross-scenario conflicts when two scenarios share the same container names
+    # (victim4, victim5). Without this, a leftover scenario4 victim4 would have
+    # deep_net attached instead of extra_net, breaking scenario3.
+    for c in attacker victim1 victim2 victim3 victim4 victim5 honeypot monitor; do
+        $RT rm -f "$c" 2>/dev/null || true
+    done
+    sleep 1
 
     # ── Build services ONE AT A TIME ───────────────────────────────────────────
     # Building all services in parallel (the default) causes OOM kills (exit
@@ -248,14 +256,17 @@ phase_setup() {
             ok "victim2 extra_net interface present ($v2_extra)"
         else
             log "Interface missing — trying network connect (no disconnect)..."
-            # Find the real network name from victim4, which IS on extra_net.
-            # podman-compose project name may differ from directory name.
-            local net
-            net=$($RT inspect victim4 \
-                --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}} {{end}}' \
-                2>/dev/null | tr ' ' '\n' | grep -v '^$' | head -1)
-            [[ -z "$net" ]] && net=$($RT network ls --format '{{.Name}}' 2>/dev/null \
-                | grep 'extra' | head -1)
+            # Find extra_net by its subnet (10.20.0.0/24) — more reliable than
+            # name guessing or container inspection, which can pick up stale
+            # containers from previous scenario4 runs using deep_net.
+            local net=""
+            while IFS= read -r netname; do
+                if $RT network inspect "$netname" 2>/dev/null \
+                        | grep -q '"10.20.0.0/24"'; then
+                    net="$netname"
+                    break
+                fi
+            done < <($RT network ls --format '{{.Name}}' 2>/dev/null)
             log "  Detected extra_net name: ${net:-(not found)}"
             if [[ -n "$net" ]]; then
                 local nc_err
