@@ -233,7 +233,7 @@ def rule_password_spray(events: list) -> list[Alert]:
             ip_failures[ip] += 1
 
     for ip, users in ip_users.items():
-        if len(users) >= SPRAY_THRESHOLD and ip_failures[ip] < len(users) * 3:
+        if len(users) >= SPRAY_THRESHOLD and ip_failures[ip] <= len(users) * 3:
             alerts.append(Alert(
                 severity=HIGH,
                 rule_id="SSH-002",

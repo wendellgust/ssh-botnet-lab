@@ -248,10 +248,23 @@ phase_setup() {
             ok "victim2 extra_net interface present ($v2_extra)"
         else
             log "Interface missing — trying network connect (no disconnect)..."
-            local nc_err
-            nc_err=$($RT network connect --ip 10.20.0.20 ssh-botnet-lab_extra_net victim2 2>&1) \
-                && ok "victim2 connected to ssh-botnet-lab_extra_net" \
-                || warn "network connect failed: $nc_err"
+            # Find the real network name from victim4, which IS on extra_net.
+            # podman-compose project name may differ from directory name.
+            local net
+            net=$($RT inspect victim4 \
+                --format '{{range $k,$v := .NetworkSettings.Networks}}{{$k}} {{end}}' \
+                2>/dev/null | tr ' ' '\n' | grep -v '^$' | head -1)
+            [[ -z "$net" ]] && net=$($RT network ls --format '{{.Name}}' 2>/dev/null \
+                | grep 'extra' | head -1)
+            log "  Detected extra_net name: ${net:-(not found)}"
+            if [[ -n "$net" ]]; then
+                local nc_err
+                nc_err=$($RT network connect --ip 10.20.0.20 "$net" victim2 2>&1) \
+                    && ok "victim2 connected to $net (10.20.0.20)" \
+                    || warn "network connect failed: $nc_err"
+            else
+                warn "Could not determine extra_net name — victim2→victim4/5 will fail"
+            fi
         fi
 
         # Final reachability check
