@@ -269,6 +269,11 @@ phase_setup() {
             done < <($RT network ls --format '{{.Name}}' 2>/dev/null)
             log "  Detected extra_net name: ${net:-(not found)}"
             if [[ -n "$net" ]]; then
+                # Disconnect first — podman-compose may have registered victim2 on
+                # extra_net at the CNI level without injecting the interface into its
+                # namespace, which causes 'network connect' to fail with "already connected".
+                $RT network disconnect "$net" victim2 2>/dev/null || true
+                sleep 1
                 local nc_err
                 nc_err=$($RT network connect --ip 10.20.0.20 "$net" victim2 2>&1) \
                     && ok "victim2 connected to $net (10.20.0.20)" \
@@ -525,12 +530,14 @@ for i in range(5):
     if [[ $SCENARIO -ge 2 ]]; then
         log "Starting C2 relay on victim1:8889 for victim3..."
         $RT exec victim1 python3 -c "
-import socket
+import socket, json
+from datetime import datetime
 srv = socket.socket()
 srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 srv.bind(('0.0.0.0', 8889))
 srv.listen(10)
 srv.settimeout(30)
+evf = open('/tmp/relay_events.jsonl', 'w')
 print('[C2-relay] Ready on 8889', flush=True)
 try:
     while True:
@@ -540,10 +547,24 @@ try:
             print(f'[C2-relay] BEACON from {a[0]}: {data[:60]}', flush=True)
             c.send(b'HTTP/1.1 200 OK\r\n\r\n')
             c.close()
+            body = data.split('\r\n\r\n', 1)[-1] if '\r\n\r\n' in data else '{}'
+            try:
+                payload = json.loads(body)
+            except Exception:
+                payload = {}
+            evt = {'ts': datetime.utcnow().isoformat(),
+                   'event': 'BEACON SENT',
+                   'bot_id': payload.get('bot_id', a[0]),
+                   'ip': a[0],
+                   'seq': payload.get('seq', '?'),
+                   'type': payload.get('type', 'HEARTBEAT')}
+            evf.write(json.dumps(evt) + '\n')
+            evf.flush()
         except socket.timeout:
             break
 except Exception as e:
     print(f'[relay] Error: {e}')
+evf.close()
 print('[C2-relay] Done')
 " &
         RELAY_PID=$!
@@ -587,8 +608,9 @@ phase_detect() {
         $RT exec victim3   cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true
         $RT exec honeypot  cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true
         $RT exec honeypot  cat /var/log/lab/honeypot_events.jsonl > /tmp/honeypot.jsonl 2>/dev/null || true
-        # Merge C2 beacon events so the analyzer's C2-001 rule can fire
-        $RT exec attacker  cat /tmp/c2_events.jsonl >> /tmp/honeypot.jsonl 2>/dev/null || true
+        # Merge C2 beacon events (direct beacons + relayed beacons) so C2-001 fires
+        $RT exec attacker  cat /tmp/c2_events.jsonl     >> /tmp/honeypot.jsonl 2>/dev/null || true
+        $RT exec victim1   cat /tmp/relay_events.jsonl  >> /tmp/honeypot.jsonl 2>/dev/null || true
         $RT cp /tmp/honeypot.jsonl monitor:/var/log/lab/honeypot_events.jsonl 2>/dev/null || true
     fi
     if [[ $SCENARIO -ge 3 ]]; then
