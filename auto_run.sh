@@ -232,6 +232,26 @@ phase_setup() {
 
     log "Giving sshd 8 more seconds to fully settle..."
     sleep 8
+
+    # Podman rootless sometimes attaches victim2 to extra_net at the CNI/pasta
+    # level but never injects the interface into the container's network
+    # namespace. Force a disconnect + reconnect to materialize eth1 inside
+    # victim2 so it can actually TCP-connect to victim4/victim5.
+    if [[ "$SCENARIO" == "3" ]]; then
+        log "Scenario 3 — force-reconnecting victim2 to extra_net (Podman rootless workaround)..."
+        local net
+        net=$($RT network ls --format '{{.Name}}' 2>/dev/null | grep 'extra_net' | head -1)
+        [[ -z "$net" ]] && net="ssh-botnet-lab_extra_net"
+        log "  Network name: $net"
+        $RT network disconnect "$net" victim2 2>/dev/null || true
+        sleep 1
+        if $RT network connect --ip 10.20.0.20 "$net" victim2 2>/dev/null; then
+            ok "victim2 re-attached to $net (IP 10.20.0.20)"
+        else
+            warn "network connect failed — victim2 → victim4/5 TCP may not work"
+        fi
+    fi
+
     ok "Scenario $SCENARIO is up"
 }
 
@@ -328,19 +348,16 @@ phase_prepare_pivot() {
             warn "paramiko import failed on victim2 — deep lateral in S3 may not work"
         fi
 
-        # Podman rootless sometimes doesn't add a kernel route for the secondary
-        # network interface. Explicitly add it so victim2 can reach extra_net.
-        log "Ensuring victim2 has a route to extra_net (10.20.0.0/24)..."
-        $RT exec victim2 bash -c "
-            dev=\$(ip -o -4 addr | awk -F'[ /]+' '\$4~/^10\\.20\\./{print \$2}')
-            if [[ -n \"\$dev\" ]]; then
-                ip route show | grep -q '10\\.20\\.0\\.0/24' \
-                    || ip route add 10.20.0.0/24 dev \"\$dev\" 2>/dev/null || true
-                echo \"Route for 10.20.0.0/24 via \$dev\"
-            else
-                echo \"WARNING: no extra_net interface found on victim2\"
-            fi
-        " 2>/dev/null || true
+        # Verify the extra_net interface is visible inside victim2 (injected by
+        # the force-reconnect done in phase_setup).
+        local v2_extra_ip
+        v2_extra_ip=$($RT exec victim2 bash -c \
+            "ip -o -4 addr | awk -F'[ /]+' '\$4~/^10\\.20\\./{print \$4}'" 2>/dev/null || true)
+        if [[ -n "$v2_extra_ip" ]]; then
+            ok "victim2 extra_net interface confirmed ($v2_extra_ip)"
+        else
+            warn "victim2 has no 10.20.x.x address — victim2→victim4/5 TCP will fail"
+        fi
     fi
 }
 
