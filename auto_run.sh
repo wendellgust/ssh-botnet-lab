@@ -233,27 +233,32 @@ phase_setup() {
     log "Giving sshd 8 more seconds to fully settle..."
     sleep 8
 
-    # Podman rootless with CNI backend does not support network connect on
-    # running containers, so victim2 never gets an extra_net interface injected.
-    # Workaround: enable IP forwarding on the host and add static routes so
-    # victim2 can reach extra_net via the attack_net gateway (host bridges).
-    # podman exec uses the container runtime (not TCP), so route injection
-    # works even without the secondary interface.
+    # Scenario 3: verify victim2 has its extra_net interface (10.20.0.x).
+    # Compose + netavark should create it at startup. If it's missing, try
+    # network connect WITHOUT disconnecting first — disconnecting first caused
+    # the previous failure because netavark still tracks the IP as allocated,
+    # making the subsequent connect appear to conflict with itself.
     if [[ "$SCENARIO" == "3" ]]; then
-        log "Scenario 3 — configuring host IP forwarding + static routes for extra_net..."
-        sysctl -w net.ipv4.ip_forward=1 2>/dev/null || true
+        log "Scenario 3 — checking victim2 extra_net interface..."
+        local v2_extra
+        v2_extra=$($RT exec victim2 bash -c \
+            "ip -o -4 addr | awk -F'[ /]+' '\$4~/^10\\.20\\./{print \$4}'" 2>/dev/null || true)
 
-        # Route from victim2 (attack_net) → extra_net via host gateway
-        $RT exec victim2 ip route add 10.20.0.0/24 via 172.21.0.1 2>/dev/null || true
-        # Return routes from victim4/5 (extra_net) → attack_net via host gateway
-        $RT exec victim4 ip route add 172.21.0.0/24 via 10.20.0.1 2>/dev/null || true
-        $RT exec victim5 ip route add 172.21.0.0/24 via 10.20.0.1 2>/dev/null || true
+        if [[ -n "$v2_extra" ]]; then
+            ok "victim2 extra_net interface present ($v2_extra)"
+        else
+            log "Interface missing — trying network connect (no disconnect)..."
+            local nc_err
+            nc_err=$($RT network connect --ip 10.20.0.20 ssh-botnet-lab_extra_net victim2 2>&1) \
+                && ok "victim2 connected to ssh-botnet-lab_extra_net" \
+                || warn "network connect failed: $nc_err"
+        fi
 
-        # Verify reachability
+        # Final reachability check
         if $RT exec victim2 bash -c "nc -z -w3 10.20.0.10 22" 2>/dev/null; then
             ok "victim2 → victim4 (10.20.0.10:22) reachable"
         else
-            warn "victim2 → victim4 still not reachable — deep lateral may fail"
+            warn "victim2 → victim4 not reachable — if 'network connect' failed above, that is why"
         fi
     fi
 
