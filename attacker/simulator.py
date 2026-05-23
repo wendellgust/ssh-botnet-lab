@@ -52,19 +52,23 @@ SSH_PASSWORDS = [
     "toor", "deploy123", "operator1", "rootpass", "rootdeep",
 ]
 
-# Known-good lab credentials tried FIRST so legit lateral movement
-# succeeds in ~5-10 attempts instead of bashing through 100+ shuffled tries.
+# Priority credentials list. Tried in order before the shuffled wordlist.
+# victim3/honeypot/victim4/victim5 creds come FIRST — they fail on victim1/victim2,
+# generating 6+ failures before the correct password is found. This ensures
+# SSH-001 (≥5 failures) and SSH-002 (multiple users) fire during attack_net
+# brute-force while lateral movement to internal/deep hosts still succeeds fast.
 PRIORITY_CREDS = [
-    ("labuser",  "password123"),  # victim1, victim2
-    ("admin",    "admin"),         # victim1, victim2
-    ("labuser",  "internal123"),  # victim3, honeypot
-    ("svcaccount","service1"),    # victim3, honeypot
-    ("labuser",  "deepnet123"),   # victim4, victim5
-    ("operator", "operator1"),    # victim4, victim5
-    ("deploy",   "deploy123"),    # victim1, victim2
-    ("root",     "toor"),          # victim1, victim2
-    ("root",     "rootpass"),     # victim3, honeypot
-    ("root",     "rootdeep"),     # victim4, victim5
+    ("labuser",   "internal123"),  # victim3, honeypot   — fails on victim1/2
+    ("svcaccount","service1"),     # victim3, honeypot   — fails on victim1/2
+    ("labuser",   "deepnet123"),   # victim4, victim5    — fails on victim1/2
+    ("operator",  "operator1"),    # victim4, victim5    — fails on victim1/2
+    ("root",      "rootpass"),     # victim3, honeypot   — fails on victim1/2
+    ("root",      "rootdeep"),     # victim4, victim5    — fails on victim1/2
+    # victim1/victim2 credentials found after 6 failures above
+    ("labuser",   "password123"),  # victim1, victim2
+    ("admin",     "admin"),        # victim1, victim2
+    ("deploy",    "deploy123"),    # victim1, victim2
+    ("root",      "toor"),         # victim1, victim2
 ]
 
 C2_MESSAGE_TYPES = ["REGISTER","HEARTBEAT","STATUS","ACK_COMMAND","EXFIL_READY","IDLE"]

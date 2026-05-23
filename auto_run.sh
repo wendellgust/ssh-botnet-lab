@@ -233,22 +233,27 @@ phase_setup() {
     log "Giving sshd 8 more seconds to fully settle..."
     sleep 8
 
-    # Podman rootless sometimes attaches victim2 to extra_net at the CNI/pasta
-    # level but never injects the interface into the container's network
-    # namespace. Force a disconnect + reconnect to materialize eth1 inside
-    # victim2 so it can actually TCP-connect to victim4/victim5.
+    # Podman rootless with CNI backend does not support network connect on
+    # running containers, so victim2 never gets an extra_net interface injected.
+    # Workaround: enable IP forwarding on the host and add static routes so
+    # victim2 can reach extra_net via the attack_net gateway (host bridges).
+    # podman exec uses the container runtime (not TCP), so route injection
+    # works even without the secondary interface.
     if [[ "$SCENARIO" == "3" ]]; then
-        log "Scenario 3 — force-reconnecting victim2 to extra_net (Podman rootless workaround)..."
-        local net
-        net=$($RT network ls --format '{{.Name}}' 2>/dev/null | grep 'extra_net' | head -1)
-        [[ -z "$net" ]] && net="ssh-botnet-lab_extra_net"
-        log "  Network name: $net"
-        $RT network disconnect "$net" victim2 2>/dev/null || true
-        sleep 1
-        if $RT network connect --ip 10.20.0.20 "$net" victim2 2>/dev/null; then
-            ok "victim2 re-attached to $net (IP 10.20.0.20)"
+        log "Scenario 3 — configuring host IP forwarding + static routes for extra_net..."
+        sysctl -w net.ipv4.ip_forward=1 2>/dev/null || true
+
+        # Route from victim2 (attack_net) → extra_net via host gateway
+        $RT exec victim2 ip route add 10.20.0.0/24 via 172.21.0.1 2>/dev/null || true
+        # Return routes from victim4/5 (extra_net) → attack_net via host gateway
+        $RT exec victim4 ip route add 172.21.0.0/24 via 10.20.0.1 2>/dev/null || true
+        $RT exec victim5 ip route add 172.21.0.0/24 via 10.20.0.1 2>/dev/null || true
+
+        # Verify reachability
+        if $RT exec victim2 bash -c "nc -z -w3 10.20.0.10 22" 2>/dev/null; then
+            ok "victim2 → victim4 (10.20.0.10:22) reachable"
         else
-            warn "network connect failed — victim2 → victim4/5 TCP may not work"
+            warn "victim2 → victim4 still not reachable — deep lateral may fail"
         fi
     fi
 
@@ -348,15 +353,11 @@ phase_prepare_pivot() {
             warn "paramiko import failed on victim2 — deep lateral in S3 may not work"
         fi
 
-        # Verify the extra_net interface is visible inside victim2 (injected by
-        # the force-reconnect done in phase_setup).
-        local v2_extra_ip
-        v2_extra_ip=$($RT exec victim2 bash -c \
-            "ip -o -4 addr | awk -F'[ /]+' '\$4~/^10\\.20\\./{print \$4}'" 2>/dev/null || true)
-        if [[ -n "$v2_extra_ip" ]]; then
-            ok "victim2 extra_net interface confirmed ($v2_extra_ip)"
+        # Verify victim2 can actually TCP-reach victim4 (route set in phase_setup)
+        if $RT exec victim2 bash -c "nc -z -w3 10.20.0.10 22" 2>/dev/null; then
+            ok "victim2 → victim4 TCP confirmed"
         else
-            warn "victim2 has no 10.20.x.x address — victim2→victim4/5 TCP will fail"
+            warn "victim2 cannot reach victim4 — deep lateral will fail (check host ip_forward)"
         fi
     fi
 }
@@ -432,13 +433,15 @@ phase_c2() {
 
     log "Starting C2 listener on attacker (port 8888)..."
     $RT exec attacker python3 -c "
-import socket
+import socket, json, re
+from datetime import datetime
 srv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 srv.bind(('0.0.0.0', 8888))
 srv.listen(10)
 srv.settimeout(45)
 print('[C2] Listener ready on port 8888', flush=True)
+evf = open('/tmp/c2_events.jsonl', 'w')
 try:
     while True:
         try:
@@ -447,10 +450,25 @@ try:
             print(f'[C2] BEACON from {addr[0]}: {data[:80]}', flush=True)
             conn.send(b'HTTP/1.1 200 OK\r\n\r\nOK')
             conn.close()
+            # extract JSON body after blank line
+            body = data.split('\r\n\r\n', 1)[-1] if '\r\n\r\n' in data else '{}'
+            try:
+                payload = json.loads(body)
+            except Exception:
+                payload = {}
+            evt = {'ts': datetime.utcnow().isoformat(),
+                   'event': 'BEACON SENT',
+                   'bot_id': payload.get('bot_id', addr[0]),
+                   'ip': addr[0],
+                   'seq': payload.get('seq', '?'),
+                   'type': payload.get('type', 'HEARTBEAT')}
+            evf.write(json.dumps(evt) + '\n')
+            evf.flush()
         except socket.timeout:
             break
 except Exception as e:
     print(f'[C2] Error: {e}')
+evf.close()
 print('[C2] Listener closed')
 " &
     C2_PID=$!
@@ -540,6 +558,8 @@ phase_detect() {
         $RT exec victim3   cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true
         $RT exec honeypot  cat /var/log/auth.log >> /tmp/a.log 2>/dev/null || true
         $RT exec honeypot  cat /var/log/lab/honeypot_events.jsonl > /tmp/honeypot.jsonl 2>/dev/null || true
+        # Merge C2 beacon events so the analyzer's C2-001 rule can fire
+        $RT exec attacker  cat /tmp/c2_events.jsonl >> /tmp/honeypot.jsonl 2>/dev/null || true
         $RT cp /tmp/honeypot.jsonl monitor:/var/log/lab/honeypot_events.jsonl 2>/dev/null || true
     fi
     if [[ $SCENARIO -ge 3 ]]; then
