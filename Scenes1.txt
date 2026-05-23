@@ -1,11 +1,11 @@
-[0;36m[11:11:52][0m Working directory: /home/kali/Downloads/ssh-botnet-lab
-[0;36m[11:11:52][0m Runtime: podman
+[0;36m[11:56:51][0m Working directory: /home/kali/Downloads/ssh-botnet-lab
+[0;36m[11:56:51][0m Runtime: podman
 
 [1m[0;36m══════════════════════════════════════════════════[0m
 [1m[0;36m  FEUP SSR — Auto Scenario Runner — Scenario 1[0m
 [1m[0;36m══════════════════════════════════════════════════[0m
 
-[0;36m[11:11:52][0m Start: Sat May 23 11:11:52 AM EDT 2026
+[0;36m[11:56:51][0m Start: Sat May 23 11:56:51 AM EDT 2026
 
 [1m[0;36m══════════════════════════════════════════════════[0m
 [1m[0;36m  PREFLIGHT — Base Image Check[0m
@@ -17,39 +17,10 @@
 [1m[0;36m  PHASE 0 — Starting Scenario 1[0m
 [1m[0;36m══════════════════════════════════════════════════[0m
 
-[0;36m[11:11:52][0m Stopping any running containers...
-[0;36m[11:12:06][0m Discovering services in scenarios/scenario4.yml...
-[0;36m[11:12:06][0m Building services one at a time (avoids OOM on parallel builds)...
-[0;36m[11:12:06][0m   Building: monitor
-Sending build context to Docker daemon  8.013kB
-STEP 1/10: FROM ubuntu:22.04
-STEP 2/10: ENV DEBIAN_FRONTEND=noninteractive
---> Using cache 70b4131504dca6de70fea1411e5b1e6077eba320b0ddc64716aceeef7df31b26
---> 70b4131504dc
-STEP 3/10: RUN apt-get update && apt-get install -y     python3 tcpdump net-tools iproute2 iputils-ping jq   && rm -rf /var/lib/apt/lists/*
---> Using cache 2f70dc192c262e5d4aa3729604f398c2d4ee4253654f6ced3a7cd34372ad039c
---> 2f70dc192c26
-STEP 4/10: COPY analyzer.py /lab/monitor/analyzer.py
---> 396752fd0181
-STEP 5/10: COPY entrypoint.sh /entrypoint.sh
---> bf703a628662
-STEP 6/10: RUN chmod +x /entrypoint.sh
---> 35a87281abf9
-STEP 7/10: RUN mkdir -p /var/log/lab
---> 9fe1bf6edadd
-STEP 8/10: WORKDIR /lab/monitor
---> 89615853486e
-STEP 9/10: CMD ["/entrypoint.sh"]
---> 7113d0c2b98a
-STEP 10/10: LABEL "com.docker.compose.image.builder"="classic"
-COMMIT docker.io/library/ssh-botnet-lab-monitor:latest
---> a3db482cccfa
-Successfully tagged docker.io/library/ssh-botnet-lab-monitor:latest
-a3db482cccfaf1f4c0e631500ba33fe8258d2bac399421556348ab54d79322a5
-Successfully built a3db482cccfa
-Successfully tagged ssh-botnet-lab-monitor
-[0;32m[✔][0m   monitor built
-[0;36m[11:12:08][0m   Building: victim1
+[0;36m[11:56:51][0m Stopping any running containers...
+[0;36m[11:57:05][0m Discovering services in scenarios/scenario4.yml...
+[0;36m[11:57:05][0m Building services one at a time (avoids OOM on parallel builds)...
+[0;36m[11:57:05][0m   Building: victim1
 Sending build context to Docker daemon  1.951kB
 STEP 1/11: FROM ubuntu:22.04
 STEP 2/11: ENV DEBIAN_FRONTEND=noninteractive
@@ -89,7 +60,7 @@ Successfully tagged docker.io/library/ssh-botnet-lab-victim2:latest
 Successfully built 2d8c604262e6
 Successfully tagged ssh-botnet-lab-victim1
 [0;32m[✔][0m   victim1 built
-[0;36m[11:12:08][0m   Building: victim2
+[0;36m[11:57:06][0m   Building: victim2
 Sending build context to Docker daemon  1.951kB
 STEP 1/11: FROM ubuntu:22.04
 STEP 2/11: ENV DEBIAN_FRONTEND=noninteractive
@@ -129,7 +100,7 @@ Successfully tagged docker.io/library/ssh-botnet-lab-victim1:latest
 Successfully built 2d8c604262e6
 Successfully tagged ssh-botnet-lab-victim2
 [0;32m[✔][0m   victim2 built
-[0;36m[11:12:09][0m   Building: victim3
+[0;36m[11:57:07][0m   Building: victim3
 Sending build context to Docker daemon  1.721kB
 STEP 1/11: FROM ubuntu:22.04
 STEP 2/11: ENV DEBIAN_FRONTEND=noninteractive
@@ -169,7 +140,7 @@ e9119592d64bd3f1e63cbd701acd5191ef55912ff37405446a90b84431cddd40
 Successfully built e9119592d64b
 Successfully tagged ssh-botnet-lab-victim3
 [0;32m[✔][0m   victim3 built
-[0;36m[11:12:09][0m   Building: victim4
+[0;36m[11:57:07][0m   Building: victim4
 Sending build context to Docker daemon  1.263kB
 STEP 1/9: FROM ubuntu:22.04
 STEP 2/9: ENV DEBIAN_FRONTEND=noninteractive
@@ -203,7 +174,7 @@ f5b59d683e2ab4f3294a92f9882bd2bb51b3a6b01bee909cfe100100609b7b5a
 Successfully built f5b59d683e2a
 Successfully tagged ssh-botnet-lab-victim4
 [0;32m[✔][0m   victim4 built
-[0;36m[11:12:10][0m   Building: victim5
+[0;36m[11:57:08][0m   Building: victim5
 Sending build context to Docker daemon  1.263kB
 STEP 1/9: FROM ubuntu:22.04
 STEP 2/9: ENV DEBIAN_FRONTEND=noninteractive
@@ -237,7 +208,7 @@ f5b59d683e2ab4f3294a92f9882bd2bb51b3a6b01bee909cfe100100609b7b5a
 Successfully built f5b59d683e2a
 Successfully tagged ssh-botnet-lab-victim5
 [0;32m[✔][0m   victim5 built
-[0;36m[11:12:10][0m   Building: attacker
+[0;36m[11:57:09][0m   Building: attacker
 Sending build context to Docker daemon  12.97kB
 STEP 1/10: FROM ubuntu:22.04
 STEP 2/10: ENV DEBIAN_FRONTEND=noninteractive
@@ -273,7 +244,7 @@ a26fc4342997fe22e0ad49048f8295e56cc23adb4128bb7b0e4e0d5f9a5dc86a
 Successfully built a26fc4342997
 Successfully tagged ssh-botnet-lab-attacker
 [0;32m[✔][0m   attacker built
-[0;36m[11:12:10][0m   Building: honeypot
+[0;36m[11:57:09][0m   Building: honeypot
 Sending build context to Docker daemon  1.721kB
 STEP 1/11: FROM ubuntu:22.04
 STEP 2/11: ENV DEBIAN_FRONTEND=noninteractive
@@ -313,56 +284,92 @@ e9119592d64bd3f1e63cbd701acd5191ef55912ff37405446a90b84431cddd40
 Successfully built e9119592d64b
 Successfully tagged ssh-botnet-lab-honeypot
 [0;32m[✔][0m   honeypot built
-[0;36m[11:12:11][0m Starting all containers...
-[0;36m[11:12:14][0m Waiting 12s for containers and sshd to initialise...
-[0;36m[11:12:26][0m Waiting for attacker...
+[0;36m[11:57:10][0m   Building: monitor
+Sending build context to Docker daemon  8.013kB
+STEP 1/10: FROM ubuntu:22.04
+STEP 2/10: ENV DEBIAN_FRONTEND=noninteractive
+--> Using cache 70b4131504dca6de70fea1411e5b1e6077eba320b0ddc64716aceeef7df31b26
+--> 70b4131504dc
+STEP 3/10: RUN apt-get update && apt-get install -y     python3 tcpdump net-tools iproute2 iputils-ping jq   && rm -rf /var/lib/apt/lists/*
+--> Using cache 2f70dc192c262e5d4aa3729604f398c2d4ee4253654f6ced3a7cd34372ad039c
+--> 2f70dc192c26
+STEP 4/10: COPY analyzer.py /lab/monitor/analyzer.py
+--> Using cache 396752fd0181558bdb74864ba81e9de6209c7bd7a70d9822bb1e6e40e43ab654
+--> 396752fd0181
+STEP 5/10: COPY entrypoint.sh /entrypoint.sh
+--> Using cache bf703a6286623f281c5e90649c404838a4f18a7c05e138b276ae3ec144612483
+--> bf703a628662
+STEP 6/10: RUN chmod +x /entrypoint.sh
+--> Using cache 35a87281abf9fe5ed62f6687871c4f034af83624cbf6f49ddbd9fa89cdbbc981
+--> 35a87281abf9
+STEP 7/10: RUN mkdir -p /var/log/lab
+--> Using cache 9fe1bf6edaddfdb03a097a46cc59a2625f11ef25ec01157db717feeeb38d0641
+--> 9fe1bf6edadd
+STEP 8/10: WORKDIR /lab/monitor
+--> Using cache 89615853486ee635a53e747a9dad75c73babbdcb4135e66f604199020e8dd87c
+--> 89615853486e
+STEP 9/10: CMD ["/entrypoint.sh"]
+--> Using cache 7113d0c2b98ad15394c306d9b457135b97e99d16c9c13a3922e508d270ab4fa8
+--> 7113d0c2b98a
+STEP 10/10: LABEL "com.docker.compose.image.builder"="classic"
+--> Using cache a3db482cccfaf1f4c0e631500ba33fe8258d2bac399421556348ab54d79322a5
+COMMIT docker.io/library/ssh-botnet-lab-monitor:latest
+--> a3db482cccfa
+Successfully tagged docker.io/library/ssh-botnet-lab-monitor:latest
+a3db482cccfaf1f4c0e631500ba33fe8258d2bac399421556348ab54d79322a5
+Successfully built a3db482cccfa
+Successfully tagged ssh-botnet-lab-monitor
+[0;32m[✔][0m   monitor built
+[0;36m[11:57:11][0m Starting all containers...
+[0;36m[11:57:14][0m Waiting 12s for containers and sshd to initialise...
+[0;36m[11:57:26][0m Waiting for attacker...
 [0;32m[✔][0m attacker is ready
-[0;36m[11:12:26][0m Waiting for victim1...
+[0;36m[11:57:26][0m Waiting for victim1...
 [0;32m[✔][0m victim1 is ready
-[0;36m[11:12:26][0m Waiting for victim2...
+[0;36m[11:57:26][0m Waiting for victim2...
 [0;32m[✔][0m victim2 is ready
-[0;36m[11:12:26][0m Waiting for monitor...
+[0;36m[11:57:27][0m Waiting for monitor...
 [0;32m[✔][0m monitor is ready
-[0;36m[11:12:27][0m Giving sshd 8 more seconds to fully settle...
+[0;36m[11:57:27][0m Giving sshd 8 more seconds to fully settle...
 [0;32m[✔][0m Scenario 1 is up
 
 [1m[0;36m══════════════════════════════════════════════════[0m
 [1m[0;36m  PHASE 1 — Reconnaissance[0m
 [1m[0;36m══════════════════════════════════════════════════[0m
 
-[0;36m[11:12:35][0m Scanning attack_net (172.21.0.x)...
-2026-05-23T15:12:35 [Scanner] INFO Scanning 172.21.0.x
-2026-05-23T15:12:35 [Scanner] INFO Scanning host 172.21.0.1
-2026-05-23T15:12:37 [Scanner] INFO Scanning host 172.21.0.2
-2026-05-23T15:12:50 [Scanner] INFO Scanning host 172.21.0.3
-2026-05-23T15:13:03 [Scanner] INFO Scanning host 172.21.0.4
-2026-05-23T15:13:15 [Scanner] INFO Scanning host 172.21.0.5
-2026-05-23T15:13:28 [Scanner] INFO Scanning host 172.21.0.6
-2026-05-23T15:13:41 [Scanner] INFO Scanning host 172.21.0.7
-2026-05-23T15:13:53 [Scanner] INFO Scanning host 172.21.0.8
-2026-05-23T15:14:06 [Scanner] INFO Scanning host 172.21.0.9
-2026-05-23T15:14:18 [Scanner] INFO Scanning host 172.21.0.10
-2026-05-23T15:14:21 [Scanner] INFO Scanning host 172.21.0.11
-2026-05-23T15:14:34 [Scanner] INFO Scanning host 172.21.0.12
-2026-05-23T15:14:46 [Scanner] INFO Scanning host 172.21.0.13
-2026-05-23T15:14:59 [Scanner] INFO Scanning host 172.21.0.14
-2026-05-23T15:15:11 [Scanner] INFO Scanning host 172.21.0.15
-2026-05-23T15:15:24 [Scanner] INFO Scanning host 172.21.0.16
-2026-05-23T15:15:37 [Scanner] INFO Scanning host 172.21.0.17
-2026-05-23T15:15:49 [Scanner] INFO Scanning host 172.21.0.18
-2026-05-23T15:16:02 [Scanner] INFO Scanning host 172.21.0.19
-2026-05-23T15:16:14 [Scanner] INFO Scanning host 172.21.0.20
-2026-05-23T15:16:14 [Scanner] INFO OPEN  172.21.0.20:22
-2026-05-23T15:16:17 [Scanner] INFO Scanning host 172.21.0.21
-2026-05-23T15:16:17 [Scanner] INFO OPEN  172.21.0.21:22
-2026-05-23T15:16:20 [Scanner] INFO Scanning host 172.21.0.22
-2026-05-23T15:16:32 [Scanner] INFO Scanning host 172.21.0.23
-2026-05-23T15:16:45 [Scanner] INFO Scanning host 172.21.0.24
-2026-05-23T15:16:57 [Scanner] INFO Scanning host 172.21.0.25
-2026-05-23T15:17:10 [Scanner] INFO Scanning host 172.21.0.26
-2026-05-23T15:17:23 [Scanner] INFO Scanning host 172.21.0.27
-2026-05-23T15:17:35 [Scanner] INFO Scanning host 172.21.0.28
-2026-05-23T15:17:48 [Scanner] INFO Scanning host 172.21.0.29
+[0;36m[11:57:35][0m Scanning attack_net (172.21.0.x)...
+2026-05-23T15:57:35 [Scanner] INFO Scanning 172.21.0.x
+2026-05-23T15:57:35 [Scanner] INFO Scanning host 172.21.0.1
+2026-05-23T15:57:38 [Scanner] INFO Scanning host 172.21.0.2
+2026-05-23T15:57:50 [Scanner] INFO Scanning host 172.21.0.3
+2026-05-23T15:58:03 [Scanner] INFO Scanning host 172.21.0.4
+2026-05-23T15:58:15 [Scanner] INFO Scanning host 172.21.0.5
+2026-05-23T15:58:28 [Scanner] INFO Scanning host 172.21.0.6
+2026-05-23T15:58:41 [Scanner] INFO Scanning host 172.21.0.7
+2026-05-23T15:58:53 [Scanner] INFO Scanning host 172.21.0.8
+2026-05-23T15:59:06 [Scanner] INFO Scanning host 172.21.0.9
+2026-05-23T15:59:19 [Scanner] INFO Scanning host 172.21.0.10
+2026-05-23T15:59:21 [Scanner] INFO Scanning host 172.21.0.11
+2026-05-23T15:59:34 [Scanner] INFO Scanning host 172.21.0.12
+2026-05-23T15:59:46 [Scanner] INFO Scanning host 172.21.0.13
+2026-05-23T15:59:59 [Scanner] INFO Scanning host 172.21.0.14
+2026-05-23T16:00:12 [Scanner] INFO Scanning host 172.21.0.15
+2026-05-23T16:00:24 [Scanner] INFO Scanning host 172.21.0.16
+2026-05-23T16:00:37 [Scanner] INFO Scanning host 172.21.0.17
+2026-05-23T16:00:49 [Scanner] INFO Scanning host 172.21.0.18
+2026-05-23T16:01:02 [Scanner] INFO Scanning host 172.21.0.19
+2026-05-23T16:01:15 [Scanner] INFO Scanning host 172.21.0.20
+2026-05-23T16:01:15 [Scanner] INFO OPEN  172.21.0.20:22
+2026-05-23T16:01:17 [Scanner] INFO Scanning host 172.21.0.21
+2026-05-23T16:01:17 [Scanner] INFO OPEN  172.21.0.21:22
+2026-05-23T16:01:20 [Scanner] INFO Scanning host 172.21.0.22
+2026-05-23T16:01:32 [Scanner] INFO Scanning host 172.21.0.23
+2026-05-23T16:01:45 [Scanner] INFO Scanning host 172.21.0.24
+2026-05-23T16:01:58 [Scanner] INFO Scanning host 172.21.0.25
+2026-05-23T16:02:10 [Scanner] INFO Scanning host 172.21.0.26
+2026-05-23T16:02:23 [Scanner] INFO Scanning host 172.21.0.27
+2026-05-23T16:02:35 [Scanner] INFO Scanning host 172.21.0.28
+2026-05-23T16:02:48 [Scanner] INFO Scanning host 172.21.0.29
 
 ╔══════════════════════════════════════════════════════════════╗
 ║  BOTNET SIMULATOR — EDUCATIONAL USE ONLY                    ║
@@ -370,17 +377,17 @@ Successfully tagged ssh-botnet-lab-honeypot
 ╚══════════════════════════════════════════════════════════════╝
 
 [0;32m[✔][0m Scan complete
-[0;36m[11:18:01][0m Waiting for SSH on 172.21.0.20 (via attacker)...
+[0;36m[12:03:01][0m Waiting for SSH on 172.21.0.20 (via attacker)...
 [0;32m[✔][0m SSH 172.21.0.20 is up
-[0;36m[11:18:01][0m Waiting for SSH on 172.21.0.21 (via attacker)...
+[0;36m[12:03:01][0m Waiting for SSH on 172.21.0.21 (via attacker)...
 [0;32m[✔][0m SSH 172.21.0.21 is up
 
 [1m[0;36m══════════════════════════════════════════════════[0m
 [1m[0;36m  PHASE 2 — SSH Brute-Force (attack_net)[0m
 [1m[0;36m══════════════════════════════════════════════════[0m
 
-[0;36m[11:18:01][0m Attacking victim1 (172.21.0.20) and victim2 (172.21.0.21) in parallel...
-[0;36m[11:18:01][0m Waiting for both jobs...
+[0;36m[12:03:01][0m Attacking victim1 (172.21.0.20) and victim2 (172.21.0.21) in parallel...
+[0;36m[12:03:01][0m Waiting for both jobs...
 
 ╔══════════════════════════════════════════════════════════════╗
 ║  BOTNET SIMULATOR — EDUCATIONAL USE ONLY                    ║
@@ -399,9 +406,9 @@ Successfully tagged ssh-botnet-lab-honeypot
 [1m[0;36m  PHASE 5 — C2 Beaconing[0m
 [1m[0;36m══════════════════════════════════════════════════[0m
 
-[0;36m[11:18:01][0m Starting C2 listener on attacker (port 8888)...
+[0;36m[12:03:02][0m Starting C2 listener on attacker (port 8888)...
 [C2] Listener ready on port 8888
-[0;36m[11:18:03][0m victim1 → attacker (172.21.0.10:8888) — 5 beacons...
+[0;36m[12:03:04][0m victim1 → attacker (172.21.0.10:8888) — 5 beacons...
 Beacon 1/5 sent
 [C2] BEACON from 172.21.0.20: POST /beacon HTTP/1.1
 Content-Length: 88
@@ -427,7 +434,7 @@ Beacon 5/5 sent
 Content-Length: 88
 
 {"bot_id": "victim1", "type": "HEAR
-[0;36m[11:18:14][0m Waiting for C2 listener to finish...
+[0;36m[12:03:14][0m Waiting for C2 listener to finish...
 [C2] Listener closed
 [0;32m[✔][0m C2 beaconing phase complete
 
@@ -435,10 +442,10 @@ Content-Length: 88
 [1m[0;36m  PHASE 7 — Log Collection & Detection[0m
 [1m[0;36m══════════════════════════════════════════════════[0m
 
-[0;36m[11:18:57][0m Collecting auth logs from all victims...
-[0;36m[11:18:57][0m Total log lines collected: 26
+[0;36m[12:03:57][0m Collecting auth logs from all victims...
+[0;36m[12:03:57][0m Total log lines collected: 24
 [0;32m[✔][0m Logs copied to monitor:/var/log/lab/auth.log
-[0;36m[11:18:57][0m Running analyzer...
+[0;36m[12:03:58][0m Running analyzer...
 
 [analyzer] Loading logs...
 [analyzer] Parsed 2 auth events, 0 honeypot events
@@ -473,4 +480,4 @@ Content-Length: 88
   podman exec -it attacker bash
   podman exec -it honeypot cat /var/log/lab/honeypot_events.jsonl
 
-Finished at: Sat May 23 11:18:58 AM EDT 2026
+Finished at: Sat May 23 12:03:58 PM EDT 2026
