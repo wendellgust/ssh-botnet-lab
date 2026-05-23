@@ -327,6 +327,20 @@ phase_prepare_pivot() {
         else
             warn "paramiko import failed on victim2 — deep lateral in S3 may not work"
         fi
+
+        # Podman rootless sometimes doesn't add a kernel route for the secondary
+        # network interface. Explicitly add it so victim2 can reach extra_net.
+        log "Ensuring victim2 has a route to extra_net (10.20.0.0/24)..."
+        $RT exec victim2 bash -c "
+            dev=\$(ip -o -4 addr | awk -F'[ /]+' '\$4~/^10\\.20\\./{print \$2}')
+            if [[ -n \"\$dev\" ]]; then
+                ip route show | grep -q '10\\.20\\.0\\.0/24' \
+                    || ip route add 10.20.0.0/24 dev \"\$dev\" 2>/dev/null || true
+                echo \"Route for 10.20.0.0/24 via \$dev\"
+            else
+                echo \"WARNING: no extra_net interface found on victim2\"
+            fi
+        " 2>/dev/null || true
     fi
 }
 

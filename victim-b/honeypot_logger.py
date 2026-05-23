@@ -17,13 +17,13 @@ OUT_PATH = "/var/log/lab/honeypot_events.jsonl"
 ROLE = os.environ.get("LAB_ROLE", "victim")
 
 FAILED_RE = re.compile(
-    r"(\w+\s+\d+\s[\d:]+).*sshd.*Failed password for (?:invalid user )?(\S+) from ([\d.]+) port (\d+)"
+    r"Failed password for (?:invalid user )?(?P<user>\S+) from (?P<src_ip>[\d.]+) port (?P<src_port>\d+)"
 )
 ACCEPT_RE = re.compile(
-    r"(\w+\s+\d+\s[\d:]+).*sshd.*Accepted password for (\S+) from ([\d.]+) port (\d+)"
+    r"Accepted password for (?P<user>\S+) from (?P<src_ip>[\d.]+) port (?P<src_port>\d+)"
 )
 INVALID_RE = re.compile(
-    r"(\w+\s+\d+\s[\d:]+).*sshd.*Invalid user (\S+) from ([\d.]+)"
+    r"Invalid user (?P<user>\S+) from (?P<src_ip>[\d.]+)"
 )
 
 def tail_log(path):
@@ -61,20 +61,20 @@ def main():
         m = FAILED_RE.search(line)
         if m:
             emit_event("ssh_failed_auth", {
-                "user": m.group(2), "src_ip": m.group(3), "src_port": m.group(4)
+                "user": m.group("user"), "src_ip": m.group("src_ip"), "src_port": m.group("src_port")
             })
             continue
         m = ACCEPT_RE.search(line)
         if m:
             emit_event("ssh_successful_auth", {
-                "user": m.group(2), "src_ip": m.group(3), "src_port": m.group(4),
+                "user": m.group("user"), "src_ip": m.group("src_ip"), "src_port": m.group("src_port"),
                 "severity": "CRITICAL" if ROLE == "honeypot" else "HIGH"
             })
             continue
         m = INVALID_RE.search(line)
         if m:
             emit_event("ssh_invalid_user", {
-                "user": m.group(2), "src_ip": m.group(3)
+                "user": m.group("user"), "src_ip": m.group("src_ip")
             })
 
 if __name__ == "__main__":
