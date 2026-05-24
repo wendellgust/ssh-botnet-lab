@@ -57,6 +57,7 @@ compose_cmd() {
 }
 
 compose_down_all() {
+    local yml
     for yml in scenarios/scenario{1,2,3,4}.yml; do
         [[ -f "$yml" ]] && compose_cmd "$yml" down 2>/dev/null || true
     done
