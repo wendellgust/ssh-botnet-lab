@@ -256,23 +256,16 @@ phase_setup() {
             ok "victim2 extra_net interface present ($v2_extra)"
         else
             log "Interface missing — trying network connect..."
-            # Inspect ALL networks at once and parse with Python — avoids every
-            # format/template ambiguity across Podman versions and backends.
+            # Show every network Podman knows about — helps diagnose lookup failures
+            local all_nets
+            all_nets=$($RT network ls 2>/dev/null | awk 'NR>1{print $2}' | tr '\n' ' ')
+            log "  All Podman networks: ${all_nets:-(none visible)}"
+            # Find extra_net: grep the NAME column of 'podman network ls' for 'extra_net'.
+            # This avoids --format templates and JSON parsing, both of which have
+            # failed across different Podman versions.
             local net=""
-            net=$($RT network inspect \
-                    $($RT network ls -q 2>/dev/null) 2>/dev/null \
-                | python3 -c "
-import json, sys
-try:
-    nets = json.load(sys.stdin)
-    for n in nets:
-        for s in n.get('subnets', []):
-            if '10.20.' in s.get('subnet', ''):
-                print(n['name'])
-                break
-except Exception:
-    pass
-" 2>/dev/null | head -1 || true)
+            net=$($RT network ls 2>/dev/null | awk 'NR>1{print $2}' \
+                    | grep 'extra_net' | head -1 || true)
             log "  Detected extra_net name: ${net:-(not found)}"
             if [[ -n "$net" ]]; then
                 # Disconnect first — podman-compose may have registered victim2 on
