@@ -256,19 +256,23 @@ phase_setup() {
             ok "victim2 extra_net interface present ($v2_extra)"
         else
             log "Interface missing — trying network connect..."
-            # Find extra_net by its subnet using Podman's own Go-template formatter.
-            # grep on 'network inspect' JSON is unreliable (field quoting varies by
-            # Podman version); --format with .Subnets is always correct.
+            # Inspect ALL networks at once and parse with Python — avoids every
+            # format/template ambiguity across Podman versions and backends.
             local net=""
-            while IFS= read -r netname; do
-                local subnet
-                subnet=$($RT network inspect "$netname" \
-                    --format '{{range .Subnets}}{{.Subnet}} {{end}}' 2>/dev/null || true)
-                if [[ "$subnet" == *"10.20."* ]]; then
-                    net="$netname"
-                    break
-                fi
-            done < <($RT network ls --format '{{.Name}}' 2>/dev/null)
+            net=$($RT network inspect \
+                    $($RT network ls -q 2>/dev/null) 2>/dev/null \
+                | python3 -c "
+import json, sys
+try:
+    nets = json.load(sys.stdin)
+    for n in nets:
+        for s in n.get('subnets', []):
+            if '10.20.' in s.get('subnet', ''):
+                print(n['name'])
+                break
+except Exception:
+    pass
+" 2>/dev/null | head -1 || true)
             log "  Detected extra_net name: ${net:-(not found)}"
             if [[ -n "$net" ]]; then
                 # Disconnect first — podman-compose may have registered victim2 on
