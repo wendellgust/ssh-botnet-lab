@@ -292,19 +292,18 @@ select{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:4px 8px
             <path d="M0,0 L7,3.5 L0,7 Z" fill="#50fa7b" fill-opacity=".7"/>
           </marker>
         </defs>
-        <!-- Zones drawn dynamically by JS. Static: attacker node -->
-        <!-- edges go under nodes -->
+        <!-- edges go under everything -->
         <g id="edges"></g>
-        <!-- Attacker node (always present) -->
-        <g id="node-atk">
-          <circle cx="110" cy="230" r="32" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#glow-r)"/>
-          <text x="110" y="225" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11" font-weight="bold">ATK</text>
-          <text x="110" y="275" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10">ATTACKER</text>
-          <text x="110" y="289" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
-        </g>
         <!-- Dynamic zones and nodes -->
         <g id="zones"></g>
         <g id="nodes"></g>
+        <!-- Attacker node drawn last so it always renders on top -->
+        <g id="node-atk">
+          <circle cx="110" cy="380" r="32" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#glow-r)"/>
+          <text x="110" y="375" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11" font-weight="bold">ATK</text>
+          <text x="110" y="425" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10">ATTACKER</text>
+          <text x="110" y="439" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
+        </g>
         <!-- Packets layer (animated dots) -->
         <g id="packets"></g>
       </svg>
@@ -346,9 +345,9 @@ const nodesG  = document.getElementById('nodes');
 const zonesG  = document.getElementById('zones');
 const pktsG   = document.getElementById('packets');
 
-/* attacker fixed position */
-nodesData['172.21.0.10'] = {cx:110, cy:230, prefix:'172.21.'};
-nodesData['direct']       = {cx:110, cy:230, prefix:'172.21.'};
+/* attacker fixed at bottom of attack_net zone */
+nodesData['172.21.0.10'] = {cx:110, cy:380, prefix:'172.21.'};
+nodesData['direct']       = {cx:110, cy:380, prefix:'172.21.'};
 
 function getPrefix(ip) {
   for (const p of Object.keys(ZONE_DEFS)) {
