@@ -617,7 +617,7 @@ function stopRun() {
   fetch('/stop');
 }
 function resetView() {
-  location.reload();
+  fetch('/reset').then(() => location.reload());
 }
 </script>
 </body>
@@ -656,6 +656,17 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         elif path == '/stop':
             stop_botnet()
+            self.send_response(204)
+            self.end_headers()
+
+        elif path == '/reset':
+            if not state['running']:
+                state['events'].clear()
+                state['hosts'].clear()
+                state['zones'].clear()
+                _pending_via.clear()
+                state['done'] = False
+                state['stats'] = {'found': 0, 'compromised': 0, 'nets': 0}
             self.send_response(204)
             self.end_headers()
 
