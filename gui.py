@@ -30,6 +30,7 @@ _clients = []
 _clients_lock = threading.Lock()
 _proc = None             # running subprocess
 _proc_lock = threading.Lock()
+defense_status = {}      # container_name -> set of applied defense ids
 
 # ── Event broadcasting ────────────────────────────────────────────────────────
 def broadcast(ev_type, data):
@@ -165,6 +166,88 @@ def stop_botnet():
         if _proc:
             _proc.terminate()
 
+def generate_report():
+    hosts_list = []
+    for ip, h in state['hosts'].items():
+        hosts_list.append({
+            'ip':  ip,
+            'state': h.get('state', 'unknown'),
+            'user':  h.get('user', ''),
+            'pwd':   h.get('pwd', ''),
+            'via':   h.get('via', 'direct'),
+            'net':   h.get('prefix', ''),
+        })
+    # Count brute-force attempts per target for IDS simulation
+    attack_counts = {}
+    for ev in state['events']:
+        if ev['type'] == 'attack_start':
+            ip = ev['data'].get('ip', '')
+            attack_counts[ip] = attack_counts.get(ip, 0) + 1
+    ids_alerts = []
+    for ip, cnt in attack_counts.items():
+        if cnt >= 3:
+            ids_alerts.append(f"BRUTE_FORCE: {cnt} attempts against {ip} from 172.21.0.10")
+    pivot_hosts = {h['via'] for h in hosts_list if h['state'] == 'compromised' and h['via'] not in ('direct', '')}
+    for ph in pivot_hosts:
+        ids_alerts.append(f"PIVOT_DETECTED: lateral movement through {ph}")
+    return {
+        'stats':   state['stats'],
+        'hosts':   hosts_list,
+        'alerts':  ids_alerts,
+        'running': state['running'],
+        'done':    state['done'],
+    }
+
+def apply_defense(action: str, target: str):
+    allowed_targets = {'victim1', 'victim2', 'victim3', 'victim4', 'victim5', 'honeypot'}
+    if target not in allowed_targets:
+        return False, f"Unknown target: {target}"
+    exe = 'podman' if os.path.exists('/usr/bin/podman') else 'docker'
+    cmds = {
+        'fail2ban': [
+            'bash', '-c',
+            'apt-get install -y fail2ban -q 2>/dev/null; '
+            'mkdir -p /etc/fail2ban && '
+            'printf "[sshd]\\nenabled=true\\nmaxretry=5\\nfindtime=60\\nbantime=300\\n"'
+            ' > /etc/fail2ban/jail.local && '
+            'service fail2ban start 2>/dev/null || fail2ban-client start 2>/dev/null; echo done'
+        ],
+        'block_ip': [
+            'bash', '-c',
+            'iptables -C INPUT -s 172.21.0.10 -j DROP 2>/dev/null || '
+            'iptables -A INPUT -s 172.21.0.10 -j DROP; echo done'
+        ],
+        'rate_limit': [
+            'bash', '-c',
+            'iptables -C INPUT -p tcp --dport 22 -m state --state NEW -m recent '
+            '--update --seconds 60 --hitcount 10 -j DROP 2>/dev/null || ('
+            'iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent --set; '
+            'iptables -A INPUT -p tcp --dport 22 -m state --state NEW -m recent '
+            '--update --seconds 60 --hitcount 10 -j DROP); echo done'
+        ],
+        'disable_password': [
+            'bash', '-c',
+            'sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config && '
+            'kill -HUP $(cat /var/run/sshd.pid 2>/dev/null || pgrep sshd | head -1) 2>/dev/null; echo done'
+        ],
+    }
+    if action not in cmds:
+        return False, f"Unknown action: {action}"
+    try:
+        result = subprocess.run(
+            [exe, 'exec', target] + cmds[action],
+            capture_output=True, text=True, timeout=30
+        )
+        ok = result.returncode == 0
+        msg = (result.stdout.strip() or result.stderr.strip() or ('ok' if ok else 'failed'))[:120]
+        if ok:
+            if target not in defense_status:
+                defense_status[target] = set()
+            defense_status[target].add(action)
+        return ok, msg
+    except Exception as e:
+        return False, str(e)[:120]
+
 # ── SSE client handler ────────────────────────────────────────────────────────
 def sse_stream(wfile):
     q = queue.Queue(maxsize=500)
@@ -251,6 +334,49 @@ select{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:4px 8px
 .host-entry.open{border-left-color:#3b82f6}
 .host-entry.attacking{border-left-color:#f97316}
 .host-entry.failed{border-left-color:#44475a}
+/* Modal system */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:#0d1117;border:1px solid #2a3050;border-radius:8px;width:710px;max-width:95vw;max-height:87vh;display:flex;flex-direction:column;overflow:hidden}
+.modal-hdr{background:#0a0f1e;padding:13px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #1e2235;flex-shrink:0}
+.modal-hdr h2{margin:0;font-size:12px;color:#f8f8f2;letter-spacing:2px}
+.modal-close{background:none;border:none;color:#6272a4;font-size:18px;cursor:pointer;line-height:1}
+.modal-body{padding:16px 18px;overflow-y:auto;flex:1}
+.modal-section{margin-bottom:16px}
+.modal-section h3{font-size:10px;color:#44475a;letter-spacing:2px;text-transform:uppercase;margin:0 0 8px}
+/* Report stat grid */
+.report-stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:4px}
+.r-stat{background:#1a1f2e;border-radius:4px;padding:10px 12px;text-align:center}
+.r-stat .val{font-size:22px;font-weight:bold;color:#f8f8f2}
+.r-stat .lbl{font-size:9px;color:#44475a;margin-top:2px;text-transform:uppercase;letter-spacing:1px}
+/* Hosts table */
+table.host-tbl{width:100%;border-collapse:collapse;font-size:10px}
+table.host-tbl th{color:#44475a;text-align:left;padding:4px 8px;border-bottom:1px solid #1e2235;font-size:9px;letter-spacing:1px;text-transform:uppercase}
+table.host-tbl td{padding:5px 8px;border-bottom:1px solid #0a0f1e}
+table.host-tbl tr.comp td{color:#ffb86c}
+table.host-tbl tr.open td{color:#3b82f6}
+table.host-tbl tr.fail td{color:#44475a}
+/* Infection chain */
+.chain-row{margin-bottom:8px}
+.chain-node{display:inline-block;background:#1a1f2e;border:1px solid #2a3050;padding:3px 9px;border-radius:12px;font-size:10px}
+.chain-arrow{color:#50fa7b;margin:0 5px;font-size:12px}
+/* IDS alerts */
+.alert-item{font-size:10px;padding:5px 8px;background:#1a0808;border-left:3px solid #ff5555;border-radius:2px;margin-bottom:4px;color:#ff8080}
+/* Defenses grid */
+.def-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.def-card{background:#1a1f2e;border:1px solid #2a3050;border-radius:6px;padding:12px}
+.def-card h4{margin:0 0 4px;font-size:11px}
+.def-card p{margin:0 0 10px;font-size:10px;color:#6272a4;line-height:1.5}
+.def-targets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.def-target{background:#0d1117;border:1px solid #2a3050;color:#6272a4;font-size:10px;padding:3px 8px;border-radius:3px;cursor:pointer;font-family:'Courier New',monospace;transition:all .15s}
+.def-target:hover{border-color:#6272a4;color:#cdd6f4}
+.def-target.applied{border-color:#50fa7b !important;color:#50fa7b}
+.def-status{font-size:9px;color:#44475a;min-height:14px;word-break:break-all}
+/* Extra control buttons */
+.btn.report-btn{border-color:#bd93f9;color:#bd93f9}
+.btn.report-btn:hover{background:#1a0a2e}
+.btn.defend-btn{border-color:#14b8a6;color:#14b8a6}
+.btn.defend-btn:hover{background:#0a1e1e}
 </style>
 </head>
 <body>
@@ -271,7 +397,9 @@ select{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:4px 8px
 <div class="controls">
   <button class="btn run" id="btn-run" onclick="startRun()">▶ Run Botnet</button>
   <button class="btn stop" id="btn-stop" onclick="stopRun()" disabled>■ Stop</button>
-  <button class="btn" onclick="resetView()">↺ Reset View</button>
+  <button class="btn" onclick="resetView()">&#8635; Reset View</button>
+  <button class="btn report-btn" onclick="openReport()">&#128203; Report</button>
+  <button class="btn defend-btn" onclick="openDefend()">&#128737; Defenses</button>
   <span class="speed-label">Delay:</span>
   <select id="delay-sel">
     <option value="0.2">Fast (0.2s)</option>
@@ -320,6 +448,36 @@ select{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:4px 8px
     <div class="report-panel">
       <div class="report-title">Host Report</div>
       <div id="host-report"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Report Modal ─────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-report" onclick="if(event.target===this)closeModal('modal-report')">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2>&#128203; ATTACK REPORT</h2>
+      <button class="modal-close" onclick="closeModal('modal-report')">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="report-body">
+      <div style="color:#6272a4;font-size:12px;text-align:center;padding:40px 0">Loading&#8230;</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Defenses Modal ────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-defend" onclick="if(event.target===this)closeModal('modal-defend')">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2>&#128737; DEFENSIVE COUNTERMEASURES</h2>
+      <button class="modal-close" onclick="closeModal('modal-defend')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>Apply per-container defenses</h3>
+        <p style="font-size:10px;color:#6272a4;margin:0 0 14px">Select a defense then click a victim container to apply it live. Effects immediately influence whether the botnet can compromise that host.</p>
+      </div>
+      <div class="def-grid" id="def-grid"></div>
     </div>
   </div>
 </div>
@@ -618,6 +776,165 @@ function stopRun() {
 function resetView() {
   fetch('/reset').then(() => location.reload());
 }
+
+/* ── Modal helpers ────────────────────────────────────────────── */
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+/* ── Report Modal ─────────────────────────────────────────────── */
+function openReport() {
+  document.getElementById('modal-report').classList.add('open');
+  document.getElementById('report-body').innerHTML =
+    '<div style="color:#6272a4;font-size:12px;text-align:center;padding:40px 0">Loading…</div>';
+  fetch('/report')
+    .then(r => r.json())
+    .then(data => renderReport(data))
+    .catch(() => {
+      document.getElementById('report-body').innerHTML =
+        '<div style="color:#ff5555;font-size:11px">Failed to load report.</div>';
+    });
+}
+
+function renderReport(d) {
+  const s = d.stats || {};
+  const hosts = d.hosts || [];
+  const alerts = d.alerts || [];
+
+  let html = `<div class="modal-section">
+    <h3>Summary</h3>
+    <div class="report-stat-grid">
+      <div class="r-stat"><div class="val" style="color:#f97316">${s.found||0}</div><div class="lbl">Hosts Found</div></div>
+      <div class="r-stat"><div class="val" style="color:#ffb86c">${s.compromised||0}</div><div class="lbl">Compromised</div></div>
+      <div class="r-stat"><div class="val" style="color:#3b82f6">${s.nets||0}</div><div class="lbl">Networks</div></div>
+    </div>
+  </div>`;
+
+  // Host table
+  html += `<div class="modal-section"><h3>Host Details</h3>
+  <table class="host-tbl"><tr><th>IP</th><th>Network</th><th>Status</th><th>Credentials</th><th>Via</th></tr>`;
+  for (const h of hosts) {
+    const cls = h.state==='compromised'?'comp':h.state==='open'?'open':'fail';
+    const cred = h.user ? `${h.user} / ${h.pwd}` : '—';
+    const via = h.via && h.via !== 'direct' ? h.via : 'direct';
+    html += `<tr class="${cls}"><td>${h.ip}</td><td>${h.net||'?'}</td><td>${h.state}</td><td style="font-family:monospace">${cred}</td><td>${via}</td></tr>`;
+  }
+  html += `</table></div>`;
+
+  // Infection chains
+  const comped = hosts.filter(h => h.state === 'compromised');
+  if (comped.length) {
+    html += `<div class="modal-section"><h3>Infection Chain</h3>`;
+    for (const chain of buildChains(comped)) {
+      html += `<div class="chain-row">` +
+        chain.map(n => `<span class="chain-node">${n}</span>`).join(`<span class="chain-arrow">→</span>`) +
+        `</div>`;
+    }
+    html += `</div>`;
+  }
+
+  // IDS alerts
+  if (alerts.length) {
+    html += `<div class="modal-section"><h3>Simulated IDS Alerts</h3>`;
+    for (const a of alerts)
+      html += `<div class="alert-item">⚠ ${a}</div>`;
+    html += `</div>`;
+  } else {
+    html += `<div class="modal-section"><h3>Simulated IDS Alerts</h3>
+      <div style="font-size:10px;color:#44475a">No alerts triggered yet — run the botnet first.</div></div>`;
+  }
+
+  document.getElementById('report-body').innerHTML = html;
+}
+
+function buildChains(hosts) {
+  const viaMap = {};
+  for (const h of hosts) viaMap[h.ip] = (h.via && h.via !== 'direct') ? h.via : null;
+  const seenKeys = new Set();
+  const chains = [];
+  for (const h of hosts) {
+    const path = [];
+    let cur = h.ip;
+    const seen = new Set();
+    while (cur && !seen.has(cur)) {
+      seen.add(cur);
+      path.unshift(cur);
+      cur = viaMap[cur] || null;
+    }
+    const chain = ['ATTACKER'].concat(path);
+    const key = chain.join('>');
+    if (!seenKeys.has(key)) { seenKeys.add(key); chains.push(chain); }
+  }
+  return chains;
+}
+
+/* ── Defenses Modal ───────────────────────────────────────────── */
+const DEFENSE_DEFS = [
+  { id:'fail2ban',         name:'fail2ban',            color:'#50fa7b',
+    desc:'Installs fail2ban and configures SSH jail: ban after 5 failed attempts within 60 s for 5 min.' },
+  { id:'block_ip',         name:'Block Attacker IP',   color:'#ff5555',
+    desc:'iptables DROP rule for all packets from 172.21.0.10 (attacker). Botnet connections immediately refused.' },
+  { id:'rate_limit',       name:'SSH Rate Limit',      color:'#f97316',
+    desc:'iptables conntrack: drops connections exceeding 10 new SSH conns per 60 s from a single source.' },
+  { id:'disable_password', name:'Disable Password Auth', color:'#bd93f9',
+    desc:'Sets PasswordAuthentication no in sshd_config and reloads sshd. Forces key-only authentication.' },
+];
+const VICTIMS = ['victim1','victim2','victim3','victim4','victim5'];
+const defenseApplied = {};  // target -> Set<action id>
+
+function openDefend() {
+  document.getElementById('modal-defend').classList.add('open');
+  renderDefenseGrid();
+}
+
+function renderDefenseGrid() {
+  const grid = document.getElementById('def-grid');
+  grid.innerHTML = DEFENSE_DEFS.map(def => {
+    const btns = VICTIMS.map(v => {
+      const applied = (defenseApplied[v] || new Set()).has(def.id);
+      return `<button class="def-target ${applied?'applied':''}" id="def-${def.id}-${v}"
+        style="${applied?'border-color:'+def.color+';color:'+def.color:''}"
+        onclick="applyDefense('${def.id}','${v}')">${v}</button>`;
+    }).join('');
+    return `<div class="def-card">
+      <h4 style="color:${def.color}">${def.name}</h4>
+      <p>${def.desc}</p>
+      <div class="def-targets">${btns}</div>
+      <div class="def-status" id="def-status-${def.id}"></div>
+    </div>`;
+  }).join('');
+}
+
+function applyDefense(action, target) {
+  const btn = document.getElementById(`def-${action}-${target}`);
+  const statusEl = document.getElementById(`def-status-${action}`);
+  if (btn) { btn.disabled = true; btn.textContent = target + '…'; }
+  if (statusEl) statusEl.textContent = `Applying ${action} to ${target}…`;
+  fetch(`/defend?action=${encodeURIComponent(action)}&target=${encodeURIComponent(target)}`)
+    .then(r => r.json())
+    .then(data => {
+      if (!defenseApplied[target]) defenseApplied[target] = new Set();
+      const def = DEFENSE_DEFS.find(d => d.id === action) || {};
+      if (data.ok) {
+        defenseApplied[target].add(action);
+        if (btn) {
+          btn.classList.add('applied');
+          btn.style.borderColor = def.color || '#50fa7b';
+          btn.style.color = def.color || '#50fa7b';
+          btn.disabled = false;
+          btn.textContent = target;
+        }
+        if (statusEl) statusEl.textContent = `✓ ${target}: ${data.msg}`;
+      } else {
+        if (btn) { btn.disabled = false; btn.textContent = target; }
+        if (statusEl) statusEl.textContent = `✗ ${target}: ${data.msg}`;
+      }
+    })
+    .catch(err => {
+      if (btn) { btn.disabled = false; btn.textContent = target; }
+      if (statusEl) statusEl.textContent = `Error: ${err}`;
+    });
+}
 </script>
 </body>
 </html>"""
@@ -677,6 +994,25 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 'running': state['running'],
                 'done':    state['done'],
             }).encode()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        elif path == '/report':
+            body = json.dumps(generate_report()).encode()
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.send_header('Content-Length', str(len(body)))
+            self.end_headers()
+            self.wfile.write(body)
+
+        elif path == '/defend':
+            action = params.get('action', [''])[0]
+            target = params.get('target', [''])[0]
+            ok, msg = apply_defense(action, target)
+            body = json.dumps({'ok': ok, 'msg': msg}).encode()
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')
             self.send_header('Content-Length', str(len(body)))
