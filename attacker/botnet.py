@@ -43,6 +43,9 @@ from collections import defaultdict
 
 try:
     import paramiko
+    import logging as _logging
+    _logging.getLogger("paramiko").setLevel(_logging.CRITICAL)
+    _logging.getLogger("paramiko.transport").setLevel(_logging.CRITICAL)
     HAS_PARAMIKO = True
 except ImportError:
     HAS_PARAMIKO = False
@@ -57,6 +60,7 @@ PASSWORDS = [
     "internal123", "service1", "rootpass", "deepnet123", "operator1",
     "deploy123", "toor", "rootdeep",
 ]
+
 
 # ── Safety: only attack private RFC-1918 ranges ───────────────────────────────
 ALLOWED_PREFIXES = ["10.", "172.16.", "172.17.", "172.18.", "172.19.", "172.20.",

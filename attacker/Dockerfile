@@ -7,6 +7,7 @@ RUN apt-get update && apt-get install -y \
   && rm -rf /var/lib/apt/lists/*
 RUN useradd -m -s /bin/bash labuser
 COPY simulator.py /lab/simulator.py
+COPY botnet.py /lab/botnet.py
 COPY entrypoint.sh /lab/entrypoint.sh
 RUN chmod +x /lab/entrypoint.sh
 WORKDIR /lab
