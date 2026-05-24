@@ -259,7 +259,7 @@ def scan_network_via_chain(prefix: str, via: str) -> list:
             cleanup.append(t_last)
             session = t_last.open_session()
             session.exec_command(scan_cmd)
-            output = session.makefile().read()
+            output = session.makefile('r').read()
             session.close()
 
         live = [l.strip() for l in output.splitlines()
@@ -314,7 +314,7 @@ def get_networks_from_host_via_chain(ip: str, user: str, password: str, via: str
 
         session = t_tgt.open_session()
         session.exec_command("ip route 2>/dev/null || route -n 2>/dev/null")
-        output = session.makefile().read()
+        output = session.makefile('r').read()
         session.close()
 
         for line in output.splitlines():
