@@ -258,8 +258,15 @@ def scan_network_via_chain(prefix: str, via: str) -> list:
             t_last.connect(username=last_user, password=last_pwd)
             cleanup.append(t_last)
             session = t_last.open_session()
+            session.set_combine_stderr(True)
             session.exec_command(scan_cmd)
-            output = session.makefile('r').read()
+            chunks = []
+            while True:
+                chunk = session.recv(4096)
+                if not chunk:
+                    break
+                chunks.append(chunk)
+            output = b"".join(chunks).decode(errors='replace')
             session.close()
 
         live = [l.strip() for l in output.splitlines()
@@ -313,8 +320,15 @@ def get_networks_from_host_via_chain(ip: str, user: str, password: str, via: str
         cleanup.append(t_tgt)
 
         session = t_tgt.open_session()
+        session.set_combine_stderr(True)
         session.exec_command("ip route 2>/dev/null || route -n 2>/dev/null")
-        output = session.makefile('r').read()
+        chunks = []
+        while True:
+            chunk = session.recv(4096)
+            if not chunk:
+                break
+            chunks.append(chunk)
+        output = b"".join(chunks).decode(errors='replace')
         session.close()
 
         for line in output.splitlines():
