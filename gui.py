@@ -176,14 +176,12 @@ def sse_stream(wfile):
             msg = ('data: ' + json.dumps(ev) + '\n\n').encode()
             wfile.write(msg)
         wfile.flush()
-        # Stream live events
+        # Stream live events — never close; keepalive pings prevent reconnect loops
         while True:
             try:
-                msg = q.get(timeout=20)
+                msg = q.get(timeout=15)
                 wfile.write(msg)
                 wfile.flush()
-                if state['done'] and q.empty():
-                    break
             except queue.Empty:
                 wfile.write(b': keepalive\n\n')
                 wfile.flush()
@@ -606,7 +604,7 @@ let evtSource;
 function connect() {
   evtSource = new EventSource('/stream');
   evtSource.onmessage = e => { try { handleEvent(JSON.parse(e.data)); } catch(_){} };
-  evtSource.onerror = () => { setTimeout(connect, 3000); };
+  evtSource.onerror = () => { evtSource.close(); setTimeout(connect, 3000); };
 }
 connect();
 

