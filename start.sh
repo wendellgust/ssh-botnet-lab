@@ -68,7 +68,7 @@ for n in $($EXE network ls --format '{{.Name}}' 2>/dev/null | grep -E "attack|in
 done
 
 echo "Building and starting Scenario $SCENARIO..."
-$COMPOSE -f "$FILE" up -d --build
+$COMPOSE --project-directory . -f "$FILE" up -d --build
 
 echo "Waiting for containers..."
 sleep 8
