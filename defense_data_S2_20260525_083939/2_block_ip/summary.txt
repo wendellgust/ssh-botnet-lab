@@ -1,0 +1,20 @@
+Test:     2_block_ip
+Defenses: block_ip
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       44        6       
+victim2       5         2       
+victim3       140       2       
+honeypot      80        0       
+
+Found: 5  Compromised: 3  Networks: 2
+
+  ✓ 172.21.0.20      compromised   admin:admin           via direct
+  ✓ 172.21.0.21      compromised   deploy:deploy123      via direct
+  ✓ 10.10.0.10       compromised   root:rootpass         via 172.21.0.20
+  ✗ 10.10.0.50       attacking     —                     via direct
+  ✗ 10.10.0.20       attacking     —                     via direct
+
+  ⚠ PIVOT_DETECTED: lateral movement through 172.21.0.20

@@ -1,0 +1,16 @@
+Test:     5_fail2ban+rate_limit
+Defenses: fail2ban,rate_limit
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       44        6       
+victim2       75        4       
+victim3       140       2       
+honeypot      80        0       
+
+Found: 2  Compromised: 1  Networks: 1
+
+  ✗ 172.21.0.20      failed        —                     via direct
+  ✓ 172.21.0.21      compromised   admin:admin           via direct
+

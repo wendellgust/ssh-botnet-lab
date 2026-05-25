@@ -1,0 +1,7 @@
+0_baseline                      0           0           0           NO      
+1_fail2ban                      44          6           3           YES     
+2_block_ip                      44          6           3           YES     
+3_rate_limit                    44          6           0           NO      
+4_disable_password              44          6           0           NO      
+5_fail2ban+rate_limit           44          6           1           NO      
+6_all_defenses                  44          6           0           NO      
