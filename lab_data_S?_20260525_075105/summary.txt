@@ -7,9 +7,7 @@ victim2       128       9
 victim3       113       11      
 victim4       12        2       
 victim5       15        2       
-honeypot      0
-0       0
-0     
+honeypot      0         0       
 
 Top source IPs (by failed attempts across all victims):
     255 172.21.0.10
