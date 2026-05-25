@@ -1,0 +1,44 @@
+{
+    "stats": {
+        "found": 4,
+        "compromised": 2,
+        "nets": 2
+    },
+    "hosts": [
+        {
+            "ip": "172.21.0.20",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "toor",
+            "via": "direct",
+            "net": ""
+        },
+        {
+            "ip": "172.21.0.21",
+            "state": "compromised",
+            "user": "admin",
+            "pwd": "admin",
+            "via": "direct",
+            "net": ""
+        },
+        {
+            "ip": "10.10.0.20",
+            "state": "attacking",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": ""
+        },
+        {
+            "ip": "10.10.0.10",
+            "state": "attacking",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": ""
+        }
+    ],
+    "alerts": [],
+    "running": false,
+    "done": true
+}
