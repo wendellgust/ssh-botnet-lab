@@ -428,7 +428,7 @@ table.host-tbl tr.fail td{color:#44475a}
 <div class="main">
   <div class="svg-panel">
     <div class="svg-wrap">
-      <svg id="diagram" viewBox="0 0 820 460" xmlns="http://www.w3.org/2000/svg">
+      <svg id="diagram" viewBox="0 0 820 580" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <filter id="glow-r"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
           <filter id="glow-o"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
@@ -502,10 +502,10 @@ table.host-tbl tr.fail td{color:#44475a}
 <script>
 /* ── Zone layout ──────────────────────────────────────────────────── */
 const ZONE_DEFS = {
-  '172.21.': {x:10,  y:20, w:210, h:420, color:'#ef4444', label:'ATTACK_NET · 172.21.0.0/24',  zone:0},
-  '10.10.':  {x:250, y:20, w:210, h:205, color:'#3b82f6', label:'INTERNAL_NET · 10.10.0.0/24', zone:1},
-  '10.20.':  {x:250, y:235,w:210, h:205, color:'#a855f7', label:'EXTRA_NET · 10.20.0.0/24',    zone:2},
-  '10.30.':  {x:490, y:20, w:210, h:420, color:'#14b8a6', label:'DEEP_NET · 10.30.0.0/24',     zone:3},
+  '172.21.': {x:10,  y:20, w:210, h:540, color:'#ef4444', label:'ATTACK_NET · 172.21.0.0/24',  zone:0},
+  '10.10.':  {x:250, y:20, w:210, h:260, color:'#3b82f6', label:'INTERNAL_NET · 10.10.0.0/24', zone:1},
+  '10.20.':  {x:250, y:290,w:210, h:270, color:'#a855f7', label:'EXTRA_NET · 10.20.0.0/24',    zone:2},
+  '10.30.':  {x:490, y:20, w:210, h:540, color:'#14b8a6', label:'DEEP_NET · 10.30.0.0/24',     zone:3},
 };
 
 /* zone -> slot index for node positioning */
@@ -522,8 +522,8 @@ const zonesG  = document.getElementById('zones');
 const pktsG   = document.getElementById('packets');
 
 /* attacker fixed at bottom of attack_net zone */
-nodesData['172.21.0.10'] = {cx:110, cy:380, prefix:'172.21.'};
-nodesData['direct']       = {cx:110, cy:380, prefix:'172.21.'};
+nodesData['172.21.0.10'] = {cx:110, cy:490, prefix:'172.21.'};
+nodesData['direct']       = {cx:110, cy:490, prefix:'172.21.'};
 
 function getPrefix(ip) {
   for (const p of Object.keys(ZONE_DEFS)) {
@@ -562,11 +562,11 @@ function allocPos(prefix) {
   const idx = zoneSlots[prefix] !== undefined ? zoneSlots[prefix] : 0;
   zoneSlots[prefix] = idx + 1;
   const cx = d.x + d.w/2;
-  const cy = d.y + 55 + idx * 115;
+  const cy = d.y + 55 + idx * 100;
   /* expand zone rect if this node would overflow the bottom */
-  const needed = (cy - d.y) + 60;
+  const needed = (cy - d.y) + 70;
   if (needed > d.h) {
-    d.h = needed + 10;
+    d.h = needed + 20;
     if (zoneRects[prefix]) zoneRects[prefix].setAttribute('height', d.h);
   }
   return {cx, cy};
