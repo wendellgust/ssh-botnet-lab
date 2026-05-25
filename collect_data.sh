@@ -84,11 +84,15 @@ echo "  [6/6] Summary stats..."
   echo ""
   echo "Top source IPs (by failed attempts across all victims):"
   cat "$OUT"/victim*_auth.log "$OUT"/honeypot_auth.log 2>/dev/null \
-    | grep "Failed password" | awk '{print $11}' | sort | uniq -c | sort -rn | head -5
+    | grep "Failed password" \
+    | awk '{for(i=1;i<=NF;i++) if($i=="from"){print $(i+1); break}}' \
+    | sort | uniq -c | sort -rn | head -5
   echo ""
   echo "Usernames most tried:"
   cat "$OUT"/victim*_auth.log "$OUT"/honeypot_auth.log 2>/dev/null \
-    | grep "Failed password" | awk '{print $9}' | sort | uniq -c | sort -rn | head -10
+    | grep "Failed password" \
+    | awk '{for(i=1;i<=NF;i++) if($i=="for"){u=$(i+1); if(u=="invalid") u=$(i+2); print u; break}}' \
+    | sort | uniq -c | sort -rn | head -10
 } > "$OUT/summary.txt"
 echo "       summary.txt"
 

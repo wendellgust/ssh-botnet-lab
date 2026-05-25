@@ -136,7 +136,7 @@ def scan_network(prefix: str) -> list[str]:
     scanned_nets.add(prefix)
     log(f"Scanning {prefix}0/24 for SSH targets...", "info")
     live = []
-    for i in range(1, 50):
+    for i in range(1, 255):
         ip = f"{prefix}{i}"
         if not is_safe_target(ip):
             continue
@@ -218,7 +218,7 @@ def scan_network_via_chain(prefix: str, via: str) -> list:
         return []
 
     # Shell command that runs on the pivot and reports open port-22 hosts
-    ips = " ".join(f"{prefix}{i}" for i in range(1, 50))
+    ips = " ".join(f"{prefix}{i}" for i in range(1, 255))
     scan_cmd = (
         f'for h in {ips}; do '
         f'(timeout 1 bash -c "exec 3<>/dev/tcp/$h/22" 2>/dev/null && echo $h) & '

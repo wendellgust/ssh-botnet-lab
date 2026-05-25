@@ -55,7 +55,8 @@ def parse_line(line):
     if m:
         ip = m.group(1)
         if ip not in state['hosts']:
-            state['hosts'][ip] = {'state': 'open', 'via': None}
+            prefix = '.'.join(ip.split('.')[:2]) + '.'
+            state['hosts'][ip] = {'state': 'open', 'via': None, 'prefix': prefix}
             state['stats']['found'] += 1
             broadcast('host_open', {'ip': ip})
         return
