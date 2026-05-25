@@ -207,11 +207,17 @@ def apply_defense(action: str, target: str):
     cmds = {
         'fail2ban': [
             'bash', '-c',
+            # Containers use `sshd -e` — logs have no syslog date/host prefix.
+            # Default fail2ban sshd filter expects the prefix; write a custom one.
             'apt-get install -y fail2ban -q 2>/dev/null; '
-            'mkdir -p /etc/fail2ban && '
-            'printf "[sshd]\\nenabled=true\\nmaxretry=5\\nfindtime=60\\nbantime=300\\n"'
-            ' > /etc/fail2ban/jail.local && '
-            'service fail2ban start 2>/dev/null || fail2ban-client start 2>/dev/null; echo done'
+            'mkdir -p /etc/fail2ban/filter.d && '
+            'printf "[Definition]\\nfailregex = Failed password for .* from <HOST>\\n" '
+            '  > /etc/fail2ban/filter.d/sshd-noprefix.conf && '
+            'printf "[sshd]\\nenabled=true\\nfilter=sshd-noprefix\\n'
+            'logpath=/var/log/auth.log\\nmaxretry=5\\nfindtime=60\\nbantime=300\\n" '
+            '  > /etc/fail2ban/jail.local && '
+            'service fail2ban start 2>/dev/null || fail2ban-client start 2>/dev/null; '
+            'sleep 1; fail2ban-client status sshd 2>/dev/null; echo done'
         ],
         'block_ip': [
             'bash', '-c',
