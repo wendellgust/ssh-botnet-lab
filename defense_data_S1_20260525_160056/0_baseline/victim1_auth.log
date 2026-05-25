@@ -1,0 +1,25 @@
+Connection from 172.21.0.10 port 45110 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 45110
+Connection from 172.21.0.10 port 32988 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 32988
+Connection from 172.21.0.10 port 32996 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 32996
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 32996 ssh2
+Connection from 172.21.0.10 port 33008 on 172.21.0.20 port 22 rdomain ""
+Accepted password for deploy from 172.21.0.10 port 33008 ssh2
+User child is on pid 20
+Connection closed by 172.21.0.10 port 33008
+Transferred: sent 2296, received 1104 bytes
+Closing connection to 172.21.0.10 port 33008
+Connection from 172.21.0.10 port 33016 on 172.21.0.20 port 22 rdomain ""
+Accepted password for deploy from 172.21.0.10 port 33016 ssh2
+User child is on pid 22
+Starting session: command for deploy from 172.21.0.10 port 33016 id 0
+Connection closed by 172.21.0.10 port 33016
+Close session: user deploy from 172.21.0.10 port 33016 id 0
+Transferred: sent 2488, received 1248 bytes
+Closing connection to 172.21.0.10 port 33016
+Connection closed by invalid user operator 172.21.0.10 port 32996 [preauth]

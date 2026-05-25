@@ -1,0 +1,13 @@
+Test:     4_disable_password
+Defenses: disable_password
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim2       50        0       
+victim3       28        2       
+
+Found: 2  Compromised: 1  Networks: 1
+
+  ✗ 172.21.0.21      failed        —                     via direct
+  ✓ 172.21.0.22      compromised   admin:admin           via direct

@@ -1,0 +1,33 @@
+Connection from 172.21.0.10 port 40228 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 40228
+Connection from 172.21.0.10 port 52846 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 52846
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 52846 ssh2
+Connection from 172.21.0.10 port 52850 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 52850
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 52850 ssh2
+Connection from 172.21.0.10 port 52852 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 52852 ssh2
+Connection from 172.21.0.10 port 52864 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 52864
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 52864 ssh2
+Connection from 172.21.0.10 port 52870 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 52870 ssh2
+Connection from 172.21.0.10 port 52878 on 172.21.0.20 port 22 rdomain ""
+Failed password for labuser from 172.21.0.10 port 52878 ssh2
+Connection from 172.21.0.10 port 47958 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 47958
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 47958 ssh2
+Connection from 172.21.0.10 port 47972 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 47972
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 47972 ssh2
+Connection from 172.21.0.10 port 47984 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 47984
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 47984 ssh2

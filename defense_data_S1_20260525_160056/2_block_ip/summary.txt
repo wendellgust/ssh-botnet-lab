@@ -1,0 +1,14 @@
+Test:     2_block_ip
+Defenses: block_ip
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       0         0       
+victim2       28        2       
+victim3       50        0       
+
+Found: 2  Compromised: 1  Networks: 1
+
+  ✓ 172.21.0.21      compromised   deploy:deploy123      via direct
+  ✗ 172.21.0.22      failed        —                     via direct

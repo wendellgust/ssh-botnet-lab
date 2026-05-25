@@ -1,0 +1,36 @@
+{
+    "stats": {
+        "found": 3,
+        "compromised": 1,
+        "nets": 1
+    },
+    "hosts": [
+        {
+            "ip": "172.21.0.20",
+            "state": "failed",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "172.21."
+        },
+        {
+            "ip": "172.21.0.21",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "toor",
+            "via": "direct",
+            "net": "172.21."
+        },
+        {
+            "ip": "172.21.0.22",
+            "state": "attacking",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "172.21."
+        }
+    ],
+    "alerts": [],
+    "running": false,
+    "done": true
+}
