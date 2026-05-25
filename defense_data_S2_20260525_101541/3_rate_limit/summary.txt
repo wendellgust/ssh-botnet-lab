@@ -1,0 +1,14 @@
+Test:     3_rate_limit
+Defenses: rate_limit
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       15        0       
+victim2       50        0       
+victim3       0         0       
+honeypot      0         0       
+
+Found: 1  Compromised: 0  Networks: 1
+
+  ✗ 172.21.0.21      open          —                     via direct

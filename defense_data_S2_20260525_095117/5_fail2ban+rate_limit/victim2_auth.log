@@ -1,0 +1,10 @@
+Connection from 172.21.0.10 port 59360 on 172.21.0.21 port 22 rdomain ""
+Accepted password for root from 172.21.0.10 port 59360 ssh2
+Connection from 172.21.0.10 port 59368 on 172.21.0.21 port 22 rdomain ""
+Accepted password for root from 172.21.0.10 port 59368 ssh2
+Read error from remote host 172.21.0.10 port 59360: Connection reset by peer
+Starting session: command for root from 172.21.0.10 port 59368 id 0
+Read error from remote host 172.21.0.10 port 59368: Connection reset by peer
+Connection from 172.21.0.10 port 38010 on 172.21.0.21 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 38010

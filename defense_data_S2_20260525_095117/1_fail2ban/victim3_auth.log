@@ -1,0 +1,206 @@
+Connection from 10.10.0.20 port 50800 on 10.10.0.10 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.10.0.20 port 50800
+Connection from 10.10.0.20 port 45104 on 10.10.0.10 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 45104
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 45104 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 45104 [preauth]
+Connection from 10.10.0.20 port 45106 on 10.10.0.10 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 45106
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 45106 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 45106 [preauth]
+Connection from 10.10.0.20 port 45108 on 10.10.0.10 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 45108
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 45108 ssh2
+Connection closed by invalid user test 10.10.0.20 port 45108 [preauth]
+Connection from 10.10.0.20 port 45122 on 10.10.0.10 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 45122
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 45122 ssh2
+Connection closed by invalid user test 10.10.0.20 port 45122 [preauth]
+Connection from 10.10.0.20 port 45130 on 10.10.0.10 port 22 rdomain ""
+Invalid user deploy from 10.10.0.20 port 45130
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.10.0.20 port 45130 ssh2
+Connection closed by invalid user deploy 10.10.0.20 port 45130 [preauth]
+Connection from 10.10.0.20 port 45144 on 10.10.0.10 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 45144
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 45144 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 45144 [preauth]
+Connection from 10.10.0.20 port 45146 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 45146
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 45146 ssh2
+Connection closed by invalid user user 10.10.0.20 port 45146 [preauth]
+Connection from 10.10.0.20 port 45158 on 10.10.0.10 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 45158
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 45158 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 45158 [preauth]
+Connection from 10.10.0.20 port 45162 on 10.10.0.10 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 45162 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 45162 [preauth]
+Connection from 10.10.0.20 port 45164 on 10.10.0.10 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 45164
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 45164 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 45164 [preauth]
+Connection from 10.10.0.20 port 45172 on 10.10.0.10 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 45172
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 45172 ssh2
+Connection closed by invalid user test 10.10.0.20 port 45172 [preauth]
+Connection from 10.10.0.20 port 45174 on 10.10.0.10 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 45174
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 45174 ssh2
+Connection closed by invalid user test 10.10.0.20 port 45174 [preauth]
+Connection from 10.10.0.20 port 45180 on 10.10.0.10 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 45180
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 45180 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 45180 [preauth]
+Connection from 10.10.0.20 port 45196 on 10.10.0.10 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 45196 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 45196 [preauth]
+Connection from 10.10.0.20 port 50654 on 10.10.0.10 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 50654
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 50654 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 50654 [preauth]
+Connection from 10.10.0.20 port 50658 on 10.10.0.10 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 50658
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 50658 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 50658 [preauth]
+Connection from 10.10.0.20 port 50670 on 10.10.0.10 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 50670
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 50670 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 50670 [preauth]
+Connection from 10.10.0.20 port 50684 on 10.10.0.10 port 22 rdomain ""
+Failed password for root from 10.10.0.20 port 50684 ssh2
+Connection closed by authenticating user root 10.10.0.20 port 50684 [preauth]
+Connection from 10.10.0.20 port 50686 on 10.10.0.10 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 50686
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 50686 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 50686 [preauth]
+Connection from 10.10.0.20 port 50700 on 10.10.0.10 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 50700
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 50700 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 50700 [preauth]
+Connection from 10.10.0.20 port 50712 on 10.10.0.10 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 50712
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 50712 ssh2
+Connection closed by invalid user test 10.10.0.20 port 50712 [preauth]
+Connection from 10.10.0.20 port 50728 on 10.10.0.10 port 22 rdomain ""
+Invalid user deploy from 10.10.0.20 port 50728
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.10.0.20 port 50728 ssh2
+Connection closed by invalid user deploy 10.10.0.20 port 50728 [preauth]
+Connection from 10.10.0.20 port 50730 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 50730
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 50730 ssh2
+Connection closed by invalid user user 10.10.0.20 port 50730 [preauth]
+Connection from 10.10.0.20 port 50738 on 10.10.0.10 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 50738
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 50738 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 50738 [preauth]
+Connection from 10.10.0.20 port 50750 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 50750
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 50750 ssh2
+Connection closed by invalid user user 10.10.0.20 port 50750 [preauth]
+Connection from 10.10.0.20 port 50766 on 10.10.0.10 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 50766 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 50766 [preauth]
+Connection from 10.10.0.20 port 50768 on 10.10.0.10 port 22 rdomain ""
+Invalid user pi from 10.10.0.20 port 50768
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.10.0.20 port 50768 ssh2
+Connection closed by invalid user pi 10.10.0.20 port 50768 [preauth]
+Connection from 10.10.0.20 port 50780 on 10.10.0.10 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 50780 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 50780 [preauth]
+Connection from 10.10.0.20 port 50786 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 50786
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 50786 ssh2
+Connection closed by invalid user user 10.10.0.20 port 50786 [preauth]
+Connection from 10.10.0.20 port 41844 on 10.10.0.10 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 41844 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 41844 [preauth]
+Connection from 10.10.0.20 port 41852 on 10.10.0.10 port 22 rdomain ""
+Invalid user pi from 10.10.0.20 port 41852
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.10.0.20 port 41852 ssh2
+Connection closed by invalid user pi 10.10.0.20 port 41852 [preauth]
+Connection from 10.10.0.20 port 41864 on 10.10.0.10 port 22 rdomain ""
+Failed password for root from 10.10.0.20 port 41864 ssh2
+Connection closed by authenticating user root 10.10.0.20 port 41864 [preauth]
+Connection from 10.10.0.20 port 41870 on 10.10.0.10 port 22 rdomain ""
+Invalid user deploy from 10.10.0.20 port 41870
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.10.0.20 port 41870 ssh2
+Connection closed by invalid user deploy 10.10.0.20 port 41870 [preauth]
+Connection from 10.10.0.20 port 41880 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 41880
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 41880 ssh2
+Connection closed by invalid user user 10.10.0.20 port 41880 [preauth]
+Connection from 10.10.0.20 port 41890 on 10.10.0.10 port 22 rdomain ""
+Invalid user deploy from 10.10.0.20 port 41890
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.10.0.20 port 41890 ssh2
+Connection closed by invalid user deploy 10.10.0.20 port 41890 [preauth]
+Connection from 10.10.0.20 port 41902 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 41902
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 41902 ssh2
+Connection closed by invalid user user 10.10.0.20 port 41902 [preauth]
+Connection from 10.10.0.20 port 41914 on 10.10.0.10 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 41914 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 41914 [preauth]
+Connection from 10.10.0.20 port 41920 on 10.10.0.10 port 22 rdomain ""
+Invalid user pi from 10.10.0.20 port 41920
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.10.0.20 port 41920 ssh2
+Connection closed by invalid user pi 10.10.0.20 port 41920 [preauth]
+Connection from 10.10.0.20 port 41928 on 10.10.0.10 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 41928
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 41928 ssh2
+Connection closed by invalid user test 10.10.0.20 port 41928 [preauth]
+Connection from 10.10.0.20 port 41938 on 10.10.0.10 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 41938
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 41938 ssh2
+Connection closed by invalid user user 10.10.0.20 port 41938 [preauth]
+Connection from 10.10.0.20 port 41940 on 10.10.0.10 port 22 rdomain ""
+Invalid user deploy from 10.10.0.20 port 41940
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.10.0.20 port 41940 ssh2
+Connection closed by invalid user deploy 10.10.0.20 port 41940 [preauth]
+Connection from 10.10.0.20 port 41946 on 10.10.0.10 port 22 rdomain ""
+Accepted password for labuser from 10.10.0.20 port 41946 ssh2
+User child is on pid 97
+Connection closed by 10.10.0.20 port 41946
+Transferred: sent 2296, received 1120 bytes
+Closing connection to 10.10.0.20 port 41946
+Connection from 10.10.0.20 port 41958 on 10.10.0.10 port 22 rdomain ""
+Accepted password for labuser from 10.10.0.20 port 41958 ssh2
+User child is on pid 100
+Starting session: command for labuser from 10.10.0.20 port 41958 id 0
+Connection closed by 10.10.0.20 port 41958
+Close session: user labuser from 10.10.0.20 port 41958 id 0
+Transferred: sent 2536, received 1264 bytes
+Closing connection to 10.10.0.20 port 41958
