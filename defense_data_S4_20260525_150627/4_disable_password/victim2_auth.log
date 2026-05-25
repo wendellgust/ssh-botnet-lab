@@ -1,0 +1,24 @@
+Connection from 172.21.0.10 port 38712 on 172.21.0.21 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 38712
+Connection from 172.21.0.10 port 47438 on 172.21.0.21 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 47438 ssh2
+Connection from 172.21.0.10 port 47450 on 172.21.0.21 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 47450 ssh2
+Connection from 172.21.0.10 port 47466 on 172.21.0.21 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 47466 ssh2
+Connection from 172.21.0.10 port 47472 on 172.21.0.21 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 47472 ssh2
+Connection from 172.21.0.10 port 47488 on 172.21.0.21 port 22 rdomain ""
+Accepted password for deploy from 172.21.0.10 port 47488 ssh2
+User child is on pid 23
+Connection from 172.21.0.10 port 47502 on 172.21.0.21 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 47488: Connection reset by peer
+Accepted password for deploy from 172.21.0.10 port 47502 ssh2
+User child is on pid 25
+Starting session: command for deploy from 172.21.0.10 port 47502 id 0
+Read error from remote host 172.21.0.10 port 47502: Connection reset by peer
+Connection closed by authenticating user root 172.21.0.10 port 47466 [preauth]
+Connection closed by authenticating user root 172.21.0.10 port 47438 [preauth]
+Connection closed by authenticating user deploy 172.21.0.10 port 47472 [preauth]
+Connection closed by authenticating user root 172.21.0.10 port 47450 [preauth]

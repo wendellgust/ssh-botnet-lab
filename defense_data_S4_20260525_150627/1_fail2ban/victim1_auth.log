@@ -1,0 +1,27 @@
+Connection from 172.21.0.10 port 57982 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 57982
+Connection from 172.21.0.10 port 50714 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 50714
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 50714 ssh2
+Connection from 172.21.0.10 port 50716 on 172.21.0.20 port 22 rdomain ""
+Invalid user user from 172.21.0.10 port 50716
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 172.21.0.10 port 50716 ssh2
+Connection from 172.21.0.10 port 50720 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 50720 ssh2
+Connection from 172.21.0.10 port 42404 on 172.21.0.20 port 22 rdomain ""
+Connection from 172.21.0.10 port 42198 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 42198 ssh2
+Connection from 172.21.0.10 port 55156 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 55156
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 55156 ssh2
+Connection from 172.21.0.10 port 42182 on 172.21.0.20 port 22 rdomain ""
+Connection from 172.21.0.10 port 55160 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 172.21.0.10 port 42182
+Invalid user ubuntu from 172.21.0.10 port 55160
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 55160 ssh2

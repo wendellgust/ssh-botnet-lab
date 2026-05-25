@@ -1,0 +1,44 @@
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.30.0.20 port 38582
+Invalid user ubuntu from 10.30.0.20 port 34836
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.30.0.20 port 34836 ssh2
+Connection closed by invalid user ubuntu 10.30.0.20 port 34836 [preauth]
+Invalid user pi from 10.30.0.20 port 34838
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.30.0.20 port 34838 ssh2
+Connection closed by invalid user pi 10.30.0.20 port 34838 [preauth]
+Failed password for root from 10.30.0.20 port 48218 ssh2
+Connection closed by authenticating user root 10.30.0.20 port 48218 [preauth]
+Failed password for root from 10.30.0.20 port 48226 ssh2
+Connection closed by authenticating user root 10.30.0.20 port 48226 [preauth]
+Invalid user test from 10.30.0.20 port 48228
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.30.0.20 port 48228 ssh2
+Connection closed by invalid user test 10.30.0.20 port 48228 [preauth]
+Failed password for root from 10.30.0.20 port 48234 ssh2
+Connection closed by authenticating user root 10.30.0.20 port 48234 [preauth]
+Invalid user user from 10.30.0.20 port 48248
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.30.0.20 port 48248 ssh2
+Connection closed by invalid user user 10.30.0.20 port 48248 [preauth]
+Failed password for labuser from 10.30.0.20 port 48262 ssh2
+Connection closed by authenticating user labuser 10.30.0.20 port 48262 [preauth]
+Invalid user user from 10.30.0.20 port 48266
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.30.0.20 port 48266 ssh2
+Connection closed by invalid user user 10.30.0.20 port 48266 [preauth]
+Failed password for labuser from 10.30.0.20 port 48278 ssh2
+Connection closed by authenticating user labuser 10.30.0.20 port 48278 [preauth]
+Invalid user test from 10.30.0.20 port 48290
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.30.0.20 port 48290 ssh2
+Connection closed by invalid user test 10.30.0.20 port 48290 [preauth]
+Failed password for labuser from 10.30.0.20 port 48298 ssh2
+Connection closed by authenticating user labuser 10.30.0.20 port 48298 [preauth]
+Invalid user user from 10.30.0.20 port 48300
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.30.0.20 port 48300 ssh2
+Connection closed by invalid user user 10.30.0.20 port 48300 [preauth]
+Accepted password for labuser from 10.30.0.20 port 48316 ssh2
+Accepted password for labuser from 10.30.0.20 port 48328 ssh2
