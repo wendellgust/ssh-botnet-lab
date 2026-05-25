@@ -1,0 +1,79 @@
+{
+    "stats": {
+        "found": 8,
+        "compromised": 6,
+        "nets": 3
+    },
+    "hosts": [
+        {
+            "ip": "172.21.0.20",
+            "state": "compromised",
+            "user": "labuser",
+            "pwd": "password123",
+            "via": "direct",
+            "net": "172.21."
+        },
+        {
+            "ip": "172.21.0.21",
+            "state": "compromised",
+            "user": "admin",
+            "pwd": "admin",
+            "via": "direct",
+            "net": "172.21."
+        },
+        {
+            "ip": "10.10.0.10",
+            "state": "compromised",
+            "user": "labuser",
+            "pwd": "internal123",
+            "via": "172.21.0.20",
+            "net": "10.10."
+        },
+        {
+            "ip": "10.10.0.20",
+            "state": "attacking",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "10.10."
+        },
+        {
+            "ip": "10.10.0.50",
+            "state": "attacking",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "10.10."
+        },
+        {
+            "ip": "10.20.0.10",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "rootdeep",
+            "via": "172.21.0.21",
+            "net": "10.20."
+        },
+        {
+            "ip": "10.20.0.11",
+            "state": "compromised",
+            "user": "labuser",
+            "pwd": "deepnet123",
+            "via": "172.21.0.21",
+            "net": "10.20."
+        },
+        {
+            "ip": "10.20.0.20",
+            "state": "compromised",
+            "user": "deploy",
+            "pwd": "deploy123",
+            "via": "172.21.0.21",
+            "net": "10.20."
+        }
+    ],
+    "alerts": [
+        "PIVOT_DETECTED: lateral movement through 172.21.0.20",
+        "PIVOT_DETECTED: lateral movement through 172.21.0.21"
+    ],
+    "running": false,
+    "done": true
+}
