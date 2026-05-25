@@ -1,0 +1,13 @@
+Test:     4_disable_password
+Defenses: disable_password
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim2       15        2       
+victim3       0         0       
+honeypot      0         0       
+
+Found: 1  Compromised: 1  Networks: 1
+
+  ✓ 172.21.0.21      compromised   deploy:deploy123      via direct

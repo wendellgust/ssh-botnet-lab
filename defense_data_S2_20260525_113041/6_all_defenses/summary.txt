@@ -1,0 +1,13 @@
+Test:     6_all_defenses
+Defenses: fail2ban,block_ip,rate_limit,disable_password
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim2       9         2       
+victim3       0         0       
+honeypot      0         0       
+
+Found: 1  Compromised: 1  Networks: 1
+
+  ✓ 172.21.0.21      compromised   admin:admin           via direct

@@ -1,0 +1,33 @@
+Connection from 172.21.0.10 port 54642 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 54642
+Connection from 172.21.0.10 port 39776 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 39776
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 39776 ssh2
+Connection from 172.21.0.10 port 39782 on 172.21.0.20 port 22 rdomain ""
+Failed password for labuser from 172.21.0.10 port 39782 ssh2
+Connection from 172.21.0.10 port 38114 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 38114
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 38114 ssh2
+Connection from 172.21.0.10 port 38126 on 172.21.0.20 port 22 rdomain ""
+Failed password for labuser from 172.21.0.10 port 38126 ssh2
+Connection from 172.21.0.10 port 38134 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 38134
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 38134 ssh2
+Connection from 172.21.0.10 port 38142 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 38142
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 38142 ssh2
+Connection from 172.21.0.10 port 38146 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 38146 ssh2
+Connection from 172.21.0.10 port 38152 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 38152
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 38152 ssh2
+Connection from 172.21.0.10 port 38154 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 38154
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 38154 ssh2

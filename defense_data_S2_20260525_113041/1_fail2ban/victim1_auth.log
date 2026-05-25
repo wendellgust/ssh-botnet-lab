@@ -1,0 +1,94 @@
+Connection from 172.21.0.10 port 46034 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 46034
+Connection from 172.21.0.10 port 57534 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 57534
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 57534 ssh2
+Connection from 172.21.0.10 port 35920 on 172.21.0.20 port 22 rdomain ""
+Invalid user user from 172.21.0.10 port 35920
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 172.21.0.10 port 35920 ssh2
+Connection from 172.21.0.10 port 35930 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 35930 ssh2
+User child is on pid 47
+Connection from 172.21.0.10 port 35936 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 35936 ssh2
+Read error from remote host 172.21.0.10 port 35930: Connection reset by peer
+User child is on pid 49
+Starting session: command for labuser from 172.21.0.10 port 35936 id 0
+Read error from remote host 172.21.0.10 port 35936: Connection reset by peer
+Connection from 172.21.0.10 port 35948 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 35948 ssh2
+User child is on pid 54
+Starting session: command for labuser from 172.21.0.10 port 35948 id 0
+Connection from 10.10.0.20 port 51336 on 10.10.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.10.0.20 port 51336
+Close session: user labuser from 172.21.0.10 port 35948 id 0
+Connection closed by 172.21.0.10 port 35948
+Transferred: sent 2552, received 4272 bytes
+Closing connection to 172.21.0.10 port 35948
+Connection from 172.21.0.10 port 35956 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 35956 ssh2
+User child is on pid 821
+Connection from 172.21.0.10 port 52646 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 35956: Connection reset by peer
+Accepted password for labuser from 172.21.0.10 port 52646 ssh2
+User child is on pid 824
+Connection from 172.21.0.10 port 52650 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 52646: Connection reset by peer
+Accepted password for labuser from 172.21.0.10 port 52650 ssh2
+User child is on pid 827
+Connection from 10.10.0.20 port 39060 on 10.10.0.20 port 22 rdomain ""
+Invalid user operator from 10.10.0.20 port 39060
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.10.0.20 port 39060 ssh2
+Connection closed by invalid user operator 10.10.0.20 port 39060 [preauth]
+Connection from 10.10.0.20 port 39066 on 10.10.0.20 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 39066 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 39066 [preauth]
+Connection from 10.10.0.20 port 39076 on 10.10.0.20 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 39076 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 39076 [preauth]
+Connection from 10.10.0.20 port 39082 on 10.10.0.20 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 39082
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 39082 ssh2
+Connection closed by invalid user test 10.10.0.20 port 39082 [preauth]
+Connection from 10.10.0.20 port 39098 on 10.10.0.20 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 39098
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 39098 ssh2
+Connection closed by invalid user test 10.10.0.20 port 39098 [preauth]
+Connection from 10.10.0.20 port 39104 on 10.10.0.20 port 22 rdomain ""
+Accepted password for deploy from 10.10.0.20 port 39104 ssh2
+User child is on pid 840
+Connection closed by 10.10.0.20 port 39104
+Transferred: sent 2296, received 1104 bytes
+Closing connection to 10.10.0.20 port 39104
+Read error from remote host 172.21.0.10 port 52650: Connection reset by peer
+Connection from 172.21.0.10 port 52662 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 52662 ssh2
+User child is on pid 843
+Connection from 10.10.0.20 port 39118 on 10.10.0.20 port 22 rdomain ""
+Accepted password for deploy from 10.10.0.20 port 39118 ssh2
+User child is on pid 846
+Starting session: command for deploy from 10.10.0.20 port 39118 id 0
+Connection from 172.21.0.10 port 52668 on 172.21.0.20 port 22 rdomain ""
+Close session: user deploy from 10.10.0.20 port 39118 id 0
+Connection closed by 10.10.0.20 port 39118
+Transferred: sent 2632, received 1264 bytes
+Closing connection to 10.10.0.20 port 39118
+Read error from remote host 172.21.0.10 port 52662: Connection reset by peer
+Accepted password for labuser from 172.21.0.10 port 52668 ssh2
+User child is on pid 851
+Connection from 172.21.0.10 port 54568 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 52668: Connection reset by peer
+Accepted password for labuser from 172.21.0.10 port 54568 ssh2
+User child is on pid 854
+Connection closed by invalid user user 172.21.0.10 port 35920 [preauth]
+Connection closed by invalid user pi 172.21.0.10 port 57534 [preauth]
+Connection closed by 172.21.0.10 port 54568
+Transferred: sent 5560, received 3024 bytes
+Closing connection to 172.21.0.10 port 54568
