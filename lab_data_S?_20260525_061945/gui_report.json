@@ -1,0 +1,71 @@
+{
+    "stats": {
+        "found": 7,
+        "compromised": 6,
+        "nets": 3
+    },
+    "hosts": [
+        {
+            "ip": "172.21.0.20",
+            "state": "compromised",
+            "user": "deploy",
+            "pwd": "deploy123",
+            "via": "direct",
+            "net": ""
+        },
+        {
+            "ip": "172.21.0.21",
+            "state": "failed",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": ""
+        },
+        {
+            "ip": "10.10.0.10",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "rootpass",
+            "via": "172.21.0.20",
+            "net": ""
+        },
+        {
+            "ip": "10.10.0.20",
+            "state": "compromised",
+            "user": "admin",
+            "pwd": "admin",
+            "via": "172.21.0.20",
+            "net": ""
+        },
+        {
+            "ip": "10.30.0.10",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "rootdeep",
+            "via": "10.10.0.10",
+            "net": ""
+        },
+        {
+            "ip": "10.30.0.11",
+            "state": "compromised",
+            "user": "labuser",
+            "pwd": "deepnet123",
+            "via": "10.10.0.10",
+            "net": ""
+        },
+        {
+            "ip": "10.30.0.20",
+            "state": "compromised",
+            "user": "labuser",
+            "pwd": "internal123",
+            "via": "10.10.0.10",
+            "net": ""
+        }
+    ],
+    "alerts": [
+        "PIVOT_DETECTED: lateral movement through 10.10.0.10",
+        "PIVOT_DETECTED: lateral movement through 172.21.0.20"
+    ],
+    "running": false,
+    "done": true
+}
