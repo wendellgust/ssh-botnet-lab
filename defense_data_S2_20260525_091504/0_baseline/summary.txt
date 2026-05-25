@@ -1,0 +1,15 @@
+Test:     0_baseline
+Defenses: none
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       13        7       
+victim2       49        0       
+victim3       81        2       
+honeypot      16        0       
+
+Found: 2  Compromised: 0  Networks: 1
+
+  ✗ 172.21.0.20      open          —                     via direct
+  ✗ 172.21.0.21      open          —                     via direct

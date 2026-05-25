@@ -1,0 +1,3 @@
+Connection from 10.10.0.20 port 45196 on 10.10.0.10 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.10.0.20 port 45196

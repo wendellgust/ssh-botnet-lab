@@ -1,0 +1,25 @@
+Connection from 172.21.0.10 port 54956 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 54956 ssh2
+User child is on pid 11
+Connection from 172.21.0.10 port 54968 on 172.21.0.20 port 22 rdomain ""
+Connection closed by 172.21.0.10 port 54956
+Transferred: sent 2296, received 1120 bytes
+Closing connection to 172.21.0.10 port 54956
+Accepted password for labuser from 172.21.0.10 port 54968 ssh2
+User child is on pid 13
+Starting session: command for labuser from 172.21.0.10 port 54968 id 0
+Read error from remote host 172.21.0.10 port 54968: Connection reset by peer
+Connection from 172.21.0.10 port 54984 on 172.21.0.20 port 22 rdomain ""
+Accepted password for labuser from 172.21.0.10 port 54984 ssh2
+User child is on pid 18
+Starting session: command for labuser from 172.21.0.10 port 54984 id 0
+Connection from 10.10.0.20 port 42414 on 10.10.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.10.0.20 port 42414
+Close session: user labuser from 172.21.0.10 port 54984 id 0
+Connection closed by 172.21.0.10 port 54984
+Transferred: sent 2552, received 4272 bytes
+Closing connection to 172.21.0.10 port 54984
+Received SIGHUP; restarting.
+Server listening on 0.0.0.0 port 22.
+Server listening on :: port 22.

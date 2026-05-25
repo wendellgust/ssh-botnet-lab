@@ -1,0 +1,3 @@
+Connection from 10.10.0.20 port 39532 on 10.10.0.10 port 22 rdomain ""
+kex_exchange_identification: read: Connection reset by peer
+Connection reset by 10.10.0.20 port 39532

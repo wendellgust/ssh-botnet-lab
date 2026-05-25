@@ -1,0 +1,15 @@
+Test:     4_disable_password
+Defenses: disable_password
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       2         3       
+victim2       12        4       
+victim3       0         0       
+honeypot      0         0       
+
+Found: 2  Compromised: 0  Networks: 1
+
+  ✗ 172.21.0.20      open          —                     via direct
+  ✗ 172.21.0.21      open          —                     via direct

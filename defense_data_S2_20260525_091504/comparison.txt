@@ -1,0 +1,10 @@
+
+Test                            v1 Failed   v1 Accept   Compromised  Pivoted 
+────────────────────────────────────────────────────────────────────
+0_baseline                      13          7           0           NO      
+1_fail2ban                      73          11          0           NO      
+2_block_ip                      0           0           0           NO      
+3_rate_limit                    15          0           0           NO      
+4_disable_password              2           3           0           NO      
+5_fail2ban+rate_limit           9           0           0           NO      
+6_all_defenses                  0           3           0           NO      
