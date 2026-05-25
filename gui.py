@@ -496,6 +496,7 @@ const ZONE_DEFS = {
 const zoneSlots = {'172.21.':0,'10.10.':0,'10.20.':0,'10.30.':0};
 const nodesData  = {}; /* ip -> {cx,cy,prefix,state} */
 const zonesDrawn = new Set();
+const zoneRects  = {}; /* prefix -> SVG rect element (for dynamic resize) */
 
 const NS  = 'http://www.w3.org/2000/svg';
 const svg = document.getElementById('diagram');
@@ -528,6 +529,7 @@ function ensureZone(prefix) {
   rect.setAttribute('fill',d.color); rect.setAttribute('fill-opacity','.04');
   rect.setAttribute('stroke',d.color); rect.setAttribute('stroke-opacity','.3');
   rect.setAttribute('stroke-width','1.5');
+  zoneRects[prefix] = rect;
   zonesG.appendChild(rect);
 
   const txt = document.createElementNS(NS,'text');
@@ -545,6 +547,12 @@ function allocPos(prefix) {
   zoneSlots[prefix] = idx + 1;
   const cx = d.x + d.w/2;
   const cy = d.y + 55 + idx * 115;
+  /* expand zone rect if this node would overflow the bottom */
+  const needed = (cy - d.y) + 60;
+  if (needed > d.h) {
+    d.h = needed + 10;
+    if (zoneRects[prefix]) zoneRects[prefix].setAttribute('height', d.h);
+  }
   return {cx, cy};
 }
 
