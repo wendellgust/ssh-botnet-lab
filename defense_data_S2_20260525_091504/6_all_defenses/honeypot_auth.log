@@ -1,3 +1,0 @@
-Connection from 10.10.0.20 port 43616 on 10.10.0.50 port 22 rdomain ""
-kex_exchange_identification: read: Connection reset by peer
-Connection reset by 10.10.0.20 port 43616

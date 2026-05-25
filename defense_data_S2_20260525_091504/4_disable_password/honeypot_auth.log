@@ -1,3 +1,0 @@
-Connection from 10.10.0.20 port 52772 on 10.10.0.50 port 22 rdomain ""
-kex_exchange_identification: Connection closed by remote host
-Connection closed by 10.10.0.20 port 52772

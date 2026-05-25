@@ -1,4 +1,0 @@
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination         
-  176 10560            tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22 state NEW recent: SET name: DEFAULT side: source mask: 255.255.255.255
-  167 10020 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22 state NEW recent: UPDATE seconds: 60 hit_count: 10 name: DEFAULT side: source mask: 255.255.255.255

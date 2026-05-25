@@ -12,7 +12,7 @@ SCENARIO="${1:-2}"
 GUI="http://localhost:5000"
 EXE="podman"; command -v podman &>/dev/null || EXE="docker"
 DELAY="0.5"
-TIMEOUT=180
+TIMEOUT=600
 TARGET="victim1"
 
 OUT="defense_data_S${SCENARIO}_$(date +%Y%m%d_%H%M%S)"
@@ -64,7 +64,9 @@ wait_gui_idle() {
 
 reset_gui() {
   # Stop any running botnet first, then reset
-  curl -sf "$GUI/stop"  2>/dev/null; sleep 2
+  curl -sf "$GUI/stop"  2>/dev/null; sleep 1
+  # Kill botnet.py inside container in case podman exec wrapper didn't propagate SIGTERM
+  $EXE exec attacker pkill -f botnet.py 2>/dev/null; sleep 1
   wait_gui_idle
   curl -sf "$GUI/reset" 2>/dev/null
   sleep 1
