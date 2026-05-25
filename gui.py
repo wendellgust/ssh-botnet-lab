@@ -234,8 +234,11 @@ def apply_defense(action: str, target: str):
         ],
         'disable_password': [
             'bash', '-c',
-            'sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config && '
-            'kill -HUP $(cat /var/run/sshd.pid 2>/dev/null || pgrep sshd | head -1) 2>/dev/null; echo done'
+            'sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config; '
+            # Stop and restart sshd so the new config takes effect immediately
+            'pkill -x sshd 2>/dev/null; sleep 1; '
+            '/usr/sbin/sshd -e 2>>/var/log/auth.log & sleep 1; '
+            'grep PasswordAuthentication /etc/ssh/sshd_config; echo done'
         ],
     }
     if action not in cmds:
