@@ -77,8 +77,8 @@ echo "  [6/6] Summary stats..."
   for v in victim1 victim2 victim3 victim4 victim5 honeypot; do
     f="$OUT/${v}_auth.log"
     [ -f "$f" ] || continue
-    failed=$(grep -c "Failed password" "$f" 2>/dev/null || echo 0)
-    accepted=$(grep -c "Accepted password" "$f" 2>/dev/null || echo 0)
+    failed=$(grep "Failed password" "$f" 2>/dev/null | wc -l)
+    accepted=$(grep "Accepted password" "$f" 2>/dev/null | wc -l)
     printf "%-12s  %-8s  %-8s\n" "$v" "$failed" "$accepted"
   done
   echo ""
