@@ -444,10 +444,10 @@ table.host-tbl tr.fail td{color:#44475a}
         <g id="nodes"></g>
         <!-- Attacker node drawn last so it always renders on top -->
         <g id="node-atk">
-          <circle cx="110" cy="380" r="32" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#glow-r)"/>
-          <text x="110" y="375" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11" font-weight="bold">ATK</text>
-          <text x="110" y="425" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10">ATTACKER</text>
-          <text x="110" y="439" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
+          <circle cx="110" cy="490" r="32" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#glow-r)"/>
+          <text x="110" y="485" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11" font-weight="bold">ATK</text>
+          <text x="110" y="530" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10">ATTACKER</text>
+          <text x="110" y="544" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
         </g>
         <!-- Packets layer (animated dots) -->
         <g id="packets"></g>
@@ -502,10 +502,10 @@ table.host-tbl tr.fail td{color:#44475a}
 <script>
 /* ── Zone layout ──────────────────────────────────────────────────── */
 const ZONE_DEFS = {
-  '172.21.': {x:10,  y:20, w:210, h:540, color:'#ef4444', label:'ATTACK_NET · 172.21.0.0/24',  zone:0},
-  '10.10.':  {x:250, y:20, w:210, h:260, color:'#3b82f6', label:'INTERNAL_NET · 10.10.0.0/24', zone:1},
-  '10.20.':  {x:250, y:290,w:210, h:270, color:'#a855f7', label:'EXTRA_NET · 10.20.0.0/24',    zone:2},
-  '10.30.':  {x:490, y:20, w:210, h:540, color:'#14b8a6', label:'DEEP_NET · 10.30.0.0/24',     zone:3},
+  '172.21.': {x:10,  y:20, w:200, h:540, color:'#ef4444', label:'ATTACK_NET · 172.21.0.0/24',  zone:0},
+  '10.10.':  {x:220, y:20, w:190, h:540, color:'#3b82f6', label:'INTERNAL_NET · 10.10.0.0/24', zone:1},
+  '10.20.':  {x:420, y:20, w:190, h:540, color:'#a855f7', label:'EXTRA_NET · 10.20.0.0/24',    zone:2},
+  '10.30.':  {x:620, y:20, w:190, h:540, color:'#14b8a6', label:'DEEP_NET · 10.30.0.0/24',     zone:3},
 };
 
 /* zone -> slot index for node positioning */
