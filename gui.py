@@ -207,17 +207,24 @@ def apply_defense(action: str, target: str):
     cmds = {
         'fail2ban': [
             'bash', '-c',
-            # Containers use `sshd -e` — logs have no syslog date/host prefix.
-            # Default fail2ban sshd filter expects the prefix; write a custom one.
+            # sshd runs with -e: logs have NO timestamp prefix, just raw messages.
+            # fail2ban skips undated lines by default → "Total failed: 0".
+            # Fix: datepattern=^ tells fail2ban to assign current time to each line.
+            # maxretry=3: ban after 3 failures (attacker's valid cred is attempt #3).
             'apt-get install -y fail2ban -q 2>/dev/null; '
+            'fail2ban-client stop 2>/dev/null; sleep 1; '
             'mkdir -p /etc/fail2ban/filter.d && '
-            'printf "[Definition]\\nfailregex = Failed password for .* from <HOST>\\n" '
+            'printf "[Definition]\\ndatepattern = ^\\n'
+            'failregex = Failed password for .* from <HOST>\\n'
+            'ignoreregex =\\n" '
             '  > /etc/fail2ban/filter.d/sshd-noprefix.conf && '
-            'printf "[sshd]\\nenabled=true\\nfilter=sshd-noprefix\\n'
-            'logpath=/var/log/auth.log\\nmaxretry=5\\nfindtime=60\\nbantime=300\\n" '
+            'printf "[DEFAULT]\\nusedns = no\\n\\n'
+            '[sshd]\\nenabled=true\\nfilter=sshd-noprefix\\n'
+            'logpath=/var/log/auth.log\\nmaxretry=3\\nfindtime=60\\nbantime=300\\n'
+            'backend=polling\\n" '
             '  > /etc/fail2ban/jail.local && '
             'service fail2ban start 2>/dev/null || fail2ban-client start 2>/dev/null; '
-            'sleep 1; fail2ban-client status sshd 2>/dev/null; echo done'
+            'sleep 2; fail2ban-client status sshd 2>/dev/null; echo done'
         ],
         'block_ip': [
             'bash', '-c',
@@ -889,7 +896,7 @@ function buildChains(hosts) {
 /* ── Defenses Modal ───────────────────────────────────────────── */
 const DEFENSE_DEFS = [
   { id:'fail2ban',         name:'fail2ban',            color:'#50fa7b',
-    desc:'Installs fail2ban and configures SSH jail: ban after 5 failed attempts within 60 s for 5 min.' },
+    desc:'Installs fail2ban and configures SSH jail: ban after 3 failed attempts within 60 s for 5 min.' },
   { id:'block_ip',         name:'Block Attacker IP',   color:'#ff5555',
     desc:'iptables DROP rule for all packets from 172.21.0.10 (attacker). Botnet connections immediately refused.' },
   { id:'rate_limit',       name:'SSH Rate Limit',      color:'#f97316',
