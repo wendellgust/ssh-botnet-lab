@@ -1,0 +1,136 @@
+# Scenario 5 — Four-Tier Enterprise Chain (3 pivots, 4 networks)
+# attack_net:  attacker, victim1, monitor
+# corp_net:    victim1(pivot1), victim2, honeypot
+# secure_net:  victim2(pivot2), victim3
+# vault_net:   victim3(pivot3), victim4, victim5
+#
+# Chain: attacker → victim1 → victim2 → victim3 → victim4/victim5
+#
+# Usage: bash scripts/run_s5.sh
+
+networks:
+  attack_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+
+  corp_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+  secure_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.50.0.0/24
+
+  vault_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.60.0.0/24
+
+services:
+  attacker:
+    build: ./attacker
+    container_name: attacker
+    hostname: attacker
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.10
+    stdin_open: true
+    tty: true
+    restart: "no"
+
+  victim1:
+    build: ./victim
+    container_name: victim1
+    hostname: victim1
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.20
+      corp_net:
+        ipv4_address: 10.10.0.20
+    environment:
+      - LAB_ROLE=pivot1-hop1
+    cap_add:
+      - NET_ADMIN
+
+  victim2:
+    build: ./victim-b
+    container_name: victim2
+    hostname: victim2
+    networks:
+      corp_net:
+        ipv4_address: 10.10.0.10
+      secure_net:
+        ipv4_address: 10.50.0.20
+    environment:
+      - LAB_ROLE=pivot2-hop2
+    cap_add:
+      - NET_ADMIN
+
+  victim3:
+    build: ./victim-b
+    container_name: victim3
+    hostname: victim3
+    networks:
+      secure_net:
+        ipv4_address: 10.50.0.10
+      vault_net:
+        ipv4_address: 10.60.0.20
+    environment:
+      - LAB_ROLE=pivot3-hop3
+    cap_add:
+      - NET_ADMIN
+
+  honeypot:
+    build: ./victim-b
+    container_name: honeypot
+    hostname: prod-server-01
+    networks:
+      corp_net:
+        ipv4_address: 10.10.0.50
+    environment:
+      - LAB_ROLE=honeypot
+    cap_add:
+      - NET_ADMIN
+
+  victim4:
+    build: ./victim-c
+    container_name: victim4
+    hostname: victim4
+    networks:
+      vault_net:
+        ipv4_address: 10.60.0.10
+    cap_add:
+      - NET_ADMIN
+
+  victim5:
+    build: ./victim-c
+    container_name: victim5
+    hostname: victim5
+    networks:
+      vault_net:
+        ipv4_address: 10.60.0.11
+    cap_add:
+      - NET_ADMIN
+
+  monitor:
+    build: ./monitor
+    container_name: monitor
+    hostname: monitor
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.100
+      corp_net:
+        ipv4_address: 10.10.0.100
+    stdin_open: true
+    tty: true
