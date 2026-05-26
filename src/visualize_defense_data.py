@@ -4,9 +4,9 @@ SSH Botnet Lab — Defense Data Visualizer
 One figure per scenario showing all defenses side-by-side.
 
 Usage:
-    python3 visualize_defense_data.py            # interactive
-    python3 visualize_defense_data.py --save     # save PNGs to defense_charts/
-    python3 visualize_defense_data.py --data-dir /path/to/Data --save
+    python3 src/visualize_defense_data.py            # interactive
+    python3 src/visualize_defense_data.py --save     # save PNGs to docs/charts/
+    python3 src/visualize_defense_data.py --data-dir /path/to/data --save
 """
 
 import re
@@ -24,8 +24,8 @@ import numpy as np
 
 # ── Config ────────────────────────────────────────────────────────────────────
 
-BASE_DIR = Path(__file__).parent / 'Data'
-OUT_DIR  = Path(__file__).parent / 'defense_charts'
+BASE_DIR = Path(__file__).parent.parent / 'data'
+OUT_DIR  = Path(__file__).parent.parent / 'docs' / 'charts'
 
 TESTS = [
     '0_baseline',

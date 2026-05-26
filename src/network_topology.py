@@ -4,7 +4,7 @@ SSH Botnet Lab — Network Topology Diagrams
 Light theme, horizontal flow per network band.
 
 Usage:
-    python3 network_topology.py [--save]
+    python3 src/network_topology.py [--save]
 """
 import argparse
 from pathlib import Path
@@ -14,7 +14,7 @@ from matplotlib.patches import FancyBboxPatch
 from matplotlib.lines import Line2D
 import matplotlib.patches as mpatches
 
-OUT_DIR = Path('defense_charts')
+OUT_DIR = Path(__file__).parent.parent / 'docs' / 'charts'
 
 # ── Palette ────────────────────────────────────────────────────────────────────
 BG  = '#f8fafc'
@@ -323,6 +323,7 @@ def draw_scenario(snum, sc, save):
     avail_w = FW - ML - ML
     all_positions = {}   # ip → pos dict
     band_tops     = {}   # net → y of band's top edge
+    band_cx_map   = {}   # net → horizontal centre of band
 
     cur_y = fig_h - MT - BAND_H  # top band starts here
 
@@ -334,9 +335,8 @@ def draw_scenario(snum, sc, save):
             bw = avail_w * w_frac - (0.15 if len(row) > 1 else 0)
             positions = draw_band(ax, x_cursor, cur_y, bw, band_def)
             all_positions.update(positions)
-            band_tops[band_def['net']] = cur_y + BAND_H   # top y
-            # Store band bot for inter-arrow destination
-            band_tops[band_def['net'] + '_bot'] = cur_y
+            band_tops[band_def['net']]   = cur_y + BAND_H
+            band_cx_map[band_def['net']] = x_cursor + bw / 2
             x_cursor += bw + 0.15
 
         if row_idx < len(rows) - 1:
@@ -344,40 +344,29 @@ def draw_scenario(snum, sc, save):
         else:
             cur_y -= BAND_H
 
-    # Intra-band arrows
-    draw_intra_arrows(ax, sc['intra_arrows'], all_positions)
+    # Inter-band arrows: src host bottom → top of destination band centre
+    dst_band_top = {b['net']: band_tops[b['net']] for row in rows for b in row}
 
-    # Inter-band arrows (top of lower band)
-    real_inter = []
-    for src_ip, dst_net, label, style in sc['inter_arrows']:
-        real_inter.append((src_ip, dst_net, label, style))
-
-    # Re-map band_tops to use band BOTTOM (where arrow should land)
-    band_bot_map = {net: band_tops[net + '_bot'] + BAND_H
-                    for net in NET_NAME if net in {b['net'] for row in rows for b in row}}
-    # We want arrows to land on TOP of the destination band
-    dst_band_top = {}
-    for row in rows:
-        for b in row:
-            dst_band_top[b['net']] = band_tops[b['net']]  # top of this band
-
-    for src_ip, dst_net, label, _ in real_inter:
+    for src_ip, dst_net, label, _ in sc['inter_arrows']:
         if src_ip not in all_positions:
             continue
-        sp  = all_positions[src_ip]
-        top = dst_band_top.get(dst_net)
+        sp       = all_positions[src_ip]
+        top      = dst_band_top.get(dst_net)
+        dst_cx   = band_cx_map.get(dst_net, sp['cx'])
         if top is None:
             continue
-        arrow(ax, sp['cx'], sp['bot'], sp['cx'], top,
-              color='#f97316', lw=1.5, label=label, rad=0.0)
+        # curve gently when source and destination x differ (diagonal arrows)
+        dx  = dst_cx - sp['cx']
+        rad = 0.12 if dx > 0.3 else (-0.12 if dx < -0.3 else 0.0)
+        arrow(ax, sp['cx'], sp['bot'], dst_cx, top,
+              color='#f97316', lw=1.5, label=label, rad=rad, label_t=0.4)
 
     # Legend
     legend_items = [
         mpatches.Patch(facecolor=v['fill'], edgecolor=v['border'], linewidth=1.5, label=k.upper())
         for k, v in ROLE.items()
     ] + [
-        Line2D([0],[0], color='#ef4444', lw=1.6, label='Direct Attack'),
-        Line2D([0],[0], color='#f97316', lw=1.5, linestyle='--', label='Pivot / Hop'),
+        Line2D([0],[0], color='#f97316', lw=1.5, label='Pivot / Hop'),
     ]
     ax.legend(handles=legend_items, loc='lower right', ncol=2,
               facecolor='#ffffff', edgecolor='#cbd5e1',
