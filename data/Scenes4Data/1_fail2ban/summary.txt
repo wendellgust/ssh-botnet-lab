@@ -1,0 +1,17 @@
+Test:     1_fail2ban
+Defenses: fail2ban
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       6         0       
+victim2       5         2       
+victim3       0         0       
+victim4       0         0       
+victim5       0         0       
+honeypot      0         0       
+
+Found: 2  Compromised: 1  Networks: 1
+
+  ✗ 172.21.0.20      failed        —                     via direct
+  ✓ 172.21.0.21      compromised   deploy:deploy123      via direct

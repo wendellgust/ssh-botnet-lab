@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Archives
+*.zip
+*.tar.gz
+*.tgz
+
+# Generated output (re-run scripts to regenerate)
+data/TODOSDADOS.zip
+
+# Editor / OS
+.DS_Store
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Lab runtime artifacts (generated per-run, not committed)
+defense_data_S*/
+lab_data_S*/

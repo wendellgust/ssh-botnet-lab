@@ -1,0 +1,36 @@
+{
+    "stats": {
+        "found": 3,
+        "compromised": 3,
+        "nets": 1
+    },
+    "hosts": [
+        {
+            "ip": "172.21.0.20",
+            "state": "compromised",
+            "user": "deploy",
+            "pwd": "deploy123",
+            "via": "direct",
+            "net": "172.21."
+        },
+        {
+            "ip": "172.21.0.21",
+            "state": "compromised",
+            "user": "deploy",
+            "pwd": "deploy123",
+            "via": "direct",
+            "net": "172.21."
+        },
+        {
+            "ip": "172.21.0.22",
+            "state": "compromised",
+            "user": "deploy",
+            "pwd": "deploy123",
+            "via": "direct",
+            "net": "172.21."
+        }
+    ],
+    "alerts": [],
+    "running": false,
+    "done": true
+}

@@ -6,9 +6,9 @@ RUN apt-get update && apt-get install -y \
     fail2ban \
     net-tools iproute2 iputils-ping iptables \
   && rm -rf /var/lib/apt/lists/*
-RUN useradd -m -s /bin/bash labuser && echo "labuser:password123" | chpasswd && \
-    useradd -m -s /bin/bash admin   && echo "admin:admin"         | chpasswd && \
-    useradd -m -s /bin/bash deploy  && echo "deploy:deploy123"    | chpasswd && \
+RUN useradd --no-log-init -m -s /bin/bash labuser && echo "labuser:password123" | chpasswd && \
+    useradd --no-log-init -m -s /bin/bash admin   && echo "admin:admin"         | chpasswd && \
+    useradd --no-log-init -m -s /bin/bash deploy  && echo "deploy:deploy123"    | chpasswd && \
     echo "root:toor" | chpasswd
 COPY firewall_setup.sh /lab/firewall_setup.sh
 COPY entrypoint.sh /entrypoint.sh

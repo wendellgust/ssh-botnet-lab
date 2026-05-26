@@ -1,0 +1,22 @@
+Test:     0_baseline
+Defenses: none
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       65        11      
+victim2       50        0       
+victim3       8         2       
+victim4       0         0       
+victim5       0         0       
+honeypot      135       2       
+
+Found: 5  Compromised: 4  Networks: 2
+
+  ✓ 172.21.0.20      compromised   admin:admin           via direct
+  ✗ 172.21.0.21      failed        —                     via direct
+  ✓ 10.10.0.10       compromised   root:rootpass         via 172.21.0.20
+  ✓ 10.10.0.20       compromised   root:toor             via 172.21.0.20
+  ✓ 10.10.0.50       compromised   root:rootpass         via 172.21.0.20
+
+  ⚠ PIVOT_DETECTED: lateral movement through 172.21.0.20

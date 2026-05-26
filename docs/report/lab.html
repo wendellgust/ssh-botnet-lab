@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SSH Botnet Lab — All Scenarios</title>
+<style>
+html,body{height:100%;overflow:hidden}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#080d1a;color:#cdd6f4;font-family:'Courier New',monospace;display:flex;flex-direction:column}
+/* Header */
+header{background:linear-gradient(90deg,#0a0a1e,#080d1a);border-bottom:2px solid #44475a;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-shrink:0}
+.lab-title{font-size:17px;color:#f8f8f2;letter-spacing:2px}
+.lab-sub{font-size:10px;color:#6272a4;margin-top:2px}
+/* Tab nav */
+.tab-nav{display:flex;background:#0a0f1e;border-bottom:1px solid #1e2235;flex-shrink:0;padding:0 16px}
+.tab-btn{background:transparent;border:none;border-bottom:3px solid transparent;color:#44475a;padding:9px 16px;cursor:pointer;font-family:'Courier New',monospace;font-size:12px;font-weight:bold;transition:all .15s;letter-spacing:1px;white-space:nowrap}
+.tab-btn:hover{color:#cdd6f4}
+.tab-btn.active{color:#f8f8f2;border-bottom-color:var(--tab-acc,#6272a4)}
+.tab-btn.s1{--tab-acc:#ef4444}.tab-btn.s2{--tab-acc:#3b82f6}.tab-btn.s3{--tab-acc:#a855f7}.tab-btn.s4{--tab-acc:#14b8a6}
+/* Tab sections */
+.tab-section{display:none;flex:1;min-height:0}
+#tab-overview.active{display:block;overflow-y:auto}
+.scenario.active{display:flex;flex-direction:column}
+/* Overview */
+.ov-inner{display:flex;flex-direction:column;align-items:center}
+.scenarios{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;padding:36px 40px;max-width:1000px;width:100%}
+.card{background:#0d1117;border:1px solid #1e2235;border-radius:8px;padding:22px;color:inherit;transition:all .2s;position:relative;overflow:hidden;cursor:pointer}
+.card:hover{transform:translateY(-2px)}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.card.s1::before{background:#ef4444}.card.s2::before{background:#3b82f6}.card.s3::before{background:#a855f7}.card.s4::before{background:#14b8a6}
+.card:hover.s1{border-color:#ef4444;box-shadow:0 8px 30px rgba(239,68,68,.15)}
+.card:hover.s2{border-color:#3b82f6;box-shadow:0 8px 30px rgba(59,130,246,.15)}
+.card:hover.s3{border-color:#a855f7;box-shadow:0 8px 30px rgba(168,85,247,.15)}
+.card:hover.s4{border-color:#14b8a6;box-shadow:0 8px 30px rgba(20,184,166,.15)}
+.card-header{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.snum{font-size:30px;font-weight:700;line-height:1}
+.s1 .snum{color:#ef4444}.s2 .snum{color:#3b82f6}.s3 .snum{color:#a855f7}.s4 .snum{color:#14b8a6}
+.card-title{font-size:14px;color:#f8f8f2;font-weight:bold;line-height:1.3}
+.card-sub{font-size:11px;color:#6272a4;margin-top:3px}
+.nets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.net-badge{font-size:9px;padding:3px 7px;border-radius:3px;border:1px solid;letter-spacing:1px;font-weight:bold}
+.s1 .net-badge{border-color:#ef4444;color:#ef4444}.s2 .net-badge{border-color:#3b82f6;color:#3b82f6}
+.s3 .net-badge{border-color:#a855f7;color:#a855f7}.s4 .net-badge{border-color:#14b8a6;color:#14b8a6}
+.topology{background:#080d1a;border-radius:6px;padding:12px;margin-bottom:12px;font-size:10px;color:#44475a;line-height:1.8}
+.topo-arrow{color:#6272a4}
+.alerts-summary{display:flex;gap:6px;flex-wrap:wrap}
+.abadge{font-size:10px;padding:3px 7px;border-radius:3px;background:#1e2235;color:#8be9fd;border:1px solid #2a3050}
+.abadge.critical{background:#2a1020;color:#ff5555;border-color:#ff5555}
+.card-footer{margin-top:14px;font-size:11px;color:#44475a;display:flex;justify-content:space-between;align-items:center}
+.open-btn{font-size:11px;color:#6272a4;border:1px solid #2a3050;padding:4px 10px;border-radius:3px;transition:all .2s}
+.card:hover .open-btn{color:#f8f8f2;border-color:#6272a4}
+.info{width:100%;max-width:1000px;padding:0 40px 36px;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.info-box{background:#0d1117;border:1px solid #1e2235;border-radius:6px;padding:14px}
+.info-title{font-size:10px;color:#44475a;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.rule{display:flex;gap:8px;margin-bottom:6px;font-size:11px}
+.rule-id{color:#8be9fd;min-width:80px;font-weight:bold}.rule-desc{color:#6272a4}
+.ov-footer{color:#44475a;font-size:11px;padding:18px;border-top:1px solid #1e2235;width:100%;text-align:center}
+/* Scenario layout */
+.layout{flex:1;display:flex;min-height:0}
+.diagram-col{flex:1;padding:18px;display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.diagram-wrap{background:#0d1117;border:1px solid #1e2235;border-radius:6px;padding:10px;overflow:hidden}
+svg{width:100%;height:auto;display:block}
+.phase-bar{background:#0d1117;border:1px solid #1e2235;border-radius:6px;padding:10px 14px}
+.phase-bar-title{font-size:10px;color:#44475a;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.phase-name{font-size:14px;color:#f8f8f2;margin-bottom:3px}
+.phase-desc{font-size:11px;color:#6272a4;line-height:1.5}
+.sidebar{width:300px;background:#0a0f1e;border-left:1px solid #1e2235;padding:14px;display:flex;flex-direction:column;gap:10px;overflow-y:auto;flex-shrink:0}
+.panel{background:#0d1117;border:1px solid #1e2235;border-radius:6px;padding:10px}
+.panel-title{font-size:10px;color:#44475a;letter-spacing:2px;text-transform:uppercase;margin-bottom:7px}
+.phase-list{display:flex;flex-direction:column;gap:3px}
+.pi{padding:6px 10px;border-radius:4px;font-size:11px;border-left:3px solid #1e2235;color:#44475a;cursor:pointer;transition:all .15s}
+.pi:hover{background:#1a1f2e}
+.pi.active{background:#1a1f2e;border-left-color:var(--acc,#6272a4);color:#f8f8f2}
+.pi.done{border-left-color:#50fa7b;color:#50fa7b}
+.alerts-list{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto}
+.ac{border-radius:4px;padding:8px 10px;border-left:4px solid;animation:slideIn .3s ease;display:none}
+.ac.show{display:block}
+.ac.critical{background:#2a1020;border-left-color:#ff5555}.ac.high{background:#1e1a10;border-left-color:#ffb86c}
+.ac-rule{font-size:10px;font-weight:700;letter-spacing:1px;margin-bottom:3px}
+.critical .ac-rule{color:#ff5555}.high .ac-rule{color:#ffb86c}
+.ac-desc{font-size:10px;color:#6272a4;line-height:1.4}
+@keyframes slideIn{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+.controls{display:flex;gap:5px;flex-wrap:wrap}
+.cbtn{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:5px 12px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;font-size:11px;transition:all .15s}
+.cbtn:hover{background:#252a3e;border-color:#6272a4}
+.pbtn.playing{background:var(--acc,#6272a4);border-color:var(--acc,#6272a4);color:#fff}
+.legend{display:flex;gap:10px;flex-wrap:wrap}
+.leg{display:flex;align-items:center;gap:5px;font-size:10px;color:#44475a}
+.leg-dot{width:9px;height:9px;border-radius:50%}
+.hop-label{font-family:monospace;font-size:9px;fill:#44475a;text-anchor:middle}
+/* per-scenario accent via CSS custom property */
+#tab-s1{--acc:#ef4444}#tab-s2{--acc:#3b82f6}#tab-s3{--acc:#a855f7}#tab-s4{--acc:#14b8a6}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="lab-title">SSH BOTNET LAB</div>
+    <div class="lab-sub">FEUP SSR — Educational SSH Brute-Force &amp; Lateral Movement Simulation · May 2026</div>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" id="btn-overview" onclick="showTab('overview')">⊞ Overview</button>
+  <button class="tab-btn s1" id="btn-s1" onclick="showTab('s1')">S1 — Flat Net</button>
+  <button class="tab-btn s2" id="btn-s2" onclick="showTab('s2')">S2 — One Pivot</button>
+  <button class="tab-btn s3" id="btn-s3" onclick="showTab('s3')">S3 — Two Pivots</button>
+  <button class="tab-btn s4" id="btn-s4" onclick="showTab('s4')">S4 — Chain</button>
+</nav>
+
+<!-- ═══════════════════════════ OVERVIEW ════════════════════════════ -->
+<section id="tab-overview" class="tab-section active">
+<div class="ov-inner">
+<div class="scenarios">
+
+  <div class="card s1" onclick="showTab('s1')">
+    <div class="card-header"><div class="snum">S1</div><div>
+      <div class="card-title">Single Flat Network</div>
+      <div class="card-sub">Basic SSH brute-force, no segmentation</div>
+    </div></div>
+    <div class="nets"><span class="net-badge">attack_net 172.21.0.0/24</span></div>
+    <div class="topology">
+      <span style="color:#ef4444">ATTACKER</span><span class="topo-arrow"> ──→ </span><span style="color:#8be9fd">VICTIM1</span><br>
+      <span style="color:#ef4444">ATTACKER</span><span class="topo-arrow"> ──→ </span><span style="color:#8be9fd">VICTIM2</span><br>
+      <span style="color:#8be9fd">VICTIM1/2</span><span class="topo-arrow"> ──→ </span><span style="color:#ef4444">ATTACKER</span><span style="color:#44475a"> (C2 beacon)</span>
+    </div>
+    <div class="alerts-summary">
+      <span class="abadge">SSH-001</span><span class="abadge">SSH-002</span><span class="abadge critical">SSH-003</span>
+    </div>
+    <div class="card-footer"><span>3 alerts · 1 CRITICAL · 2 HIGH</span><span class="open-btn">Open →</span></div>
+  </div>
+
+  <div class="card s2" onclick="showTab('s2')">
+    <div class="card-header"><div class="snum">S2</div><div>
+      <div class="card-title">Two Networks, One Pivot</div>
+      <div class="card-sub">Lateral movement via victim1</div>
+    </div></div>
+    <div class="nets"><span class="net-badge">attack_net</span><span class="net-badge">internal_net</span></div>
+    <div class="topology">
+      <span style="color:#ef4444">ATK</span><span class="topo-arrow"> ──→ </span><span style="color:#a855f7">VICTIM1</span><span style="color:#44475a"> (pivot, dual-homed)</span><br>
+      <span style="color:#a855f7">VICTIM1</span><span class="topo-arrow"> ──→ </span><span style="color:#8be9fd">VICTIM3</span><span style="color:#44475a"> (internal)</span><br>
+      <span style="color:#a855f7">VICTIM1</span><span class="topo-arrow"> ──→ </span><span style="color:#f1fa8c">HONEYPOT</span><span style="color:#44475a"> (10.10.0.50)</span>
+    </div>
+    <div class="alerts-summary">
+      <span class="abadge">SSH-001</span><span class="abadge">SSH-002</span><span class="abadge critical">SSH-003</span>
+      <span class="abadge">LATERAL-001</span><span class="abadge critical">HONEYPOT-001</span><span class="abadge">C2-001</span>
+    </div>
+    <div class="card-footer"><span>6 alerts · 2 CRITICAL · 4 HIGH</span><span class="open-btn">Open →</span></div>
+  </div>
+
+  <div class="card s3" onclick="showTab('s3')">
+    <div class="card-header"><div class="snum">S3</div><div>
+      <div class="card-title">Three Networks, Two Parallel Pivots</div>
+      <div class="card-sub">victim1 → internal · victim2 → extra (parallel)</div>
+    </div></div>
+    <div class="nets"><span class="net-badge">attack_net</span><span class="net-badge">internal_net</span><span class="net-badge">extra_net</span></div>
+    <div class="topology">
+      <span style="color:#ef4444">ATK</span><span class="topo-arrow"> ──→ </span><span style="color:#a855f7">V1</span><span class="topo-arrow"> ──→ </span><span style="color:#8be9fd">V3 + HONEYPOT</span><br>
+      <span style="color:#ef4444">ATK</span><span class="topo-arrow"> ──→ </span><span style="color:#a855f7">V2</span><span class="topo-arrow"> ──→ </span><span style="color:#8be9fd">V4 + V5</span><br>
+      <span style="color:#44475a">Two independent pivot channels — parallel</span>
+    </div>
+    <div class="alerts-summary">
+      <span class="abadge">SSH-001</span><span class="abadge">SSH-002</span><span class="abadge critical">SSH-003 ×2</span>
+      <span class="abadge">LATERAL-001 ×2</span><span class="abadge critical">HONEYPOT-001</span><span class="abadge">C2-001</span>
+    </div>
+    <div class="card-footer"><span>8 alerts · 3 CRITICAL · 5 HIGH</span><span class="open-btn">Open →</span></div>
+  </div>
+
+  <div class="card s4" onclick="showTab('s4')">
+    <div class="card-header"><div class="snum">S4</div><div>
+      <div class="card-title">Three Networks, Two-Hop Chain</div>
+      <div class="card-sub">ATK → V1 → V3 → V4/V5 (two hops deep)</div>
+    </div></div>
+    <div class="nets"><span class="net-badge">attack_net</span><span class="net-badge">internal_net</span><span class="net-badge">deep_net</span></div>
+    <div class="topology">
+      <span style="color:#ef4444">ATK</span><span class="topo-arrow"> ──→ </span><span style="color:#a855f7">V1</span><span style="color:#44475a"> (HOP 1)</span><span class="topo-arrow"> ──→ </span><span style="color:#a855f7">V3</span><span style="color:#44475a"> (HOP 2)</span><br>
+      <span style="color:#a855f7">V3</span><span class="topo-arrow"> ──→ </span><span style="color:#14b8a6">V4 + V5</span><span style="color:#44475a"> (deep_net)</span><br>
+      <span style="color:#44475a">Chain crosses two internal boundaries</span>
+    </div>
+    <div class="alerts-summary">
+      <span class="abadge">SSH-001</span><span class="abadge">SSH-002</span><span class="abadge critical">SSH-003</span>
+      <span class="abadge">LATERAL-001 ×2</span><span class="abadge critical">HONEYPOT-001</span><span class="abadge">C2-001</span>
+    </div>
+    <div class="card-footer"><span>7 alerts · 2 CRITICAL · 5 HIGH</span><span class="open-btn">Open →</span></div>
+  </div>
+
+</div>
+
+<div class="info">
+  <div class="info-box" style="grid-column:span 3">
+    <div class="info-title">IDS Detection Rules</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
+      <div class="rule"><span class="rule-id">SSH-001</span><span class="rule-desc">≥5 failed SSH logins from same source IP</span></div>
+      <div class="rule"><span class="rule-id">SSH-002</span><span class="rule-desc">Same source tries ≥3 different usernames</span></div>
+      <div class="rule"><span class="rule-id">SSH-003</span><span class="rule-desc">Failures then success from same IP</span></div>
+      <div class="rule"><span class="rule-id">LATERAL-001</span><span class="rule-desc">SSH from internal IP (10.x) to another internal IP</span></div>
+      <div class="rule"><span class="rule-id">HONEYPOT-001</span><span class="rule-desc">Any connection to honeypot (10.10.0.50)</span></div>
+      <div class="rule"><span class="rule-id">C2-001</span><span class="rule-desc">HTTP POST with bot-id header to port 8888</span></div>
+    </div>
+  </div>
+</div>
+<div class="ov-footer">FEUP SSR — SSH Botnet Lab · Educational use only · All traffic isolated inside Docker/Podman networks</div>
+</div>
+</section>
+
+<!-- ═══════════════════════════ S1 ════════════════════════════════════ -->
+<section id="tab-s1" class="tab-section scenario">
+<div class="layout">
+  <div class="diagram-col">
+    <div class="diagram-wrap">
+      <svg id="s1-diagram" viewBox="0 0 820 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="s1-glow-red"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="s1-glow-green"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect x="10" y="10" width="800" height="340" rx="8" fill="#ef4444" fill-opacity=".04" stroke="#ef4444" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="26" y="32" fill="#ef4444" fill-opacity=".5" font-family="monospace" font-size="11" font-weight="bold" letter-spacing="1">ATTACK_NET · 172.21.0.0/24</text>
+        <line x1="190" y1="180" x2="490" y2="120" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="190" y1="180" x2="490" y2="240" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="490" y1="120" x2="680" y2="180" stroke="#2a3050" stroke-width="1" stroke-dasharray="3,5" stroke-opacity=".4"/>
+        <line x1="490" y1="240" x2="680" y2="180" stroke="#2a3050" stroke-width="1" stroke-dasharray="3,5" stroke-opacity=".4"/>
+        <g id="s1-node-attacker">
+          <circle cx="190" cy="180" r="32" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#s1-glow-red)"/>
+          <text x="190" y="176" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11" font-weight="bold">ATK</text>
+          <text x="190" y="224" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11">ATTACKER</text>
+          <text x="190" y="238" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
+        </g>
+        <g id="s1-node-victim1">
+          <circle cx="490" cy="120" r="28" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="490" y="116" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="10" font-weight="bold">HOST</text>
+          <text x="490" y="160" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="11">VICTIM1</text>
+          <text x="490" y="174" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.20</text>
+        </g>
+        <g id="s1-node-victim2">
+          <circle cx="490" cy="240" r="28" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="490" y="236" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="10" font-weight="bold">HOST</text>
+          <text x="490" y="280" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="11">VICTIM2</text>
+          <text x="490" y="294" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.21</text>
+        </g>
+        <g id="s1-node-monitor">
+          <circle cx="680" cy="180" r="28" fill="#081008" stroke="#50fa7b" stroke-width="2" filter="url(#s1-glow-green)"/>
+          <text x="680" y="176" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="10" font-weight="bold">IDS</text>
+          <text x="680" y="220" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="11">MONITOR</text>
+          <text x="680" y="234" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.100</text>
+        </g>
+        <g id="s1-packets"></g>
+      </svg>
+    </div>
+    <div class="phase-bar">
+      <div class="phase-bar-title">Current Phase</div>
+      <div class="phase-name" id="s1-phase-name">Ready</div>
+      <div class="phase-desc" id="s1-phase-desc">Press Play to simulate the attack, or use Next to step through phases manually.</div>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>Attacker</div>
+        <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Victim</div>
+        <div class="leg"><div class="leg-dot" style="background:#ffb86c"></div>Compromised</div>
+        <div class="leg"><div class="leg-dot" style="background:#50fa7b"></div>Monitor/IDS</div>
+        <div class="leg"><div class="leg-dot" style="background:#f97316"></div>Scan</div>
+        <div class="leg"><div class="leg-dot" style="background:#ff5555"></div>Failed auth</div>
+        <div class="leg"><div class="leg-dot" style="background:#50fa7b;opacity:.7"></div>Success</div>
+        <div class="leg"><div class="leg-dot" style="background:#bd93f9"></div>C2 beacon</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Attack Phases</div>
+      <div class="phase-list" id="s1-phase-list"></div>
+    </div>
+    <div class="panel" style="flex:1">
+      <div class="panel-title">IDS Alerts</div>
+      <div class="alerts-list" id="s1-alerts-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Controls</div>
+      <div class="controls">
+        <button class="cbtn" onclick="s1ctrl.reset()">↺</button>
+        <button class="cbtn" onclick="s1ctrl.prevPhase()">◀ Prev</button>
+        <button class="cbtn pbtn" id="s1-play-btn" onclick="s1ctrl.togglePlay()">▶ Play</button>
+        <button class="cbtn" onclick="s1ctrl.nextPhase()">Next ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════ S2 ════════════════════════════════════ -->
+<section id="tab-s2" class="tab-section scenario">
+<div class="layout">
+  <div class="diagram-col">
+    <div class="diagram-wrap">
+      <svg id="s2-diagram" viewBox="0 0 920 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="s2-gr"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="s2-gg"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect x="10" y="10" width="430" height="380" rx="8" fill="#ef4444" fill-opacity=".04" stroke="#ef4444" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="26" y="32" fill="#ef4444" fill-opacity=".5" font-family="monospace" font-size="11" font-weight="bold" letter-spacing="1">ATTACK_NET · 172.21.0.0/24</text>
+        <rect x="460" y="10" width="450" height="380" rx="8" fill="#3b82f6" fill-opacity=".04" stroke="#3b82f6" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="476" y="32" fill="#3b82f6" fill-opacity=".5" font-family="monospace" font-size="11" font-weight="bold" letter-spacing="1">INTERNAL_NET · 10.10.0.0/24</text>
+        <line x1="445" y1="40" x2="445" y2="370" stroke="#44475a" stroke-width="1" stroke-dasharray="6,4"/>
+        <line x1="150" y1="200" x2="445" y2="185" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="150" y1="200" x2="220" y2="310" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="445" y1="185" x2="650" y2="150" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="445" y1="185" x2="650" y2="300" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <g id="s2-node-attacker">
+          <circle cx="150" cy="200" r="30" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#s2-gr)"/>
+          <text x="150" y="196" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10" font-weight="bold">ATK</text>
+          <text x="150" y="242" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11">ATTACKER</text>
+          <text x="150" y="256" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
+        </g>
+        <g id="s2-node-victim2">
+          <circle cx="220" cy="310" r="26" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="220" y="306" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="10" font-weight="bold">HOST</text>
+          <text x="220" y="348" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="11">VICTIM2</text>
+          <text x="220" y="362" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.21</text>
+        </g>
+        <g id="s2-node-monitor">
+          <circle cx="280" cy="80" r="22" fill="#081008" stroke="#50fa7b" stroke-width="2" filter="url(#s2-gg)"/>
+          <text x="280" y="76" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="9" font-weight="bold">IDS</text>
+          <text x="280" y="114" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="10">MONITOR</text>
+        </g>
+        <g id="s2-node-victim1">
+          <circle cx="445" cy="185" r="30" fill="#0a0a20" stroke="#a855f7" stroke-width="2.5"/>
+          <text x="445" y="178" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="9" font-weight="bold">PIVOT</text>
+          <text x="445" y="191" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="8">dual-homed</text>
+          <text x="445" y="227" text-anchor="middle" fill="#caa5f7" font-family="monospace" font-size="11">VICTIM1</text>
+          <text x="445" y="241" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">.20 / 10.10.0.20</text>
+        </g>
+        <g id="s2-node-victim3">
+          <circle cx="650" cy="150" r="26" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="650" y="146" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="10" font-weight="bold">HOST</text>
+          <text x="650" y="188" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="11">VICTIM3</text>
+          <text x="650" y="202" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">10.10.0.10</text>
+        </g>
+        <g id="s2-node-honeypot">
+          <circle cx="650" cy="300" r="26" fill="#0a1008" stroke="#f1fa8c" stroke-width="2"/>
+          <text x="650" y="296" text-anchor="middle" fill="#f1fa8c" font-family="monospace" font-size="9" font-weight="bold">TRAP</text>
+          <text x="650" y="338" text-anchor="middle" fill="#f1fa8c" font-family="monospace" font-size="11">HONEYPOT</text>
+          <text x="650" y="352" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">10.10.0.50</text>
+        </g>
+        <g id="s2-packets"></g>
+      </svg>
+    </div>
+    <div class="phase-bar">
+      <div class="phase-bar-title">Current Phase</div>
+      <div class="phase-name" id="s2-phase-name">Ready</div>
+      <div class="phase-desc" id="s2-phase-desc">Press Play to simulate the attack, or use Next to step through phases.</div>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>Attacker</div>
+        <div class="leg"><div class="leg-dot" style="background:#a855f7"></div>Pivot</div>
+        <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Victim</div>
+        <div class="leg"><div class="leg-dot" style="background:#f1fa8c"></div>Honeypot</div>
+        <div class="leg"><div class="leg-dot" style="background:#ffb86c"></div>Compromised</div>
+        <div class="leg"><div class="leg-dot" style="background:#bd93f9"></div>C2 beacon</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Attack Phases</div>
+      <div class="phase-list" id="s2-phase-list"></div>
+    </div>
+    <div class="panel" style="flex:1">
+      <div class="panel-title">IDS Alerts</div>
+      <div class="alerts-list" id="s2-alerts-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Controls</div>
+      <div class="controls">
+        <button class="cbtn" onclick="s2ctrl.reset()">↺</button>
+        <button class="cbtn" onclick="s2ctrl.prevPhase()">◀ Prev</button>
+        <button class="cbtn pbtn" id="s2-play-btn" onclick="s2ctrl.togglePlay()">▶ Play</button>
+        <button class="cbtn" onclick="s2ctrl.nextPhase()">Next ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════ S3 ════════════════════════════════════ -->
+<section id="tab-s3" class="tab-section scenario">
+<div class="layout">
+  <div class="diagram-col">
+    <div class="diagram-wrap">
+      <svg id="s3-diagram" viewBox="0 0 980 420" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="s3-gr"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="s3-gg"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        </defs>
+        <rect x="10" y="10" width="300" height="400" rx="8" fill="#ef4444" fill-opacity=".04" stroke="#ef4444" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="26" y="32" fill="#ef4444" fill-opacity=".5" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="1">ATTACK_NET · 172.21.0.0/24</text>
+        <rect x="330" y="10" width="320" height="220" rx="8" fill="#3b82f6" fill-opacity=".04" stroke="#3b82f6" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="346" y="32" fill="#3b82f6" fill-opacity=".5" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="1">INTERNAL_NET · 10.10.0.0/24</text>
+        <rect x="330" y="240" width="320" height="170" rx="8" fill="#a855f7" fill-opacity=".04" stroke="#a855f7" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="346" y="262" fill="#a855f7" fill-opacity=".5" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="1">EXTRA_NET · 10.20.0.0/24</text>
+        <line x1="160" y1="200" x2="300" y2="140" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="160" y1="200" x2="300" y2="310" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="300" y1="140" x2="560" y2="110" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="300" y1="140" x2="560" y2="175" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="300" y1="310" x2="560" y2="285" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="300" y1="310" x2="560" y2="360" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <g id="s3-node-attacker">
+          <circle cx="160" cy="200" r="30" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#s3-gr)"/>
+          <text x="160" y="196" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10" font-weight="bold">ATK</text>
+          <text x="160" y="242" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11">ATTACKER</text>
+          <text x="160" y="256" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
+        </g>
+        <g id="s3-node-victim1">
+          <circle cx="300" cy="140" r="28" fill="#0a0a20" stroke="#a855f7" stroke-width="2.5"/>
+          <text x="300" y="133" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="9" font-weight="bold">PIVOT1</text>
+          <text x="300" y="145" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="7">→internal</text>
+          <text x="300" y="180" text-anchor="middle" fill="#caa5f7" font-family="monospace" font-size="10">VICTIM1</text>
+          <text x="300" y="193" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">.20 / 10.10.0.20</text>
+        </g>
+        <g id="s3-node-victim2">
+          <circle cx="300" cy="310" r="28" fill="#0a0a20" stroke="#a855f7" stroke-width="2.5"/>
+          <text x="300" y="303" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="9" font-weight="bold">PIVOT2</text>
+          <text x="300" y="315" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="7">→extra</text>
+          <text x="300" y="350" text-anchor="middle" fill="#caa5f7" font-family="monospace" font-size="10">VICTIM2</text>
+          <text x="300" y="363" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">.21 / 10.20.0.20</text>
+        </g>
+        <g id="s3-node-victim3">
+          <circle cx="560" cy="110" r="24" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="560" y="106" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="9" font-weight="bold">HOST</text>
+          <text x="560" y="146" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="10">VICTIM3</text>
+          <text x="560" y="159" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.10.0.10</text>
+        </g>
+        <g id="s3-node-honeypot">
+          <circle cx="560" cy="175" r="22" fill="#0a1008" stroke="#f1fa8c" stroke-width="2"/>
+          <text x="560" y="171" text-anchor="middle" fill="#f1fa8c" font-family="monospace" font-size="8" font-weight="bold">TRAP</text>
+          <text x="560" y="209" text-anchor="middle" fill="#f1fa8c" font-family="monospace" font-size="9">HONEYPOT</text>
+          <text x="560" y="221" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.10.0.50</text>
+        </g>
+        <g id="s3-node-victim4">
+          <circle cx="560" cy="285" r="24" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="560" y="281" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="9" font-weight="bold">HOST</text>
+          <text x="560" y="321" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="10">VICTIM4</text>
+          <text x="560" y="333" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.20.0.10</text>
+        </g>
+        <g id="s3-node-victim5">
+          <circle cx="560" cy="360" r="24" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="560" y="356" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="9" font-weight="bold">HOST</text>
+          <text x="560" y="396" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="10">VICTIM5</text>
+          <text x="560" y="408" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.20.0.11</text>
+        </g>
+        <g id="s3-node-monitor">
+          <circle cx="100" cy="80" r="20" fill="#081008" stroke="#50fa7b" stroke-width="2" filter="url(#s3-gg)"/>
+          <text x="100" y="76" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="8" font-weight="bold">IDS</text>
+          <text x="100" y="112" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="9">MONITOR</text>
+        </g>
+        <g id="s3-packets"></g>
+      </svg>
+    </div>
+    <div class="phase-bar">
+      <div class="phase-bar-title">Current Phase</div>
+      <div class="phase-name" id="s3-phase-name">Ready</div>
+      <div class="phase-desc" id="s3-phase-desc">Press Play to simulate the parallel two-pivot attack.</div>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>Attacker</div>
+        <div class="leg"><div class="leg-dot" style="background:#a855f7"></div>Pivot</div>
+        <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Victim</div>
+        <div class="leg"><div class="leg-dot" style="background:#f1fa8c"></div>Honeypot</div>
+        <div class="leg"><div class="leg-dot" style="background:#ffb86c"></div>Compromised</div>
+        <div class="leg"><div class="leg-dot" style="background:#ff5555"></div>Failed</div>
+        <div class="leg"><div class="leg-dot" style="background:#50fa7b"></div>Success</div>
+        <div class="leg"><div class="leg-dot" style="background:#bd93f9"></div>C2 beacon</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Attack Phases</div>
+      <div class="phase-list" id="s3-phase-list"></div>
+    </div>
+    <div class="panel" style="flex:1">
+      <div class="panel-title">IDS Alerts</div>
+      <div class="alerts-list" id="s3-alerts-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Controls</div>
+      <div class="controls">
+        <button class="cbtn" onclick="s3ctrl.reset()">↺</button>
+        <button class="cbtn" onclick="s3ctrl.prevPhase()">◀ Prev</button>
+        <button class="cbtn pbtn" id="s3-play-btn" onclick="s3ctrl.togglePlay()">▶ Play</button>
+        <button class="cbtn" onclick="s3ctrl.nextPhase()">Next ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══════════════════════════ S4 ════════════════════════════════════ -->
+<section id="tab-s4" class="tab-section scenario">
+<div class="layout">
+  <div class="diagram-col">
+    <div class="diagram-wrap">
+      <svg id="s4-diagram" viewBox="0 0 960 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="s4-gr"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <filter id="s4-gg"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+          <marker id="s4-arr" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <path d="M0,0 L7,3.5 L0,7 Z" fill="#14b8a6" fill-opacity=".5"/>
+          </marker>
+        </defs>
+        <rect x="10" y="10" width="270" height="380" rx="8" fill="#ef4444" fill-opacity=".04" stroke="#ef4444" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="26" y="32" fill="#ef4444" fill-opacity=".5" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="1">ATTACK_NET</text>
+        <text x="26" y="44" fill="#ef4444" fill-opacity=".3" font-family="monospace" font-size="9">172.21.0.0/24</text>
+        <rect x="300" y="10" width="310" height="380" rx="8" fill="#3b82f6" fill-opacity=".04" stroke="#3b82f6" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="316" y="32" fill="#3b82f6" fill-opacity=".5" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="1">INTERNAL_NET</text>
+        <text x="316" y="44" fill="#3b82f6" fill-opacity=".3" font-family="monospace" font-size="9">10.10.0.0/24</text>
+        <rect x="630" y="10" width="320" height="380" rx="8" fill="#14b8a6" fill-opacity=".04" stroke="#14b8a6" stroke-opacity=".3" stroke-width="1.5"/>
+        <text x="646" y="32" fill="#14b8a6" fill-opacity=".5" font-family="monospace" font-size="10" font-weight="bold" letter-spacing="1">DEEP_NET</text>
+        <text x="646" y="44" fill="#14b8a6" fill-opacity=".3" font-family="monospace" font-size="9">10.30.0.0/24</text>
+        <text x="265" y="355" class="hop-label" fill="#f97316" font-size="10">HOP 1</text>
+        <text x="610" y="355" class="hop-label" fill="#f97316" font-size="10">HOP 2</text>
+        <line x1="145" y1="200" x2="290" y2="180" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="145" y1="200" x2="230" y2="310" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="290" y1="180" x2="620" y2="155" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="290" y1="180" x2="505" y2="300" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="620" y1="155" x2="760" y2="150" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <line x1="620" y1="155" x2="760" y2="290" stroke="#2a3050" stroke-width="1" stroke-dasharray="5,4"/>
+        <path d="M175,198 L262,181" stroke="#14b8a6" stroke-width="1.5" fill="none" stroke-opacity=".3" marker-end="url(#s4-arr)"/>
+        <path d="M318,178 L592,157" stroke="#14b8a6" stroke-width="1.5" fill="none" stroke-opacity=".3" marker-end="url(#s4-arr)"/>
+        <path d="M648,154 L734,150" stroke="#14b8a6" stroke-width="1.5" fill="none" stroke-opacity=".3" marker-end="url(#s4-arr)"/>
+        <g id="s4-node-attacker">
+          <circle cx="145" cy="200" r="30" fill="#180808" stroke="#ef4444" stroke-width="2.5" filter="url(#s4-gr)"/>
+          <text x="145" y="196" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="10" font-weight="bold">ATK</text>
+          <text x="145" y="242" text-anchor="middle" fill="#ef4444" font-family="monospace" font-size="11">ATTACKER</text>
+          <text x="145" y="256" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="9">172.21.0.10</text>
+        </g>
+        <g id="s4-node-victim2">
+          <circle cx="230" cy="310" r="24" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="230" y="306" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="9" font-weight="bold">HOST</text>
+          <text x="230" y="344" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="10">VICTIM2</text>
+          <text x="230" y="356" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">172.21.0.21</text>
+        </g>
+        <g id="s4-node-victim1">
+          <circle cx="290" cy="180" r="28" fill="#0a0a20" stroke="#a855f7" stroke-width="2.5"/>
+          <text x="290" y="173" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="9" font-weight="bold">PIVOT 1</text>
+          <text x="290" y="184" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="7">HOP 1</text>
+          <text x="290" y="220" text-anchor="middle" fill="#caa5f7" font-family="monospace" font-size="10">VICTIM1</text>
+          <text x="290" y="233" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">.20 / 10.10.0.20</text>
+        </g>
+        <g id="s4-node-victim3">
+          <circle cx="620" cy="155" r="28" fill="#0a0a20" stroke="#a855f7" stroke-width="2.5"/>
+          <text x="620" y="148" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="9" font-weight="bold">PIVOT 2</text>
+          <text x="620" y="159" text-anchor="middle" fill="#a855f7" font-family="monospace" font-size="7">HOP 2</text>
+          <text x="620" y="195" text-anchor="middle" fill="#caa5f7" font-family="monospace" font-size="10">VICTIM3</text>
+          <text x="620" y="208" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.10.0.10</text>
+        </g>
+        <g id="s4-node-honeypot">
+          <circle cx="505" cy="300" r="24" fill="#0a1008" stroke="#f1fa8c" stroke-width="2"/>
+          <text x="505" y="296" text-anchor="middle" fill="#f1fa8c" font-family="monospace" font-size="8" font-weight="bold">TRAP</text>
+          <text x="505" y="336" text-anchor="middle" fill="#f1fa8c" font-family="monospace" font-size="10">HONEYPOT</text>
+          <text x="505" y="348" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.10.0.50</text>
+        </g>
+        <g id="s4-node-victim4">
+          <circle cx="760" cy="150" r="26" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="760" y="146" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="9" font-weight="bold">HOST</text>
+          <text x="760" y="188" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="10">VICTIM4</text>
+          <text x="760" y="200" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.30.0.10</text>
+        </g>
+        <g id="s4-node-victim5">
+          <circle cx="760" cy="290" r="26" fill="#0a1020" stroke="#3b82f6" stroke-width="2"/>
+          <text x="760" y="286" text-anchor="middle" fill="#3b82f6" font-family="monospace" font-size="9" font-weight="bold">HOST</text>
+          <text x="760" y="328" text-anchor="middle" fill="#8be9fd" font-family="monospace" font-size="10">VICTIM5</text>
+          <text x="760" y="340" text-anchor="middle" fill="#44475a" font-family="monospace" font-size="8">10.30.0.11</text>
+        </g>
+        <g id="s4-node-monitor">
+          <circle cx="100" cy="70" r="20" fill="#081008" stroke="#50fa7b" stroke-width="2" filter="url(#s4-gg)"/>
+          <text x="100" y="66" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="8" font-weight="bold">IDS</text>
+          <text x="100" y="102" text-anchor="middle" fill="#50fa7b" font-family="monospace" font-size="9">MONITOR</text>
+        </g>
+        <g id="s4-packets"></g>
+      </svg>
+    </div>
+    <div class="phase-bar">
+      <div class="phase-bar-title">Current Phase</div>
+      <div class="phase-name" id="s4-phase-name">Ready</div>
+      <div class="phase-desc" id="s4-phase-desc">Press Play to simulate the two-hop chain attack. Attacker → victim1 → victim3 → victim4/5.</div>
+    </div>
+    <div class="panel">
+      <div class="legend">
+        <div class="leg"><div class="leg-dot" style="background:#ef4444"></div>Attacker</div>
+        <div class="leg"><div class="leg-dot" style="background:#a855f7"></div>Pivot (each hop)</div>
+        <div class="leg"><div class="leg-dot" style="background:#3b82f6"></div>Victim</div>
+        <div class="leg"><div class="leg-dot" style="background:#f1fa8c"></div>Honeypot</div>
+        <div class="leg"><div class="leg-dot" style="background:#ffb86c"></div>Compromised</div>
+        <div class="leg"><div class="leg-dot" style="background:#14b8a6"></div>Deep chain</div>
+        <div class="leg"><div class="leg-dot" style="background:#bd93f9"></div>C2 beacon</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <div class="panel">
+      <div class="panel-title">Attack Phases</div>
+      <div class="phase-list" id="s4-phase-list"></div>
+    </div>
+    <div class="panel" style="flex:1">
+      <div class="panel-title">IDS Alerts</div>
+      <div class="alerts-list" id="s4-alerts-list"></div>
+    </div>
+    <div class="panel">
+      <div class="panel-title">Controls</div>
+      <div class="controls">
+        <button class="cbtn" onclick="s4ctrl.reset()">↺</button>
+        <button class="cbtn" onclick="s4ctrl.prevPhase()">◀ Prev</button>
+        <button class="cbtn pbtn" id="s4-play-btn" onclick="s4ctrl.togglePlay()">▶ Play</button>
+        <button class="cbtn" onclick="s4ctrl.nextPhase()">Next ▶</button>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<script>
+/* ── Tab navigation ──────────────────────────────────────────────── */
+const TABS=['overview','s1','s2','s3','s4'];
+function showTab(id){
+  TABS.forEach(t=>{
+    document.getElementById('tab-'+t).classList.toggle('active',t===id);
+    document.getElementById('btn-'+t).classList.toggle('active',t===id);
+  });
+}
+
+/* ── ScenarioController ──────────────────────────────────────────── */
+class ScenarioController{
+  constructor({prefix,nodes,phases,origColors,initDesc}){
+    this.pre=prefix;
+    this.NODES=nodes;
+    this.PHASES=phases;
+    this.origColors=origColors||{};
+    this.initDesc=initDesc||'Press Play to simulate the attack.';
+    this.phase=-1;this.playing=false;this.playTimer=null;this.compromised=new Set();
+  }
+  el(id){return document.getElementById(this.pre+'-'+id);}
+  qs(sel){return document.querySelector(sel.replace(/#node-/g,'#'+this.pre+'-node-'));}
+  renderPhaseList(){
+    this.el('phase-list').innerHTML=this.PHASES.map((p,i)=>`
+      <div class="pi ${i===this.phase?'active':i<this.phase?'done':''}"
+           onclick="window['${this.pre}ctrl'].goToPhase(${i})">${p.icon} ${p.name}</div>
+    `).join('');
+  }
+  setCompromised(id){
+    const g=this.qs('#node-'+id);if(!g)return;
+    const c=g.querySelector('circle');if(!c)return;
+    c.setAttribute('stroke','#ffb86c');c.setAttribute('stroke-width','3');
+    c.style.filter='drop-shadow(0 0 8px #ffb86c)';
+  }
+  resetNodeStyle(id){
+    const g=this.qs('#node-'+id);if(!g)return;
+    const c=g.querySelector('circle');if(!c)return;
+    const orig=this.origColors[id];if(!orig)return;
+    c.setAttribute('stroke',typeof orig==='string'?orig:orig.stroke);
+    c.setAttribute('stroke-width',typeof orig==='string'?'2':(orig.sw||'2'));
+    c.style.filter='';
+  }
+  firePacket(p){
+    return new Promise(resolve=>{
+      const from=this.NODES[p.from],to=this.NODES[p.to];
+      const pkts=this.el('packets');
+      let done=0,total=p.count||1;
+      for(let i=0;i<total;i++){
+        setTimeout(()=>{
+          const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
+          c.setAttribute('r','5');c.setAttribute('fill',p.color);c.setAttribute('opacity','0');
+          pkts.appendChild(c);
+          const dur=p.speed||700,start=performance.now();
+          const step=(now)=>{
+            const t=Math.min((now-start)/dur,1);
+            const e=t<.5?2*t*t:-1+(4-2*t)*t;
+            c.setAttribute('cx',from.x+(to.x-from.x)*e);
+            c.setAttribute('cy',from.y+(to.y-from.y)*e);
+            c.setAttribute('opacity',t<.1?t*10:t>.85?(1-t)/.15:1);
+            if(t<1)requestAnimationFrame(step);
+            else{pkts.removeChild(c);done++;if(done===total)resolve();}
+          };
+          requestAnimationFrame(step);
+        },(p.startDelay||0)+i*(p.interval||200));
+      }
+    });
+  }
+  async runPhasePackets(packets,onDone){
+    await Promise.all(packets.map(p=>this.firePacket(p)));
+    setTimeout(onDone,300);
+  }
+  showAlert(a,delay){
+    setTimeout(()=>{
+      const lid=this.pre+'-a-'+a.id;
+      if(document.getElementById(lid))return;
+      const div=document.createElement('div');
+      div.id=lid;div.className='ac '+a.level+' show';
+      div.innerHTML=`<div class="ac-rule">[${a.level.toUpperCase()}] ${a.rule}</div><div class="ac-desc">${a.desc}</div>`;
+      this.el('alerts-list').appendChild(div);
+    },delay);
+  }
+  goToPhase(n){
+    if(n<0||n>=this.PHASES.length)return;
+    this.phase=n;const p=this.PHASES[n];
+    this.el('phase-name').textContent=p.icon+' '+p.name;
+    this.el('phase-desc').textContent=p.desc;
+    this.renderPhaseList();
+    this.runPhasePackets(p.packets,()=>{
+      p.compromise.forEach(id=>{this.compromised.add(id);this.setCompromised(id);});
+      p.alerts.forEach((a,i)=>this.showAlert(a,i*500));
+      const wait=p.alerts.length*500+600;
+      if(this.playing&&this.phase<this.PHASES.length-1){
+        this.playTimer=setTimeout(()=>this.goToPhase(this.phase+1),wait);
+      }else if(this.phase>=this.PHASES.length-1||p.isFinal){
+        this.playing=false;
+        const btn=this.el('play-btn');
+        btn.textContent='▶ Play';btn.classList.remove('playing');
+      }
+    });
+  }
+  nextPhase(){clearTimeout(this.playTimer);if(this.phase<this.PHASES.length-1)this.goToPhase(this.phase+1);}
+  prevPhase(){clearTimeout(this.playTimer);if(this.phase>0)this.goToPhase(this.phase-1);}
+  togglePlay(){
+    if(this.playing){
+      this.playing=false;clearTimeout(this.playTimer);
+      this.el('play-btn').textContent='▶ Play';this.el('play-btn').classList.remove('playing');
+    }else{
+      this.playing=true;
+      this.el('play-btn').textContent='⏸ Pause';this.el('play-btn').classList.add('playing');
+      if(this.phase>=this.PHASES.length-1)this.reset();
+      this.goToPhase(this.phase+1);
+    }
+  }
+  reset(){
+    this.playing=false;clearTimeout(this.playTimer);
+    this.phase=-1;this.compromised.clear();
+    this.el('packets').innerHTML='';
+    this.el('alerts-list').innerHTML='';
+    this.el('phase-name').textContent='Ready';
+    this.el('phase-desc').textContent=this.initDesc;
+    this.el('play-btn').textContent='▶ Play';this.el('play-btn').classList.remove('playing');
+    Object.keys(this.origColors).forEach(id=>this.resetNodeStyle(id));
+    this.renderPhaseList();
+  }
+}
+
+/* ── S1 ─────────────────────────────────────────────────────────── */
+const s1ctrl=new ScenarioController({
+  prefix:'s1',
+  nodes:{attacker:{x:190,y:180},victim1:{x:490,y:120},victim2:{x:490,y:240},monitor:{x:680,y:180}},
+  origColors:{victim1:{stroke:'#3b82f6',sw:'2'},victim2:{stroke:'#3b82f6',sw:'2'}},
+  initDesc:'Press Play to simulate the attack, or use Next to step through phases manually.',
+  phases:[
+    {name:'Phase 1 — Reconnaissance',icon:'🔍',
+     desc:'Attacker scans 172.21.0.1–29 for open SSH (port 22). Discovers victim1 (172.21.0.20) and victim2 (172.21.0.21).',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#f97316',count:3,interval:300,speed:700},
+       {from:'attacker',to:'victim2',color:'#f97316',count:3,interval:300,speed:700,startDelay:200},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 2 — SSH Brute-Force',icon:'💥',
+     desc:'Attacker tries 10 credential combinations. 6 credentials fail before the correct one is found (labuser:password123). Both victims attacked in parallel.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#ff5555',count:6,interval:250,speed:600},
+       {from:'attacker',to:'victim2',color:'#ff5555',count:6,interval:250,speed:600,startDelay:150},
+       {from:'attacker',to:'victim1',color:'#50fa7b',count:1,speed:600,startDelay:1700},
+       {from:'attacker',to:'victim2',color:'#50fa7b',count:1,speed:600,startDelay:1900},
+     ],
+     compromise:['victim1','victim2'],
+     alerts:[
+       {id:'SSH-001',level:'high',rule:'SSH-001 — Brute-Force Detected',desc:'12 failed logins from 172.21.0.10 targeting 4 usernames (labuser, operator, svcaccount, root).'},
+       {id:'SSH-002',level:'high',rule:'SSH-002 — Password Spray',desc:'Source 172.21.0.10 tried 4 different usernames — classic spray pattern.'},
+       {id:'SSH-003',level:'critical',rule:'SSH-003 — Successful Brute-Force',desc:'172.21.0.10 succeeded after 12 failures. labuser compromised on victim1 and victim2.'},
+     ]},
+    {name:'Phase 5 — C2 Beaconing',icon:'📡',
+     desc:'Compromised hosts send HTTP POST beacons to attacker on port 8888 every 2 seconds. 5 beacons each.',
+     packets:[
+       {from:'victim1',to:'attacker',color:'#bd93f9',count:5,interval:350,speed:700},
+       {from:'victim2',to:'attacker',color:'#bd93f9',count:5,interval:350,speed:700,startDelay:200},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 6 — Detection Report',icon:'🛡️',
+     desc:'IDS monitor produces final report. 3 alerts fired: SSH-001, SSH-002, SSH-003. C2 beacon log not collected in S1 (no honeypot relay).',
+     packets:[],compromise:[],alerts:[],isFinal:true},
+  ]
+});
+window.s1ctrl=s1ctrl;s1ctrl.reset();
+
+/* ── S2 ─────────────────────────────────────────────────────────── */
+const s2ctrl=new ScenarioController({
+  prefix:'s2',
+  nodes:{attacker:{x:150,y:200},victim1:{x:445,y:185},victim2:{x:220,y:310},victim3:{x:650,y:150},honeypot:{x:650,y:300},monitor:{x:280,y:80}},
+  origColors:{
+    victim1:{stroke:'#a855f7',sw:'2.5'},victim2:{stroke:'#3b82f6',sw:'2'},
+    victim3:{stroke:'#3b82f6',sw:'2'},honeypot:{stroke:'#f1fa8c',sw:'2'}
+  },
+  initDesc:'Press Play to simulate the attack, or use Next to step through phases.',
+  phases:[
+    {name:'Phase 1 — Reconnaissance',icon:'🔍',
+     desc:'Attacker scans attack_net (172.21.0.x). Discovers victim1 (pivot, dual-homed) and victim2.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#f97316',count:3,interval:300,speed:650},
+       {from:'attacker',to:'victim2',color:'#f97316',count:3,interval:300,speed:650,startDelay:200},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 2 — SSH Brute-Force',icon:'💥',
+     desc:'Attacker brute-forces victim1 and victim2. 12 failures across 4 usernames before credentials found.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#ff5555',count:6,interval:220,speed:580},
+       {from:'attacker',to:'victim2',color:'#ff5555',count:6,interval:220,speed:580,startDelay:150},
+       {from:'attacker',to:'victim1',color:'#50fa7b',count:1,speed:580,startDelay:1500},
+       {from:'attacker',to:'victim2',color:'#50fa7b',count:1,speed:580,startDelay:1700},
+     ],
+     compromise:['victim1','victim2'],
+     alerts:[
+       {id:'SSH-001',level:'high',rule:'SSH-001 — Brute-Force Detected',desc:'12 failed logins from 172.21.0.10. Usernames: labuser, operator, svcaccount, root.'},
+       {id:'SSH-002',level:'high',rule:'SSH-002 — Password Spray',desc:'4 different usernames tried from same source IP — spray pattern detected.'},
+       {id:'SSH-003a',level:'critical',rule:'SSH-003 — Successful Brute-Force (victim1)',desc:'172.21.0.10 succeeded after failures. labuser compromised on victim1 (pivot).'},
+     ]},
+    {name:'Phase 3 — Pivot Setup',icon:'🔗',
+     desc:'Attacker installs paramiko + simulator.py on victim1. victim1 is now a controlled pivot into internal_net.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#a855f7',count:4,interval:300,speed:600},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 4 — Lateral Movement',icon:'➡️',
+     desc:'victim1 (10.10.0.20) moves laterally into internal_net, brute-forcing victim3 and triggering the honeypot at 10.10.0.50.',
+     packets:[
+       {from:'victim1',to:'victim3',color:'#ff5555',count:4,interval:250,speed:700},
+       {from:'victim1',to:'victim3',color:'#50fa7b',count:1,speed:700,startDelay:1100},
+       {from:'victim1',to:'honeypot',color:'#f1fa8c',count:1,speed:700,startDelay:1400},
+     ],
+     compromise:['victim3'],
+     alerts:[
+       {id:'LATERAL-001',level:'high',rule:'LATERAL-001 — Lateral Movement Detected',desc:'Internal host 10.10.0.20 initiating SSH to 10.10.0.10. East-west traffic — pivot active.'},
+       {id:'HONEYPOT-001',level:'critical',rule:'HONEYPOT-001 — Honeypot Hit',desc:'10.10.0.20 contacted honeypot 10.10.0.50. Attacker has pivoted into internal_net.'},
+       {id:'SSH-003b',level:'critical',rule:'SSH-003 — Successful Brute-Force (victim3)',desc:'10.10.0.20 brute-forced victim3 (10.10.0.10). labuser compromised internally.'},
+     ]},
+    {name:'Phase 5 — C2 Beaconing',icon:'📡',
+     desc:'victim1 beacons directly to attacker. victim3 beacons via relay on victim1:8889. 10 total beacon events.',
+     packets:[
+       {from:'victim1',to:'attacker',color:'#bd93f9',count:5,interval:320,speed:700},
+       {from:'victim3',to:'victim1',color:'#bd93f9',count:5,interval:320,speed:700,startDelay:300},
+     ],compromise:[],
+     alerts:[
+       {id:'C2-001',level:'high',rule:'C2-001 — C2 Beaconing Detected',desc:'10 beacon events. Bot IDs: victim1, victim3. victim3 relays through victim1:8889 to attacker.'},
+     ]},
+    {name:'Phase 6 — Detection Report',icon:'🛡️',
+     desc:'IDS monitor fires all 6 expected rules. Scenario 2 complete.',
+     packets:[],compromise:[],alerts:[],isFinal:true},
+  ]
+});
+window.s2ctrl=s2ctrl;s2ctrl.reset();
+
+/* ── S3 ─────────────────────────────────────────────────────────── */
+const s3ctrl=new ScenarioController({
+  prefix:'s3',
+  nodes:{
+    attacker:{x:160,y:200},
+    victim1:{x:300,y:140},victim2:{x:300,y:310},
+    victim3:{x:560,y:110},honeypot:{x:560,y:175},
+    victim4:{x:560,y:285},victim5:{x:560,y:360},
+    monitor:{x:100,y:80}
+  },
+  origColors:{
+    victim1:{stroke:'#a855f7',sw:'2.5'},victim2:{stroke:'#a855f7',sw:'2.5'},
+    victim3:{stroke:'#3b82f6',sw:'2'},victim4:{stroke:'#3b82f6',sw:'2'},
+    victim5:{stroke:'#3b82f6',sw:'2'},honeypot:{stroke:'#f1fa8c',sw:'2'}
+  },
+  initDesc:'Press Play to simulate the parallel two-pivot attack.',
+  phases:[
+    {name:'Phase 1 — Reconnaissance',icon:'🔍',
+     desc:'Attacker scans attack_net. Finds victim1 (pivot1, dual-homed) and victim2 (pivot2, dual-homed).',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#f97316',count:3,interval:280,speed:650},
+       {from:'attacker',to:'victim2',color:'#f97316',count:3,interval:280,speed:650,startDelay:200},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 2 — Parallel Brute-Force',icon:'💥',
+     desc:'Attacker simultaneously brute-forces victim1 AND victim2. Both run in parallel. 12 failures before success.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#ff5555',count:6,interval:200,speed:560},
+       {from:'attacker',to:'victim2',color:'#ff5555',count:6,interval:200,speed:560,startDelay:100},
+       {from:'attacker',to:'victim1',color:'#50fa7b',count:1,speed:560,startDelay:1350},
+       {from:'attacker',to:'victim2',color:'#50fa7b',count:1,speed:560,startDelay:1500},
+     ],
+     compromise:['victim1','victim2'],
+     alerts:[
+       {id:'SSH-001',level:'high',rule:'SSH-001 — Brute-Force Detected',desc:'12 failed logins from 172.21.0.10 against 4 usernames on both victim1 and victim2.'},
+       {id:'SSH-002',level:'high',rule:'SSH-002 — Password Spray',desc:'Source 172.21.0.10 tried labuser, operator, svcaccount, root — spray pattern.'},
+       {id:'SSH-003a',level:'critical',rule:'SSH-003 — Successful Brute-Force (attack_net)',desc:'172.21.0.10 compromised victim1 and victim2. Both pivots under attacker control.'},
+     ]},
+    {name:'Phase 3 — Pivot Setup (both)',icon:'🔗',
+     desc:'Attacker deploys paramiko + simulator.py on victim1 AND victim2. Two independent pivot channels established.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#a855f7',count:3,interval:300,speed:600},
+       {from:'attacker',to:'victim2',color:'#a855f7',count:3,interval:300,speed:600,startDelay:200},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 4 — Lateral (internal_net)',icon:'➡️',
+     desc:'victim1 pivots into internal_net — brute-forces victim3 and triggers honeypot at 10.10.0.50.',
+     packets:[
+       {from:'victim1',to:'victim3',color:'#ff5555',count:4,interval:250,speed:680},
+       {from:'victim1',to:'victim3',color:'#50fa7b',count:1,speed:680,startDelay:1100},
+       {from:'victim1',to:'honeypot',color:'#f1fa8c',count:1,speed:680,startDelay:1400},
+     ],
+     compromise:['victim3'],
+     alerts:[
+       {id:'LATERAL-001a',level:'high',rule:'LATERAL-001 — Lateral Movement (internal_net)',desc:'10.10.0.20 initiating SSH to internal hosts. victim1 pivot is active.'},
+       {id:'HONEYPOT-001',level:'critical',rule:'HONEYPOT-001 — Honeypot Hit',desc:'10.10.0.20 contacted 10.10.0.50. Attacker confirmed inside internal_net.'},
+       {id:'SSH-003b',level:'critical',rule:'SSH-003 — Successful Brute-Force (internal_net)',desc:'10.10.0.20 brute-forced victim3. labuser compromised internally.'},
+     ]},
+    {name:'Phase 4b — Lateral (extra_net)',icon:'⚡',
+     desc:'victim2 pivots into extra_net — simultaneously attacks victim4 and victim5 in parallel.',
+     packets:[
+       {from:'victim2',to:'victim4',color:'#ff5555',count:4,interval:250,speed:680},
+       {from:'victim2',to:'victim5',color:'#ff5555',count:4,interval:250,speed:680,startDelay:120},
+       {from:'victim2',to:'victim4',color:'#50fa7b',count:1,speed:680,startDelay:1100},
+       {from:'victim2',to:'victim5',color:'#50fa7b',count:1,speed:680,startDelay:1250},
+     ],
+     compromise:['victim4','victim5'],
+     alerts:[
+       {id:'LATERAL-001b',level:'high',rule:'LATERAL-001 — Lateral Movement (extra_net)',desc:'10.20.0.20 initiating SSH to extra_net. victim2 pivot active on separate subnet.'},
+       {id:'SSH-003c',level:'critical',rule:'SSH-003 — Successful Brute-Force (extra_net)',desc:'10.20.0.20 compromised victim4 and victim5. labuser compromised on both.'},
+     ]},
+    {name:'Phase 5 — C2 Beaconing',icon:'📡',
+     desc:'victim1 beacons directly. victim3 relays through victim1. 10 beacon events total.',
+     packets:[
+       {from:'victim1',to:'attacker',color:'#bd93f9',count:5,interval:300,speed:700},
+       {from:'victim3',to:'victim1',color:'#bd93f9',count:5,interval:300,speed:680,startDelay:250},
+     ],compromise:[],
+     alerts:[
+       {id:'C2-001',level:'high',rule:'C2-001 — C2 Beaconing Detected',desc:'10 beacons. Bot IDs: victim1, victim3. victim3 relays via victim1:8889 relay.'},
+     ]},
+    {name:'Phase 6 — Detection Report',icon:'🛡️',
+     desc:'8 alerts total: SSH-001, SSH-002, 2×SSH-003, 2×LATERAL-001, HONEYPOT-001, C2-001. Scenario 3 complete.',
+     packets:[],compromise:[],alerts:[],isFinal:true},
+  ]
+});
+window.s3ctrl=s3ctrl;s3ctrl.reset();
+
+/* ── S4 ─────────────────────────────────────────────────────────── */
+const s4ctrl=new ScenarioController({
+  prefix:'s4',
+  nodes:{
+    attacker:{x:145,y:200},
+    victim1:{x:290,y:180},victim2:{x:230,y:310},
+    victim3:{x:620,y:155},honeypot:{x:505,y:300},
+    victim4:{x:760,y:150},victim5:{x:760,y:290},
+    monitor:{x:100,y:70}
+  },
+  origColors:{
+    victim1:{stroke:'#a855f7',sw:'2.5'},victim2:{stroke:'#3b82f6',sw:'2'},
+    victim3:{stroke:'#a855f7',sw:'2.5'},victim4:{stroke:'#3b82f6',sw:'2'},
+    victim5:{stroke:'#3b82f6',sw:'2'},honeypot:{stroke:'#f1fa8c',sw:'2'}
+  },
+  initDesc:'Press Play to simulate the two-hop chain attack. Attacker → victim1 → victim3 → victim4/5.',
+  phases:[
+    {name:'Phase 1 — Reconnaissance',icon:'🔍',
+     desc:'Attacker scans attack_net. Discovers victim1 (172.21.0.20) as primary target for two-hop chain.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#f97316',count:3,interval:300,speed:650},
+       {from:'attacker',to:'victim2',color:'#f97316',count:2,interval:300,speed:650,startDelay:200},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 2 — Brute-Force victim1',icon:'💥',
+     desc:'Attacker brute-forces victim1. 12 failures across 4 usernames before credentials found (labuser:password123).',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#ff5555',count:6,interval:220,speed:580},
+       {from:'attacker',to:'victim1',color:'#50fa7b',count:1,speed:580,startDelay:1400},
+     ],
+     compromise:['victim1'],
+     alerts:[
+       {id:'SSH-001',level:'high',rule:'SSH-001 — Brute-Force Detected',desc:'12 failed logins from 172.21.0.10. Usernames: labuser, operator, svcaccount, root.'},
+       {id:'SSH-002',level:'high',rule:'SSH-002 — Password Spray',desc:'4 different usernames tried from same source IP — spray pattern detected.'},
+       {id:'SSH-003a',level:'critical',rule:'SSH-003 — Successful Brute-Force',desc:'172.21.0.10 succeeded after 12 failures. victim1 compromised — HOP 1 established.'},
+     ]},
+    {name:'Phase 3 — Pivot Setup on victim1',icon:'🔗',
+     desc:'Attacker installs paramiko + simulator.py on victim1. HOP 1 ready — can now attack internal_net.',
+     packets:[
+       {from:'attacker',to:'victim1',color:'#a855f7',count:4,interval:280,speed:600},
+     ],compromise:[],alerts:[]},
+    {name:'Phase 4 — Lateral to internal_net',icon:'➡️',
+     desc:'victim1 (10.10.0.20) attacks victim3 (10.10.0.10). victim3 becomes HOP 2 pivot into deep_net.',
+     packets:[
+       {from:'victim1',to:'victim3',color:'#ff5555',count:5,interval:240,speed:700},
+       {from:'victim1',to:'victim3',color:'#50fa7b',count:1,speed:700,startDelay:1250},
+       {from:'victim1',to:'honeypot',color:'#f1fa8c',count:1,speed:700,startDelay:1600},
+     ],
+     compromise:['victim3'],
+     alerts:[
+       {id:'LATERAL-001a',level:'high',rule:'LATERAL-001 — Lateral Movement (HOP 1)',desc:'Internal host 10.10.0.20 initiating SSH to victim3 (10.10.0.10) — first internal crossing.'},
+       {id:'HONEYPOT-001',level:'critical',rule:'HONEYPOT-001 — Honeypot Hit',desc:'10.10.0.20 contacted 10.10.0.50. Attacker confirmed inside internal_net via HOP 1.'},
+       {id:'SSH-003b',level:'critical',rule:'SSH-003 — Successful Brute-Force (victim3)',desc:'10.10.0.20 compromised victim3. victim3 becomes HOP 2 pivot.'},
+     ]},
+    {name:'Phase 4b — Deep Lateral (victim3 → deep_net)',icon:'⛓️',
+     desc:'victim3 (10.10.0.10) attacks victim4 and victim5 in deep_net (10.30.0.0/24). Two hops from attacker.',
+     packets:[
+       {from:'victim3',to:'victim4',color:'#14b8a6',count:5,interval:230,speed:750},
+       {from:'victim3',to:'victim5',color:'#14b8a6',count:5,interval:230,speed:750,startDelay:150},
+       {from:'victim3',to:'victim4',color:'#50fa7b',count:1,speed:750,startDelay:1300},
+       {from:'victim3',to:'victim5',color:'#50fa7b',count:1,speed:750,startDelay:1500},
+     ],
+     compromise:['victim4','victim5'],
+     alerts:[
+       {id:'LATERAL-001b',level:'high',rule:'LATERAL-001 — Lateral Movement (HOP 2)',desc:'Internal host 10.10.0.10 initiating SSH to deep_net — second internal crossing.'},
+       {id:'SSH-003c',level:'critical',rule:'SSH-003 — Successful Brute-Force (deep_net)',desc:'10.10.0.10 compromised victim4 and victim5 in deep_net. Chain: ATK→V1→V3→V4/V5.'},
+     ]},
+    {name:'Phase 5 — C2 Beaconing',icon:'📡',
+     desc:'Compromised hosts beacon back. victim1 → attacker direct. victim3 → victim1 relay → attacker.',
+     packets:[
+       {from:'victim1',to:'attacker',color:'#bd93f9',count:5,interval:300,speed:700},
+       {from:'victim3',to:'victim1',color:'#bd93f9',count:5,interval:300,speed:700,startDelay:300},
+     ],compromise:[],
+     alerts:[
+       {id:'C2-001',level:'high',rule:'C2-001 — C2 Beaconing Detected',desc:'10 beacons. Bot IDs: victim1, victim3. Chain traversal confirmed through 2 internal boundaries.'},
+     ]},
+    {name:'Phase 6 — Detection Report',icon:'🛡️',
+     desc:'Full chain detected. ATK→V1(HOP1)→V3(HOP2)→V4/V5. 7 alerts: SSH-001, SSH-002, SSH-003, 2×LATERAL-001, HONEYPOT-001, C2-001.',
+     packets:[],compromise:[],alerts:[],isFinal:true},
+  ]
+});
+window.s4ctrl=s4ctrl;s4ctrl.reset();
+</script>
+</body>
+</html>

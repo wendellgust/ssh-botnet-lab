@@ -1,0 +1,126 @@
+# Scenario 3 — Three Networks, Two Pivot Points
+# attack_net:  attacker, victim1, victim2, monitor
+# internal_net: victim1(pivot1), victim3, honeypot
+# extra_net:    victim2(pivot2), victim4, victim5
+#
+# Two separate pivots — victim1 leads to internal_net,
+# victim2 leads to extra_net. The botnet must compromise
+# BOTH pivots to fully propagate.
+#
+# Usage: podman compose -f scenarios/scenario3.yml up -d --build
+
+networks:
+  attack_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.21.0.0/24
+
+  internal_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.10.0.0/24
+
+  extra_net:
+    driver: bridge
+    internal: true
+    ipam:
+      config:
+        - subnet: 10.20.0.0/24
+
+services:
+  attacker:
+    build: ./attacker
+    container_name: attacker
+    hostname: attacker
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.10
+    stdin_open: true
+    tty: true
+    restart: "no"
+
+  victim1:
+    build: ./victim
+    container_name: victim1
+    hostname: victim1
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.20
+      internal_net:
+        ipv4_address: 10.10.0.20
+    environment:
+      - LAB_ROLE=pivot1
+    cap_add:
+      - NET_ADMIN
+
+  victim2:
+    build: ./victim
+    container_name: victim2
+    hostname: victim2
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.21
+      extra_net:
+        ipv4_address: 10.20.0.20
+    environment:
+      - LAB_ROLE=pivot2
+    cap_add:
+      - NET_ADMIN
+
+  victim3:
+    build: ./victim-b
+    container_name: victim3
+    hostname: victim3
+    networks:
+      internal_net:
+        ipv4_address: 10.10.0.10
+    cap_add:
+      - NET_ADMIN
+
+  honeypot:
+    build: ./victim-b
+    container_name: honeypot
+    hostname: prod-server-01
+    networks:
+      internal_net:
+        ipv4_address: 10.10.0.50
+    environment:
+      - LAB_ROLE=honeypot
+    cap_add:
+      - NET_ADMIN
+
+  victim4:
+    build: ./victim-c
+    container_name: victim4
+    hostname: victim4
+    networks:
+      extra_net:
+        ipv4_address: 10.20.0.10
+    cap_add:
+      - NET_ADMIN
+
+  victim5:
+    build: ./victim-c
+    container_name: victim5
+    hostname: victim5
+    networks:
+      extra_net:
+        ipv4_address: 10.20.0.11
+    cap_add:
+      - NET_ADMIN
+
+  monitor:
+    build: ./monitor
+    container_name: monitor
+    hostname: monitor
+    networks:
+      attack_net:
+        ipv4_address: 172.21.0.100
+      internal_net:
+        ipv4_address: 10.10.0.100
+    stdin_open: true
+    tty: true

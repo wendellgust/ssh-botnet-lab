@@ -1,0 +1,15 @@
+Test:     0_baseline
+Defenses: none
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       1         2       
+victim2       21        2       
+victim3       10        2       
+
+Found: 3  Compromised: 3  Networks: 1
+
+  ✓ 172.21.0.20      compromised   deploy:deploy123      via direct
+  ✓ 172.21.0.21      compromised   deploy:deploy123      via direct
+  ✓ 172.21.0.22      compromised   deploy:deploy123      via direct

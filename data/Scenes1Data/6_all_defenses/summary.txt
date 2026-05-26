@@ -1,0 +1,13 @@
+Test:     6_all_defenses
+Defenses: fail2ban,block_ip,rate_limit,disable_password
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim2       50        0       
+victim3       36        2       
+
+Found: 2  Compromised: 1  Networks: 1
+
+  ✗ 172.21.0.21      failed        —                     via direct
+  ✓ 172.21.0.22      compromised   deploy:deploy123      via direct

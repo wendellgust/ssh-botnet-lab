@@ -1,0 +1,29 @@
+Connection from 172.21.0.10 port 45574 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 45574
+Connection from 172.21.0.10 port 47848 on 172.21.0.20 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 47848 ssh2
+Connection from 172.21.0.10 port 47854 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 47854
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 47854 ssh2
+Connection from 172.21.0.10 port 47864 on 172.21.0.20 port 22 rdomain ""
+Failed password for labuser from 172.21.0.10 port 47864 ssh2
+Connection from 172.21.0.10 port 47870 on 172.21.0.20 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 47870 ssh2
+Connection from 172.21.0.10 port 47874 on 172.21.0.20 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 47874 ssh2
+Connection from 172.21.0.10 port 47888 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 47888
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 47888 ssh2
+Connection from 172.21.0.10 port 47892 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 47892 ssh2
+Connection from 172.21.0.10 port 44274 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 44274
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 44274 ssh2
+Connection from 172.21.0.10 port 44288 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 44288
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 44288 ssh2

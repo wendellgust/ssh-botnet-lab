@@ -1,0 +1,174 @@
+Connection from 172.21.0.10 port 46258 on 172.21.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 46258
+Connection from 172.21.0.10 port 51670 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 51670
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 51670 ssh2
+Connection from 172.21.0.10 port 51672 on 172.21.0.20 port 22 rdomain ""
+Failed password for labuser from 172.21.0.10 port 51672 ssh2
+Connection from 172.21.0.10 port 51682 on 172.21.0.20 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 51682 ssh2
+Connection from 172.21.0.10 port 51686 on 172.21.0.20 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 51686 ssh2
+Connection from 172.21.0.10 port 51698 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 51698
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 51698 ssh2
+Connection from 172.21.0.10 port 51712 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 51712
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 51712 ssh2
+Connection from 172.21.0.10 port 48878 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 48878
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 48878 ssh2
+Connection from 172.21.0.10 port 48894 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 48894
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 48894 ssh2
+Connection from 172.21.0.10 port 48908 on 172.21.0.20 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 48908 ssh2
+Connection from 172.21.0.10 port 48920 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 48920
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 48920 ssh2
+Connection from 172.21.0.10 port 48924 on 172.21.0.20 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 48924 ssh2
+Connection from 172.21.0.10 port 48934 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 48934
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 48934 ssh2
+Connection from 172.21.0.10 port 48942 on 172.21.0.20 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 48942
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 48942 ssh2
+Connection from 172.21.0.10 port 48948 on 172.21.0.20 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 48948
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 48948 ssh2
+Connection from 172.21.0.10 port 48952 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 48952
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 48952 ssh2
+Connection from 172.21.0.10 port 48966 on 172.21.0.20 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 48966
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 48966 ssh2
+Connection from 172.21.0.10 port 48968 on 172.21.0.20 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 48968
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 172.21.0.10 port 48968 ssh2
+Connection from 172.21.0.10 port 48982 on 172.21.0.20 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 48982 ssh2
+Connection from 172.21.0.10 port 48992 on 172.21.0.20 port 22 rdomain ""
+Failed password for admin from 172.21.0.10 port 48992 ssh2
+Connection from 172.21.0.10 port 48996 on 172.21.0.20 port 22 rdomain ""
+Accepted password for root from 172.21.0.10 port 48996 ssh2
+Connection from 172.21.0.10 port 48998 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 48996: Connection reset by peer
+Accepted password for root from 172.21.0.10 port 48998 ssh2
+Starting session: command for root from 172.21.0.10 port 48998 id 0
+Read error from remote host 172.21.0.10 port 48998: Connection reset by peer
+Connection from 172.21.0.10 port 49002 on 172.21.0.20 port 22 rdomain ""
+Accepted password for root from 172.21.0.10 port 49002 ssh2
+Starting session: command for root from 172.21.0.10 port 49002 id 0
+Connection from 10.10.0.20 port 40214 on 10.10.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.10.0.20 port 40214
+Read error from remote host 172.21.0.10 port 49002: Connection reset by peer
+Connection from 172.21.0.10 port 59646 on 172.21.0.20 port 22 rdomain ""
+Accepted password for root from 172.21.0.10 port 59646 ssh2
+Connection from 172.21.0.10 port 51402 on 172.21.0.20 port 22 rdomain ""
+Accepted password for root from 172.21.0.10 port 51402 ssh2
+Read error from remote host 172.21.0.10 port 59646: Connection reset by peer
+Connection from 172.21.0.10 port 51408 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 51402: Connection reset by peer
+Accepted password for root from 172.21.0.10 port 51408 ssh2
+Connection from 10.10.0.20 port 40234 on 10.10.0.20 port 22 rdomain ""
+Invalid user operator from 10.10.0.20 port 40234
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.10.0.20 port 40234 ssh2
+Connection closed by invalid user operator 10.10.0.20 port 40234 [preauth]
+Connection from 10.10.0.20 port 40242 on 10.10.0.20 port 22 rdomain ""
+Invalid user operator from 10.10.0.20 port 40242
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.10.0.20 port 40242 ssh2
+Connection closed by invalid user operator 10.10.0.20 port 40242 [preauth]
+Connection from 10.10.0.20 port 40252 on 10.10.0.20 port 22 rdomain ""
+Invalid user pi from 10.10.0.20 port 40252
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.10.0.20 port 40252 ssh2
+Connection closed by invalid user pi 10.10.0.20 port 40252 [preauth]
+Connection from 10.10.0.20 port 40254 on 10.10.0.20 port 22 rdomain ""
+Invalid user pi from 10.10.0.20 port 40254
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.10.0.20 port 40254 ssh2
+Connection closed by invalid user pi 10.10.0.20 port 40254 [preauth]
+Connection from 10.10.0.20 port 40260 on 10.10.0.20 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 40260 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 40260 [preauth]
+Connection from 10.10.0.20 port 51016 on 10.10.0.20 port 22 rdomain ""
+Failed password for deploy from 10.10.0.20 port 51016 ssh2
+Connection closed by authenticating user deploy 10.10.0.20 port 51016 [preauth]
+Connection from 10.10.0.20 port 51030 on 10.10.0.20 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 51030
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 51030 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 51030 [preauth]
+Connection from 10.10.0.20 port 51040 on 10.10.0.20 port 22 rdomain ""
+Failed password for root from 10.10.0.20 port 51040 ssh2
+Connection closed by authenticating user root 10.10.0.20 port 51040 [preauth]
+Connection from 10.10.0.20 port 51056 on 10.10.0.20 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 51056
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 51056 ssh2
+Connection closed by invalid user test 10.10.0.20 port 51056 [preauth]
+Connection from 10.10.0.20 port 51068 on 10.10.0.20 port 22 rdomain ""
+Failed password for admin from 10.10.0.20 port 51068 ssh2
+Connection closed by authenticating user admin 10.10.0.20 port 51068 [preauth]
+Connection from 10.10.0.20 port 51076 on 10.10.0.20 port 22 rdomain ""
+Failed password for deploy from 10.10.0.20 port 51076 ssh2
+Connection closed by authenticating user deploy 10.10.0.20 port 51076 [preauth]
+Connection from 10.10.0.20 port 51090 on 10.10.0.20 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 51090
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 51090 ssh2
+Connection closed by invalid user user 10.10.0.20 port 51090 [preauth]
+Connection from 10.10.0.20 port 51098 on 10.10.0.20 port 22 rdomain ""
+Failed password for labuser from 10.10.0.20 port 51098 ssh2
+Connection closed by authenticating user labuser 10.10.0.20 port 51098 [preauth]
+Connection from 10.10.0.20 port 51112 on 10.10.0.20 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 51112
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 51112 ssh2
+Connection closed by invalid user user 10.10.0.20 port 51112 [preauth]
+Connection from 10.10.0.20 port 51120 on 10.10.0.20 port 22 rdomain ""
+Invalid user test from 10.10.0.20 port 51120
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.10.0.20 port 51120 ssh2
+Connection closed by invalid user test 10.10.0.20 port 51120 [preauth]
+Connection from 10.10.0.20 port 51136 on 10.10.0.20 port 22 rdomain ""
+Accepted password for deploy from 10.10.0.20 port 51136 ssh2
+User child is on pid 861
+Connection closed by 10.10.0.20 port 51136
+Transferred: sent 2296, received 1104 bytes
+Closing connection to 10.10.0.20 port 51136
+Connection from 172.21.0.10 port 57468 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 51408: Connection reset by peer
+Accepted password for root from 172.21.0.10 port 57468 ssh2
+Connection from 10.10.0.20 port 51150 on 10.10.0.20 port 22 rdomain ""
+Accepted password for deploy from 10.10.0.20 port 51150 ssh2
+User child is on pid 865
+Starting session: command for deploy from 10.10.0.20 port 51150 id 0
+Connection from 172.21.0.10 port 57480 on 172.21.0.20 port 22 rdomain ""
+Connection closed by 10.10.0.20 port 51150
+Close session: user deploy from 10.10.0.20 port 51150 id 0
+Transferred: sent 2600, received 1248 bytes
+Closing connection to 10.10.0.20 port 51150
+Accepted password for root from 172.21.0.10 port 57480 ssh2
+Read error from remote host 172.21.0.10 port 57468: Connection reset by peer
+Connection from 172.21.0.10 port 56326 on 172.21.0.20 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 57480: Connection reset by peer
+Accepted password for root from 172.21.0.10 port 56326 ssh2
+Read error from remote host 172.21.0.10 port 56326: Connection reset by peer

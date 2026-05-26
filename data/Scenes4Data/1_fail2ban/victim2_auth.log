@@ -1,0 +1,38 @@
+Connection from 172.21.0.10 port 57020 on 172.21.0.21 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 172.21.0.10 port 57020
+Connection from 172.21.0.10 port 58448 on 172.21.0.21 port 22 rdomain ""
+Invalid user user from 172.21.0.10 port 58448
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 172.21.0.10 port 58448 ssh2
+Connection from 172.21.0.10 port 58452 on 172.21.0.21 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 58452
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 172.21.0.10 port 58452 ssh2
+Connection from 172.21.0.10 port 58462 on 172.21.0.21 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 58462
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 172.21.0.10 port 58462 ssh2
+Connection from 172.21.0.10 port 58466 on 172.21.0.21 port 22 rdomain ""
+Invalid user pi from 172.21.0.10 port 58466
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 172.21.0.10 port 58466 ssh2
+Connection from 172.21.0.10 port 58472 on 172.21.0.21 port 22 rdomain ""
+Failed password for root from 172.21.0.10 port 58472 ssh2
+Connection from 172.21.0.10 port 58476 on 172.21.0.21 port 22 rdomain ""
+Accepted password for deploy from 172.21.0.10 port 58476 ssh2
+User child is on pid 25
+Connection from 172.21.0.10 port 58480 on 172.21.0.21 port 22 rdomain ""
+Accepted password for deploy from 172.21.0.10 port 58480 ssh2
+Read error from remote host 172.21.0.10 port 58476: Connection reset by peer
+User child is on pid 27
+Starting session: command for deploy from 172.21.0.10 port 58480 id 0
+Close session: user deploy from 172.21.0.10 port 58480 id 0
+Connection closed by authenticating user root 172.21.0.10 port 58472 [preauth]
+Connection closed by invalid user test 172.21.0.10 port 58452 [preauth]
+Connection closed by invalid user user 172.21.0.10 port 58448 [preauth]
+Connection closed by invalid user operator 172.21.0.10 port 58462 [preauth]
+Connection closed by invalid user pi 172.21.0.10 port 58466 [preauth]
+Connection closed by 172.21.0.10 port 58480
+Transferred: sent 2552, received 1264 bytes
+Closing connection to 172.21.0.10 port 58480

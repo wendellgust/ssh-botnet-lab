@@ -1,0 +1,54 @@
+{
+    "stats": {
+        "found": 5,
+        "compromised": 2,
+        "nets": 2
+    },
+    "hosts": [
+        {
+            "ip": "172.21.0.20",
+            "state": "failed",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "172.21."
+        },
+        {
+            "ip": "172.21.0.21",
+            "state": "compromised",
+            "user": "admin",
+            "pwd": "admin",
+            "via": "direct",
+            "net": "172.21."
+        },
+        {
+            "ip": "10.20.0.10",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "rootdeep",
+            "via": "172.21.0.21",
+            "net": "10.20."
+        },
+        {
+            "ip": "10.20.0.11",
+            "state": "attacking",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "10.20."
+        },
+        {
+            "ip": "10.20.0.20",
+            "state": "open",
+            "user": "",
+            "pwd": "",
+            "via": null,
+            "net": "10.20."
+        }
+    ],
+    "alerts": [
+        "PIVOT_DETECTED: lateral movement through 172.21.0.21"
+    ],
+    "running": false,
+    "done": true
+}

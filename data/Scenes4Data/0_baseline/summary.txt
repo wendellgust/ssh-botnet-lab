@@ -1,0 +1,26 @@
+Test:     0_baseline
+Defenses: none
+Target:   victim1
+
+Host          Failed    Accepted
+──────────────────────────
+victim1       60        18      
+victim2       13        2       
+victim3       179       11      
+victim4       82        2       
+victim5       13        2       
+honeypot      71        2       
+
+Found: 8  Compromised: 8  Networks: 3
+
+  ✓ 172.21.0.20      compromised   admin:admin           via direct
+  ✓ 172.21.0.21      compromised   deploy:deploy123      via direct
+  ✓ 10.10.0.20       compromised   deploy:deploy123      via 172.21.0.20
+  ✓ 10.10.0.10       compromised   root:rootpass         via 172.21.0.20
+  ✓ 10.10.0.50       compromised   labuser:internal123   via 172.21.0.20
+  ✓ 10.30.0.20       compromised   labuser:internal123   via 10.10.0.10
+  ✓ 10.30.0.10       compromised   labuser:deepnet123    via 10.10.0.10
+  ✓ 10.30.0.11       compromised   labuser:deepnet123    via 10.10.0.10
+
+  ⚠ PIVOT_DETECTED: lateral movement through 10.10.0.10
+  ⚠ PIVOT_DETECTED: lateral movement through 172.21.0.20
