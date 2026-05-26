@@ -48,7 +48,6 @@ ssh-botnet-lab/
 │   └── visualize_defense_data.py  Plot defense comparison charts
 │
 ├── docs/                       Documentation and generated assets
-│   ├── DATA_COLLECTION.md
 │   ├── scenarios_diagram.svg
 │   ├── charts/                 Generated PNG diagrams and charts
 │   └── report/                 Lab report outputs
