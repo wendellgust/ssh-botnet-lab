@@ -42,8 +42,15 @@ RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC
 
 wait_for_ssh() {
   local host="$1" tries=0
-  while [ $tries -lt 20 ]; do
-    $EXE exec "$host" bash -c 'ss -tlnp | grep -q ":22"' 2>/dev/null && return 0
+  while [ $tries -lt 30 ]; do
+    # Check port open AND sshd responds to banner exchange
+    if $EXE exec "$host" bash -c 'ss -tlnp | grep -q ":22"' 2>/dev/null; then
+      if $EXE exec "$host" bash -c \
+          'timeout 2 bash -c "exec 3<>/dev/tcp/127.0.0.1/22 && head -1 <&3 | grep -q SSH"' \
+          2>/dev/null; then
+        return 0
+      fi
+    fi
     sleep 2; tries=$((tries+1))
   done
   echo "    WARNING: $host sshd may not be ready"
@@ -183,7 +190,7 @@ run_test() {
   # 4. Wait for sshd on all victims
   echo "  Waiting for sshd..."
   for v in $VICTIMS; do wait_for_ssh "$v"; done
-  sleep 2
+  sleep 5
 
   # 5. Apply defenses
   if [ -n "$defenses" ]; then
