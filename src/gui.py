@@ -1148,6 +1148,19 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.send_response(204)
             self.end_headers()
 
+        elif path == '/setup/assume':
+            # Mark setup as done without running containers (for scripts that bring up
+            # containers externally via auto_run.sh before starting the GUI).
+            scenario = params.get('scenario', ['2'])[0]
+            if not setup_state['running']:
+                setup_state.update({'running': False, 'done': True,
+                                    'scenario': scenario, 'error': None})
+                broadcast({'type': 'setup_done', 'scenario': scenario})
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            self.wfile.write(b'{"ok":true}')
+
         elif path == '/run':
             delay = params.get('delay', ['0.5'])[0]
             if not state['running'] and setup_state['done']:

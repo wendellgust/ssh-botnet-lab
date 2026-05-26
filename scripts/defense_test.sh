@@ -220,6 +220,11 @@ if ! curl -sf "$GUI/" >/dev/null 2>&1; then
   exit 1
 fi
 
+# Containers were started externally — tell the GUI setup is done for this scenario
+echo "  Notifying GUI that scenario $SCENARIO containers are ready..."
+curl -sf "$GUI/setup/assume?scenario=$SCENARIO" >/dev/null
+sleep 1
+
 for test_def in "${TESTS[@]}"; do
   run_test "${test_def%%:*}" "${test_def#*:}"
 done
