@@ -1,0 +1,378 @@
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 127.0.0.1 port 40972
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.20.0.20 port 44924
+Invalid user admin from 10.20.0.20 port 44938
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 44938 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 44938 [preauth]
+Invalid user deploy from 10.20.0.20 port 44948
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 44948 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 44948 [preauth]
+Invalid user user from 10.20.0.20 port 44960
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 44960 ssh2
+Connection closed by invalid user user 10.20.0.20 port 44960 [preauth]
+Failed password for root from 10.20.0.20 port 44968 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 44968 [preauth]
+Invalid user deploy from 10.20.0.20 port 44972
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 44972 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 44972 [preauth]
+Invalid user pi from 10.20.0.20 port 44976
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 44976 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 44976 [preauth]
+Failed password for labuser from 10.20.0.20 port 44990 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 44990 [preauth]
+Failed password for root from 10.20.0.20 port 47618 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 47618 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 47632
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 47632 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 47632 [preauth]
+Invalid user deploy from 10.20.0.20 port 47644
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 47644 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 47644 [preauth]
+Invalid user user from 10.20.0.20 port 47658
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 47658 ssh2
+Connection closed by invalid user user 10.20.0.20 port 47658 [preauth]
+Invalid user test from 10.20.0.20 port 47674
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 47674 ssh2
+Connection closed by invalid user test 10.20.0.20 port 47674 [preauth]
+Invalid user deploy from 10.20.0.20 port 47684
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 47684 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 47684 [preauth]
+Invalid user test from 10.20.0.20 port 47696
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 47696 ssh2
+Connection closed by invalid user test 10.20.0.20 port 47696 [preauth]
+Failed password for root from 10.20.0.20 port 47710 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 47710 [preauth]
+Failed password for root from 10.20.0.20 port 47724 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 47724 [preauth]
+Invalid user user from 10.20.0.20 port 47732
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 47732 ssh2
+Connection closed by invalid user user 10.20.0.20 port 47732 [preauth]
+Invalid user test from 10.20.0.20 port 47742
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 47742 ssh2
+Connection closed by invalid user test 10.20.0.20 port 47742 [preauth]
+Invalid user user from 10.20.0.20 port 47744
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 47744 ssh2
+Connection closed by invalid user user 10.20.0.20 port 47744 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 47750
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 47750 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 47750 [preauth]
+Invalid user admin from 10.20.0.20 port 47764
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 47764 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 47764 [preauth]
+Invalid user test from 10.20.0.20 port 47768
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 47768 ssh2
+Connection closed by invalid user test 10.20.0.20 port 47768 [preauth]
+Invalid user pi from 10.20.0.20 port 47778
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 47778 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 47778 [preauth]
+Invalid user pi from 10.20.0.20 port 50656
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 50656 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 50656 [preauth]
+Invalid user operator from 10.20.0.20 port 50662
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 50662 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 50662 [preauth]
+Invalid user pi from 10.20.0.20 port 50668
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 50668 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 50668 [preauth]
+Invalid user user from 10.20.0.20 port 50680
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 50680 ssh2
+Connection closed by invalid user user 10.20.0.20 port 50680 [preauth]
+Failed password for root from 10.20.0.20 port 50694 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 50694 [preauth]
+Invalid user test from 10.20.0.20 port 50708
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 50708 ssh2
+Connection closed by invalid user test 10.20.0.20 port 50708 [preauth]
+Invalid user admin from 10.20.0.20 port 50722
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 50722 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 50722 [preauth]
+Invalid user admin from 10.20.0.20 port 50734
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 50734 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 50734 [preauth]
+Invalid user test from 10.20.0.20 port 50738
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 50738 ssh2
+Connection closed by invalid user test 10.20.0.20 port 50738 [preauth]
+Failed password for labuser from 10.20.0.20 port 50748 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 50748 [preauth]
+Invalid user user from 10.20.0.20 port 50762
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 50762 ssh2
+Connection closed by invalid user user 10.20.0.20 port 50762 [preauth]
+Invalid user deploy from 10.20.0.20 port 50770
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 50770 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 50770 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 50780
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 50780 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 50780 [preauth]
+Invalid user user from 10.20.0.20 port 50782
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 50782 ssh2
+Connection closed by invalid user user 10.20.0.20 port 50782 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 50792
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 50792 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 50792 [preauth]
+Invalid user user from 10.20.0.20 port 44170
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 44170 ssh2
+Connection closed by invalid user user 10.20.0.20 port 44170 [preauth]
+Invalid user user from 10.20.0.20 port 44180
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 44180 ssh2
+Connection closed by invalid user user 10.20.0.20 port 44180 [preauth]
+Invalid user operator from 10.20.0.20 port 44188
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 44188 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 44188 [preauth]
+Invalid user operator from 10.20.0.20 port 44198
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 44198 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 44198 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 44204
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 44204 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 44204 [preauth]
+Failed password for labuser from 10.20.0.20 port 44208 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 44208 [preauth]
+Invalid user test from 10.20.0.20 port 44222
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 44222 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44222 [preauth]
+Invalid user test from 10.20.0.20 port 44226
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 44226 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44226 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 44234
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 44234 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 44234 [preauth]
+Invalid user deploy from 10.20.0.20 port 44246
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 44246 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 44246 [preauth]
+Invalid user pi from 10.20.0.20 port 44252
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 44252 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 44252 [preauth]
+Invalid user pi from 10.20.0.20 port 44262
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 44262 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 44262 [preauth]
+Invalid user deploy from 10.20.0.20 port 44278
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 44278 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 44278 [preauth]
+Invalid user operator from 10.20.0.20 port 44282
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 44282 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 44282 [preauth]
+Invalid user admin from 10.20.0.20 port 44292
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 44292 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 44292 [preauth]
+Invalid user pi from 10.20.0.20 port 44308
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 44308 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 44308 [preauth]
+Invalid user admin from 10.20.0.20 port 43468
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43468 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43468 [preauth]
+Invalid user test from 10.20.0.20 port 43482
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 43482 ssh2
+Connection closed by invalid user test 10.20.0.20 port 43482 [preauth]
+Failed password for labuser from 10.20.0.20 port 43496 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43496 [preauth]
+Invalid user admin from 10.20.0.20 port 43504
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43504 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43504 [preauth]
+Invalid user admin from 10.20.0.20 port 43512
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43512 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43512 [preauth]
+Invalid user deploy from 10.20.0.20 port 43518
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 43518 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 43518 [preauth]
+Invalid user operator from 10.20.0.20 port 43524
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 43524 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 43524 [preauth]
+Failed password for root from 10.20.0.20 port 43530 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 43530 [preauth]
+Invalid user operator from 10.20.0.20 port 43532
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 43532 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 43532 [preauth]
+Failed password for labuser from 10.20.0.20 port 43538 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43538 [preauth]
+Invalid user admin from 10.20.0.20 port 43540
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43540 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43540 [preauth]
+Invalid user deploy from 10.20.0.20 port 43542
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 43542 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 43542 [preauth]
+Invalid user test from 10.20.0.20 port 43550
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 43550 ssh2
+Connection closed by invalid user test 10.20.0.20 port 43550 [preauth]
+Invalid user admin from 10.20.0.20 port 43552
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43552 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43552 [preauth]
+Failed password for labuser from 10.20.0.20 port 43554 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43554 [preauth]
+Invalid user deploy from 10.20.0.20 port 37936
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 37936 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 37936 [preauth]
+Failed password for labuser from 10.20.0.20 port 37938 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 37938 [preauth]
+Invalid user operator from 10.20.0.20 port 37946
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 37946 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 37946 [preauth]
+Invalid user user from 10.20.0.20 port 37950
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 37950 ssh2
+Connection closed by invalid user user 10.20.0.20 port 37950 [preauth]
+Invalid user test from 10.20.0.20 port 37952
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 37952 ssh2
+Connection closed by invalid user test 10.20.0.20 port 37952 [preauth]
+Invalid user test from 10.20.0.20 port 37962
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 37962 ssh2
+Connection closed by invalid user test 10.20.0.20 port 37962 [preauth]
+Invalid user user from 10.20.0.20 port 37978
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 37978 ssh2
+Connection closed by invalid user user 10.20.0.20 port 37978 [preauth]
+Invalid user pi from 10.20.0.20 port 37988
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 37988 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 37988 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 37994
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 37994 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 37994 [preauth]
+Failed password for root from 10.20.0.20 port 38000 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 38000 [preauth]
+Invalid user deploy from 10.20.0.20 port 38004
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 38004 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 38004 [preauth]
+Invalid user operator from 10.20.0.20 port 38006
+Could not get shadow information for NOUSER
+Failed password for invalid user operator from 10.20.0.20 port 38006 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 38006 [preauth]
+Invalid user test from 10.20.0.20 port 38008
+Could not get shadow information for NOUSER
+Failed password for invalid user test from 10.20.0.20 port 38008 ssh2
+Connection closed by invalid user test 10.20.0.20 port 38008 [preauth]
+Failed password for root from 10.20.0.20 port 38020 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 38020 [preauth]
+Failed password for root from 10.20.0.20 port 38026 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 38026 [preauth]
+Invalid user deploy from 10.20.0.20 port 43648
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 43648 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 43648 [preauth]
+Invalid user admin from 10.20.0.20 port 43664
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43664 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43664 [preauth]
+Invalid user admin from 10.20.0.20 port 43670
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43670 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43670 [preauth]
+Invalid user admin from 10.20.0.20 port 43684
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43684 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43684 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 43694
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 43694 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 43694 [preauth]
+Failed password for labuser from 10.20.0.20 port 43702 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43702 [preauth]
+Failed password for labuser from 10.20.0.20 port 43714 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43714 [preauth]
+Invalid user admin from 10.20.0.20 port 43726
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 43726 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 43726 [preauth]
+Failed password for root from 10.20.0.20 port 43732 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 43732 [preauth]
+Failed password for root from 10.20.0.20 port 43744 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 43744 [preauth]
+Invalid user pi from 10.20.0.20 port 43758
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 43758 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 43758 [preauth]
+Invalid user deploy from 10.20.0.20 port 43772
+Could not get shadow information for NOUSER
+Failed password for invalid user deploy from 10.20.0.20 port 43772 ssh2
+Connection closed by invalid user deploy 10.20.0.20 port 43772 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 43788
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 43788 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 43788 [preauth]
+Failed password for labuser from 10.20.0.20 port 43802 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43802 [preauth]
+Invalid user pi from 10.20.0.20 port 43812
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 43812 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 43812 [preauth]
+Failed password for labuser from 10.20.0.20 port 43816 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 43816 [preauth]
+Failed password for root from 10.20.0.20 port 36826 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 36826 [preauth]
+Failed password for labuser from 10.20.0.20 port 36832 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 36832 [preauth]
+Invalid user user from 10.20.0.20 port 36844
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.20.0.20 port 36844 ssh2
+Connection closed by invalid user user 10.20.0.20 port 36844 [preauth]
+Invalid user admin from 10.20.0.20 port 36846
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.20.0.20 port 36846 ssh2
+Connection closed by invalid user admin 10.20.0.20 port 36846 [preauth]
+Invalid user ubuntu from 10.20.0.20 port 36856
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.20.0.20 port 36856 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 36856 [preauth]
+Accepted password for labuser from 10.20.0.20 port 36868 ssh2
+Accepted password for labuser from 10.20.0.20 port 36884 ssh2

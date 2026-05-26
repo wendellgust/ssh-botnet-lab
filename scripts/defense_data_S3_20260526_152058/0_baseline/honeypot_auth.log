@@ -1,0 +1,38 @@
+Connection from 127.0.0.1 port 35604 on 127.0.0.1 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 127.0.0.1 port 35604
+Connection from 10.10.0.20 port 41114 on 10.10.0.50 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.10.0.20 port 41114
+Connection from 10.10.0.20 port 41118 on 10.10.0.50 port 22 rdomain ""
+Invalid user ubuntu from 10.10.0.20 port 41118
+Could not get shadow information for NOUSER
+Failed password for invalid user ubuntu from 10.10.0.20 port 41118 ssh2
+Connection closed by invalid user ubuntu 10.10.0.20 port 41118 [preauth]
+Connection from 10.10.0.20 port 41132 on 10.10.0.50 port 22 rdomain ""
+Invalid user admin from 10.10.0.20 port 41132
+Could not get shadow information for NOUSER
+Failed password for invalid user admin from 10.10.0.20 port 41132 ssh2
+Connection closed by invalid user admin 10.10.0.20 port 41132 [preauth]
+Connection from 10.10.0.20 port 41140 on 10.10.0.50 port 22 rdomain ""
+Invalid user pi from 10.10.0.20 port 41140
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.10.0.20 port 41140 ssh2
+Connection closed by invalid user pi 10.10.0.20 port 41140 [preauth]
+Connection from 10.10.0.20 port 41150 on 10.10.0.50 port 22 rdomain ""
+Invalid user user from 10.10.0.20 port 41150
+Could not get shadow information for NOUSER
+Failed password for invalid user user from 10.10.0.20 port 41150 ssh2
+Connection closed by invalid user user 10.10.0.20 port 41150 [preauth]
+Connection from 10.10.0.20 port 41166 on 10.10.0.50 port 22 rdomain ""
+Accepted password for root from 10.10.0.20 port 41166 ssh2
+Connection closed by 10.10.0.20 port 41166
+Transferred: sent 2296, received 1104 bytes
+Closing connection to 10.10.0.20 port 41166
+Connection from 10.10.0.20 port 41182 on 10.10.0.50 port 22 rdomain ""
+Accepted password for root from 10.10.0.20 port 41182 ssh2
+Starting session: command for root from 10.10.0.20 port 41182 id 0
+Close session: user root from 10.10.0.20 port 41182 id 0
+Connection closed by 10.10.0.20 port 41182
+Transferred: sent 2536, received 1264 bytes
+Closing connection to 10.10.0.20 port 41182
