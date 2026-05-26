@@ -97,7 +97,7 @@ Each scenario executes the following phases automatically:
 \begin{enumerate}
   \item \textbf{Scan:} The botnet iterates over known IP ranges for the current network segment, attempting an SSH connection on port 22 to identify live hosts.
   \item \textbf{Brute-force:} For each live host, the botnet tries all credential pairs from the wordlist via Paramiko. A configurable delay between attempts controls attack speed and influences whether rate-based defenses trigger.
-  \item \textbf{Pivot preparation:} On a successfully compromised dual-homed host, the botnet uses the existing SSH session to install Python and the Paramiko library, turning it into a relay node capable of forwarding SSH connections to the next network segment.
+  \item \textbf{Pivot preparation:} Once a dual-homed host is compromised, the botnet opens a Paramiko \texttt{direct-tcpip} channel through the host's existing SSH daemon — a standard SSH port-forwarding mechanism. This creates a transparent TCP tunnel to the next network segment without writing any files to the pivot host. From the perspective of internal hosts, SSH connections arrive from the pivot's internal IP, not from the external attacker.
   \item \textbf{Lateral movement:} The botnet tunnels new SSH connections through the relay to reach hosts on internal segments that are otherwise unreachable from the attacker. The same scan-and-brute-force logic repeats for each discovered segment.
   \item \textbf{Honeypot trigger:} From inside the compromised network, the botnet attempts a connection to the honeypot IP. This step intentionally produces a detectable event to test IDS alerting for lateral movement.
   \item \textbf{C2 beaconing:} Each compromised bot establishes a TCP connection to the attacker's listener on port 8888 and sends five JSON heartbeat messages identifying itself. Bots in deeper segments relay their beacons through the chain of pivot hosts, demonstrating multi-hop C2 communication.
@@ -105,7 +105,7 @@ Each scenario executes the following phases automatically:
 
 \subsection{Defenses}
 
-Four countermeasures are applied to Victim~1 (the primary target and pivot host) and evaluated independently and in combination. All are applied live via \texttt{podman exec} — no container restart required — allowing mid-run defense activation from the GUI.
+Four countermeasures are applied to Victim~1 (the primary target and pivot host) and evaluated independently and in combination. Each defense is enforced by executing the corresponding command inside the container via \texttt{podman exec} — no container restart required.
 
 \begin{itemize}
   \item \textbf{Fail2Ban:} Monitors \texttt{/var/log/auth.log} and inserts a temporary iptables DROP rule for the attacker's IP after 3 failed SSH attempts within 60\,s. Reactive — requires failed attempts to trigger; the attacker may succeed before the ban fires if the first credential in the wordlist is correct.
@@ -122,7 +122,7 @@ The full environment is reproducible from the repository. A Linux host with Podm
 
 \subsection{Methodology}
 
-Each defense configuration was evaluated by: (1) restarting all victim containers to clear iptables rules, Fail2Ban state, and auth logs; (2) applying the defense(s) exclusively to Victim~1 — the primary brute-force target and pivot host; (3) running the full botnet; (4) collecting auth logs, GUI reports, and iptables state. The primary metrics are number of compromised hosts and whether the attacker successfully pivoted into internal networks. Since defenses are applied only to Victim~1, other hosts on the attack network remain undefended throughout all configurations; a residual compromise count of~1 in some rows of Table~\ref{tab:results} reflects these undefended hosts, not a bypass of the applied defense.
+All data was collected using \texttt{scripts/defense\_test.sh}, an automated script that cycles through all seven defense configurations for a given scenario. For each configuration it: (1) restarts all victim containers to clear iptables rules, Fail2Ban state, and auth logs; (2) applies the defense(s) exclusively to Victim~1 via \texttt{podman exec}; (3) triggers the full attack via the GUI \texttt{/run} endpoint, which executes \texttt{botnet.py} inside the attacker container; (4) waits for the botnet to finish and collects \texttt{/var/log/auth.log} from every victim, iptables state, and a structured JSON report. The primary metrics are number of compromised hosts and whether the attacker successfully pivoted into internal networks. Since defenses are applied only to Victim~1, other hosts on the attack network remain undefended throughout all configurations; a residual compromise count of~1 in some rows of Table~\ref{tab:results} reflects these undefended hosts, not a bypass of the applied defense.
 
 \subsection{Results}
 

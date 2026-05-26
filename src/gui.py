@@ -1183,7 +1183,8 @@ class Handler(http.server.BaseHTTPRequestHandler):
                 _pending_via.clear()
                 state['done'] = False
                 state['stats'] = {'found': 0, 'compromised': 0, 'nets': 0}
-                setup_state.update({'running': False, 'done': False, 'scenario': None, 'error': None})
+                # preserve setup_state so containers don't need re-setup after each reset
+                setup_state.update({'running': False, 'error': None})
             self.send_response(204)
             self.end_headers()
 
