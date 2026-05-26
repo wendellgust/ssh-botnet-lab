@@ -3,7 +3,15 @@
 # auto_run.sh — Fully automatic scenario runner for FEUP SSR SSH Botnet Lab
 # FEUP SSR · May 2026
 #
-# Usage: ./auto_run.sh [1|2|3|4]
+# Usage:
+#   ./auto_run.sh [1|2|3|4]              # full automated run (default scenario 2)
+#   ./auto_run.sh [1|2|3|4] --setup-only # start containers only, then use gui.py
+#
+# Modes:
+#   (default)     build + start + recon + brute-force + lateral + C2 + detect
+#   --setup-only  build + start containers only — open gui.py and click Run Botnet
+#
+# Scenarios:
 #   1 — single flat network
 #   2 — 2 networks, 1 pivot           (default)
 #   3 — 3 networks, 2 parallel pivots
@@ -11,6 +19,10 @@
 # =============================================================================
 
 SCENARIO=${1:-2}
+SETUP_ONLY=false
+for arg in "$@"; do
+    [[ "$arg" == "--setup-only" ]] && SETUP_ONLY=true
+done
 
 # ── Colors ─────────────────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'
@@ -32,8 +44,8 @@ if ! [[ "$SCENARIO" =~ ^[1-4]$ ]]; then
     exit 1
 fi
 
-# ── Must run from the lab root directory ───────────────────────────────────────
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# ── Always run from the project root (one level up from scripts/) ──────────────
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$SCRIPT_DIR"
 log "Working directory: $SCRIPT_DIR"
 
@@ -669,6 +681,21 @@ log "Start: $(date)"
 
 phase_preflight    # ← pull ubuntu:22.04 if not cached — must have internet once
 phase_setup
+
+if [[ "$SETUP_ONLY" == "true" ]]; then
+    banner "Containers ready — GUI mode"
+    echo -e "${GREEN}Scenario $SCENARIO containers are up.${RESET}"
+    echo ""
+    echo "  Start the GUI:"
+    echo "    python3 src/gui.py"
+    echo ""
+    echo "  Then open http://localhost:5000 and click ▶ Run Botnet"
+    echo ""
+    echo "  To stop:"
+    echo "    $RT compose --project-directory . -f scenarios/scenario${SCENARIO}.yml down"
+    exit 0
+fi
+
 phase_recon
 phase_bruteforce
 

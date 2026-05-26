@@ -14,6 +14,7 @@ import re
 import time
 import sys
 import os
+from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 
 # ── Global state ──────────────────────────────────────────────────────────────
@@ -28,9 +29,14 @@ state = {
 _pending_via = {}        # ip -> via (set on attack_start, used on compromised)
 _clients = []
 _clients_lock = threading.Lock()
-_proc = None             # running subprocess
+_proc = None             # running botnet subprocess
 _proc_lock = threading.Lock()
 defense_status = {}      # container_name -> set of applied defense ids
+
+setup_state = {'running': False, 'done': False, 'scenario': None, 'error': None}
+_setup_proc = None
+_setup_proc_lock = threading.Lock()
+_PROJECT_ROOT = Path(__file__).parent.parent
 
 # ── Event broadcasting ────────────────────────────────────────────────────────
 def broadcast(ev_type, data):
@@ -166,6 +172,48 @@ def stop_botnet():
     with _proc_lock:
         if _proc:
             _proc.terminate()
+
+def run_setup(scenario: str):
+    global _setup_proc
+    if setup_state['running']:
+        return
+    setup_state.update({'running': True, 'done': False, 'scenario': scenario, 'error': None})
+    broadcast('setup_start', {'scenario': scenario})
+
+    script = _PROJECT_ROOT / 'scripts' / 'auto_run.sh'
+    cmd = ['bash', str(script), str(scenario), '--setup-only']
+    try:
+        with _setup_proc_lock:
+            _setup_proc = subprocess.Popen(
+                cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+                text=True, cwd=str(_PROJECT_ROOT)
+            )
+        for raw in _setup_proc.stdout:
+            broadcast('setup_log', {'line': raw.rstrip('\n')})
+        _setup_proc.wait()
+        rc = _setup_proc.returncode
+    except Exception as e:
+        setup_state.update({'running': False, 'error': str(e)})
+        broadcast('setup_error', {'msg': str(e)})
+        return
+    finally:
+        setup_state['running'] = False
+        with _setup_proc_lock:
+            _setup_proc = None
+
+    if rc == 0:
+        setup_state['done'] = True
+        broadcast('setup_done', {'scenario': scenario})
+    else:
+        err = f'Setup exited with code {rc}'
+        setup_state['error'] = err
+        broadcast('setup_error', {'msg': err})
+
+def stop_setup():
+    global _setup_proc
+    with _setup_proc_lock:
+        if _setup_proc:
+            _setup_proc.terminate()
 
 def generate_report():
     hosts_list = []
@@ -314,16 +362,31 @@ body{background:#080d1a;color:#cdd6f4;font-family:'Courier New',monospace;displa
 .pulse.running{background:#50fa7b;animation:blink 1s infinite}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
 /* Controls */
-.controls{background:#0a0f1e;border-bottom:1px solid #1e2235;padding:8px 20px;display:flex;gap:8px;align-items:center;flex-shrink:0}
+.controls{background:#0a0f1e;border-bottom:1px solid #1e2235;padding:6px 20px;display:flex;gap:6px;align-items:center;flex-shrink:0;flex-wrap:wrap}
 .btn{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:5px 14px;border-radius:4px;cursor:pointer;font-family:'Courier New',monospace;font-size:12px;transition:all .15s}
 .btn:hover{background:#252a3e;border-color:#6272a4}
 .btn.run{border-color:#50fa7b;color:#50fa7b}
 .btn.run:hover{background:#0a200a}
 .btn.stop{border-color:#ff5555;color:#ff5555}
 .btn.stop:hover{background:#200a0a}
-.btn:disabled{opacity:.4;cursor:default}
-.speed-label{font-size:11px;color:#44475a;margin-left:8px}
+.btn:disabled{opacity:.35;cursor:default;pointer-events:none}
+.speed-label{font-size:11px;color:#44475a;margin-left:4px}
 select{background:#1a1f2e;border:1px solid #2a3050;color:#cdd6f4;padding:4px 8px;border-radius:4px;font-family:'Courier New',monospace;font-size:11px}
+/* Scenario selector */
+.scenario-sep{width:1px;height:24px;background:#1e2235;margin:0 4px}
+.scenario-label{font-size:10px;color:#44475a;letter-spacing:1px;text-transform:uppercase;white-space:nowrap}
+.btn.sc{padding:4px 10px;font-size:11px;border-color:#2a3050;color:#6272a4}
+.btn.sc:hover{border-color:#6272a4;color:#cdd6f4}
+.btn.sc.active{border-color:#f97316;color:#f97316;background:#1a0e00}
+.btn.sc.ready{border-color:#50fa7b;color:#50fa7b;background:#001a08}
+.btn.sc:disabled{opacity:.25}
+/* Setup progress bar */
+.setup-bar{background:#0a0f1e;border-bottom:1px solid #1e2235;padding:4px 20px;flex-shrink:0;display:none;align-items:center;gap:10px}
+.setup-bar.visible{display:flex}
+.setup-bar-label{font-size:10px;color:#f97316;font-family:'Courier New',monospace;letter-spacing:1px}
+.setup-progress{flex:1;height:3px;background:#1e2235;border-radius:2px;overflow:hidden}
+.setup-progress-fill{height:100%;background:linear-gradient(90deg,#f97316,#ffb86c);width:0%;transition:width .4s;animation:setupPulse 1.5s infinite}
+@keyframes setupPulse{0%,100%{opacity:.7}50%{opacity:1}}
 /* Main layout */
 .main{flex:1;display:flex;min-height:0}
 /* SVG panel */
@@ -412,9 +475,15 @@ table.host-tbl tr.fail td{color:#44475a}
 </div>
 
 <div class="controls">
-  <button class="btn run" id="btn-run" onclick="startRun()">▶ Run Botnet</button>
+  <span class="scenario-label">Network:</span>
+  <button class="btn sc" id="btn-s1" onclick="selectScenario(1)" title="Single flat network — all hosts in attack_net">S1 · Single</button>
+  <button class="btn sc" id="btn-s2" onclick="selectScenario(2)" title="2 networks, victim1 pivots to internal_net">S2 · Pivot</button>
+  <button class="btn sc" id="btn-s3" onclick="selectScenario(3)" title="3 networks, two parallel pivots">S3 · 2 Pivots</button>
+  <button class="btn sc" id="btn-s4" onclick="selectScenario(4)" title="3 networks, 2-hop deep chain">S4 · Deep</button>
+  <div class="scenario-sep"></div>
+  <button class="btn run" id="btn-run" onclick="startRun()" disabled>▶ Run Botnet</button>
   <button class="btn stop" id="btn-stop" onclick="stopRun()" disabled>■ Stop</button>
-  <button class="btn" onclick="resetView()">&#8635; Reset View</button>
+  <button class="btn" onclick="resetView()">&#8635; Reset</button>
   <button class="btn report-btn" onclick="openReport()">&#128203; Report</button>
   <button class="btn defend-btn" onclick="openDefend()">&#128737; Defenses</button>
   <span class="speed-label">Delay:</span>
@@ -423,6 +492,10 @@ table.host-tbl tr.fail td{color:#44475a}
     <option value="0.5" selected>Normal (0.5s)</option>
     <option value="1.0">Slow (1.0s)</option>
   </select>
+</div>
+<div class="setup-bar" id="setup-bar">
+  <span class="setup-bar-label" id="setup-bar-label">⚙ SETTING UP…</span>
+  <div class="setup-progress"><div class="setup-progress-fill" id="setup-fill"></div></div>
 </div>
 
 <div class="main">
@@ -454,8 +527,8 @@ table.host-tbl tr.fail td{color:#44475a}
       </svg>
     </div>
     <div class="phase-bar">
-      <div class="phase-name" id="phase-name">Ready</div>
-      <div class="phase-desc" id="phase-desc">Click "Run Botnet" to start autonomous propagation. Ensure containers are up first.</div>
+      <div class="phase-name" id="phase-name">Select a scenario</div>
+      <div class="phase-desc" id="phase-desc">Click S1–S4 to choose a network topology and start containers. Run Botnet unlocks when setup is complete.</div>
     </div>
   </div>
 
@@ -526,6 +599,31 @@ const pktsG   = document.getElementById('packets');
 /* attacker fixed at bottom of attack_net zone */
 nodesData['172.21.0.10'] = {cx:110, cy:490, prefix:'172.21.'};
 nodesData['direct']       = {cx:110, cy:490, prefix:'172.21.'};
+
+/* ── Scenario setup ───────────────────────────────────────────────── */
+const SC_LABELS = {1:'S1 · Single', 2:'S2 · Pivot', 3:'S3 · 2 Pivots', 4:'S4 · Deep'};
+let activeScenario = null;
+
+function selectScenario(n) {
+  if (activeScenario === n && document.getElementById('btn-s'+n).classList.contains('ready')) return;
+  activeScenario = n;
+  // update button styles
+  [1,2,3,4].forEach(i => {
+    const b = document.getElementById('btn-s'+i);
+    b.classList.remove('active','ready');
+  });
+  document.getElementById('btn-s'+n).classList.add('active');
+  // disable run until setup completes
+  document.getElementById('btn-run').disabled = true;
+  // kick off setup
+  fetch('/setup?scenario='+n);
+  document.getElementById('phase-name').textContent = 'Setting up Scenario ' + n + '…';
+  document.getElementById('phase-desc').textContent = 'Building and starting containers — this may take a few minutes on the first run.';
+}
+
+function setScenarioBtnsEnabled(on) {
+  [1,2,3,4].forEach(i => { document.getElementById('btn-s'+i).disabled = !on; });
+}
 
 function getPrefix(ip) {
   for (const p of Object.keys(ZONE_DEFS)) {
@@ -713,7 +811,50 @@ const hostStates = {};
 function handleEvent(ev) {
   const {type, data, ts} = ev;
 
-  if (type === 'start') {
+  if (type === 'setup_start') {
+    const n = data.scenario;
+    activeScenario = parseInt(n);
+    setScenarioBtnsEnabled(false);
+    document.getElementById('btn-run').disabled = true;
+    document.getElementById('btn-stop').disabled = false;
+    document.getElementById('setup-bar').classList.add('visible');
+    document.getElementById('setup-bar-label').textContent = '⚙  SETTING UP SCENARIO ' + n + '…';
+    document.getElementById('setup-fill').style.width = '15%';
+    document.getElementById('phase-name').textContent = 'Setting up Scenario ' + n + '…';
+    document.getElementById('phase-desc').textContent = 'Building and starting containers…';
+    addLog(ts, '⚙ Setup started — Scenario ' + n, 'log-info');
+  }
+  else if (type === 'setup_log') {
+    const l = data.line || '';
+    if (l.trim()) addLog(ts, l, 'log-info');
+    // nudge the progress bar a bit
+    const fill = document.getElementById('setup-fill');
+    const cur = parseFloat(fill.style.width)||15;
+    if (cur < 88) fill.style.width = Math.min(cur + 1.2, 88) + '%';
+  }
+  else if (type === 'setup_done') {
+    const n = data.scenario;
+    setScenarioBtnsEnabled(true);
+    [1,2,3,4].forEach(i => document.getElementById('btn-s'+i).classList.remove('active','ready'));
+    document.getElementById('btn-s'+n).classList.add('ready');
+    document.getElementById('btn-run').disabled = false;
+    document.getElementById('btn-stop').disabled = true;
+    document.getElementById('setup-bar').classList.remove('visible');
+    document.getElementById('setup-fill').style.width = '100%';
+    document.getElementById('phase-name').textContent = 'Scenario ' + n + ' ready';
+    document.getElementById('phase-desc').textContent = 'Containers up. Click ▶ Run Botnet to start autonomous propagation.';
+    document.getElementById('status-text').textContent = 'Ready';
+    addLog(ts, '✓ Scenario ' + n + ' containers ready', 'log-ok');
+  }
+  else if (type === 'setup_error') {
+    setScenarioBtnsEnabled(true);
+    document.getElementById('btn-stop').disabled = true;
+    document.getElementById('setup-bar').classList.remove('visible');
+    document.getElementById('phase-name').textContent = 'Setup failed';
+    document.getElementById('phase-desc').textContent = data.msg || 'Check terminal output.';
+    addLog(ts, '✗ Setup error: ' + (data.msg||'unknown'), 'log-warn');
+  }
+  else if (type === 'start') {
     document.getElementById('pulse').classList.add('running');
     document.getElementById('status-text').textContent = 'Running';
     document.getElementById('phase-name').textContent = 'Phase 1 — Network Discovery';
@@ -781,7 +922,7 @@ function handleEvent(ev) {
   else if (type === 'done') {
     document.getElementById('pulse').classList.remove('running');
     document.getElementById('status-text').textContent = 'Done';
-    document.getElementById('btn-run').disabled = false;
+    document.getElementById('btn-run').disabled = false;   // re-enable for another run
     document.getElementById('btn-stop').disabled = true;
     document.getElementById('phase-name').textContent = '✓ Propagation Complete';
     document.getElementById('phase-desc').textContent =
@@ -999,9 +1140,17 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.end_headers()
             sse_stream(self.wfile)
 
+        elif path == '/setup':
+            scenario = params.get('scenario', ['2'])[0]
+            if not setup_state['running'] and not state['running']:
+                t = threading.Thread(target=run_setup, args=(scenario,), daemon=True)
+                t.start()
+            self.send_response(204)
+            self.end_headers()
+
         elif path == '/run':
             delay = params.get('delay', ['0.5'])[0]
-            if not state['running']:
+            if not state['running'] and setup_state['done']:
                 t = threading.Thread(target=run_botnet, args=(delay,), daemon=True)
                 t.start()
             self.send_response(204)
@@ -1009,17 +1158,19 @@ class Handler(http.server.BaseHTTPRequestHandler):
 
         elif path == '/stop':
             stop_botnet()
+            stop_setup()
             self.send_response(204)
             self.end_headers()
 
         elif path == '/reset':
-            if not state['running']:
+            if not state['running'] and not setup_state['running']:
                 state['events'].clear()
                 state['hosts'].clear()
                 state['zones'].clear()
                 _pending_via.clear()
                 state['done'] = False
                 state['stats'] = {'found': 0, 'compromised': 0, 'nets': 0}
+                setup_state.update({'running': False, 'done': False, 'scenario': None, 'error': None})
             self.send_response(204)
             self.end_headers()
 
@@ -1030,6 +1181,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
                           for ip,h in state['hosts'].items()},
                 'running': state['running'],
                 'done':    state['done'],
+                'setup':   setup_state,
             }).encode()
             self.send_response(200)
             self.send_header('Content-Type', 'application/json')

@@ -71,26 +71,27 @@ ssh-botnet-lab/
 sudo bash scripts/install.sh
 ```
 
-### 2. Start a scenario
+### 2a. Interactive GUI mode (recommended)
+
+Start containers for a scenario, then control the botnet from the browser:
 
 ```bash
-# Scenario 2 is the standard lab (2 networks, 1 pivot)
-bash scripts/auto_run.sh 2
+# Start containers only (no attack runs yet)
+bash scripts/auto_run.sh 2 --setup-only   # or 1 / 3 / 4
 
-# Other scenarios:
-bash scripts/auto_run.sh 1   # single flat network
-bash scripts/auto_run.sh 3   # 3 networks, 2 parallel pivots
-bash scripts/auto_run.sh 4   # 3 networks, 2-hop deep chain
-```
-
-### 3. Open the live GUI
-
-```bash
+# In a second terminal, start the GUI server
 python3 src/gui.py
-# Open http://localhost:5000
 ```
 
-Click **▶ Run Botnet** to start autonomous propagation. The dashboard shows real-time host discovery, brute-force attempts, compromised nodes, and pivot paths. Use the **Defenses** panel to apply fail2ban, IP blocking, rate-limiting, or disable-password-auth live.
+Open **http://localhost:5000**, click **▶ Run Botnet**. The dashboard shows real-time host discovery, brute-force attempts, compromised nodes, and pivot paths. Use the **Defenses** panel to apply fail2ban, IP blocking, rate-limiting, or disable-password-auth live.
+
+### 2b. Fully automated mode (no GUI needed)
+
+Runs all phases unattended — build, brute-force, lateral movement, C2, detection report:
+
+```bash
+bash scripts/auto_run.sh 2   # or 1 / 3 / 4
+```
 
 ---
 
