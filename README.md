@@ -99,25 +99,25 @@ bash scripts/auto_run.sh 2   # or 1 / 3 / 4
 
 ### Scenario 1 — Flat network
 
-![Scenario 1 topology](docs/charts/topology_scenario_1.png)
+![Scenario 1 topology](docs/charts/TopologyScene1.png)
 
 Single `attack_net`. Attacker reaches all victims directly — no pivoting required.
 
 ### Scenario 2 — Single pivot
 
-![Scenario 2 topology](docs/charts/topology_scenario_2.png)
+![Scenario 2 topology](docs/charts/TopologyScene2.png)
 
 `attack_net` + `internal_net`. Attacker compromises victim1, then pivots through it to reach internal hosts and the honeypot.
 
 ### Scenario 3 — Parallel pivots
 
-![Scenario 3 topology](docs/charts/topology_scenario_3.png)
+![Scenario 3 topology](docs/charts/TopologyScene3.png)
 
 `attack_net` + `internal_net` + `extra_net`. Two independent pivot paths: victim1 → internal, victim2 → extra.
 
 ### Scenario 4 — Deep chain
 
-![Scenario 4 topology](docs/charts/topology_scenario_4.png)
+![Scenario 4 topology](docs/charts/TopologyScene4.png)
 
 `attack_net` + `internal_net` + `deep_net`. Two-hop chain: attacker → victim1 → victim3 → deep segment.
 
