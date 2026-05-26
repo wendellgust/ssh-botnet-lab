@@ -501,11 +501,13 @@ table.host-tbl tr.fail td{color:#44475a}
 
 <script>
 /* ── Zone layout ──────────────────────────────────────────────────── */
+/* attack_net: full-height left column.                               */
+/* downstream nets: stacked vertically on right side, top→bottom.    */
 const ZONE_DEFS = {
-  '172.21.': {x:10,  y:20, w:200, h:540, color:'#ef4444', label:'ATTACK_NET · 172.21.0.0/24',  zone:0},
-  '10.10.':  {x:220, y:20, w:190, h:540, color:'#3b82f6', label:'INTERNAL_NET · 10.10.0.0/24', zone:1},
-  '10.20.':  {x:420, y:20, w:190, h:540, color:'#a855f7', label:'EXTRA_NET · 10.20.0.0/24',    zone:2},
-  '10.30.':  {x:620, y:20, w:190, h:540, color:'#14b8a6', label:'DEEP_NET · 10.30.0.0/24',     zone:3},
+  '172.21.': {x:10,  y:20,  w:200, h:540, color:'#ef4444', label:'ATTACK_NET · 172.21.0.0/24',  zone:0},
+  '10.10.':  {x:225, y:22,  w:575, h:165, color:'#3b82f6', label:'INTERNAL_NET · 10.10.0.0/24', zone:1},
+  '10.20.':  {x:225, y:202, w:575, h:165, color:'#a855f7', label:'EXTRA_NET · 10.20.0.0/24',    zone:2},
+  '10.30.':  {x:225, y:382, w:575, h:178, color:'#14b8a6', label:'DEEP_NET · 10.30.0.0/24',     zone:3},
 };
 
 /* zone -> slot index for node positioning */
@@ -561,9 +563,19 @@ function allocPos(prefix) {
   const d = ZONE_DEFS[prefix];
   const idx = zoneSlots[prefix] !== undefined ? zoneSlots[prefix] : 0;
   zoneSlots[prefix] = idx + 1;
-  const cx = d.x + d.w/2;
-  const cy = d.y + 55 + idx * 100;
-  /* expand zone rect if this node would overflow the bottom */
+  let cx, cy;
+  if (d.w <= 220) {
+    /* narrow (attack_net): stack nodes vertically at column centre */
+    cx = d.x + d.w / 2;
+    cy = d.y + 55 + idx * 90;
+  } else {
+    /* wide (downstream nets): spread nodes horizontally, wrap rows */
+    const cols = Math.max(1, Math.floor(d.w / 155));
+    const colW = d.w / cols;
+    cx = Math.round(d.x + colW * (idx % cols + 0.5));
+    cy = d.y + 68 + Math.floor(idx / cols) * 90;
+  }
+  /* expand zone rect if nodes overflow */
   const needed = (cy - d.y) + 70;
   if (needed > d.h) {
     d.h = needed + 20;
