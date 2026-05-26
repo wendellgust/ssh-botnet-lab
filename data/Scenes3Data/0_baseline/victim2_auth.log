@@ -1,322 +1,259 @@
-Connection from 172.21.0.10 port 34274 on 172.21.0.21 port 22 rdomain ""
+Connection from 127.0.0.1 port 35568 on 127.0.0.1 port 22 rdomain ""
 kex_exchange_identification: Connection closed by remote host
-Connection closed by 172.21.0.10 port 34274
-Connection from 172.21.0.10 port 46656 on 172.21.0.21 port 22 rdomain ""
+Connection closed by 127.0.0.1 port 35568
+Connection from 172.21.0.10 port 43718 on 172.21.0.21 port 22 rdomain ""
 kex_exchange_identification: Connection closed by remote host
-Connection closed by 172.21.0.10 port 46656
-Connection from 172.21.0.10 port 47222 on 172.21.0.21 port 22 rdomain ""
-Invalid user operator from 172.21.0.10 port 47222
+Connection closed by 172.21.0.10 port 43718
+Connection from 172.21.0.10 port 57372 on 172.21.0.21 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 57372
 Could not get shadow information for NOUSER
-Failed password for invalid user operator from 172.21.0.10 port 47222 ssh2
-Connection from 172.21.0.10 port 47232 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 47232 ssh2
-Connection from 172.21.0.10 port 47246 on 172.21.0.21 port 22 rdomain ""
-Failed password for labuser from 172.21.0.10 port 47246 ssh2
-Connection from 172.21.0.10 port 47250 on 172.21.0.21 port 22 rdomain ""
-Invalid user test from 172.21.0.10 port 47250
+Failed password for invalid user test from 172.21.0.10 port 57372 ssh2
+Connection from 172.21.0.10 port 57376 on 172.21.0.21 port 22 rdomain ""
+Failed password for labuser from 172.21.0.10 port 57376 ssh2
+Connection from 172.21.0.10 port 57384 on 172.21.0.21 port 22 rdomain ""
+Invalid user test from 172.21.0.10 port 57384
 Could not get shadow information for NOUSER
-Failed password for invalid user test from 172.21.0.10 port 47250 ssh2
-Connection from 172.21.0.10 port 47264 on 172.21.0.21 port 22 rdomain ""
-Invalid user test from 172.21.0.10 port 47264
+Failed password for invalid user test from 172.21.0.10 port 57384 ssh2
+Connection from 172.21.0.10 port 57398 on 172.21.0.21 port 22 rdomain ""
+Invalid user ubuntu from 172.21.0.10 port 57398
 Could not get shadow information for NOUSER
-Failed password for invalid user test from 172.21.0.10 port 47264 ssh2
-Connection from 172.21.0.10 port 47268 on 172.21.0.21 port 22 rdomain ""
-Invalid user user from 172.21.0.10 port 47268
+Failed password for invalid user ubuntu from 172.21.0.10 port 57398 ssh2
+Connection from 172.21.0.10 port 57412 on 172.21.0.21 port 22 rdomain ""
+Failed password for deploy from 172.21.0.10 port 57412 ssh2
+Connection from 172.21.0.10 port 57418 on 172.21.0.21 port 22 rdomain ""
+Invalid user operator from 172.21.0.10 port 57418
 Could not get shadow information for NOUSER
-Failed password for invalid user user from 172.21.0.10 port 47268 ssh2
-Connection from 172.21.0.10 port 47284 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 47284
+Failed password for invalid user operator from 172.21.0.10 port 57418 ssh2
+Connection from 172.21.0.10 port 57432 on 172.21.0.21 port 22 rdomain ""
+Accepted password for admin from 172.21.0.10 port 57432 ssh2
+User child is on pid 32
+Connection from 172.21.0.10 port 57436 on 172.21.0.21 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 57432: Connection reset by peer
+Accepted password for admin from 172.21.0.10 port 57436 ssh2
+User child is on pid 34
+Starting session: command for admin from 172.21.0.10 port 57436 id 0
+Connection from 172.21.0.10 port 57450 on 172.21.0.21 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 57436: Connection reset by peer
+Accepted password for admin from 172.21.0.10 port 57450 ssh2
+User child is on pid 39
+Starting session: command for admin from 172.21.0.10 port 57450 id 0
+Connection from 10.20.0.20 port 53358 on 10.20.0.20 port 22 rdomain ""
+kex_exchange_identification: Connection closed by remote host
+Connection closed by 10.20.0.20 port 53358
+Close session: user admin from 172.21.0.10 port 57450 id 0
+Connection closed by 172.21.0.10 port 57450
+Transferred: sent 2552, received 4256 bytes
+Closing connection to 172.21.0.10 port 57450
+Connection from 172.21.0.10 port 57452 on 172.21.0.21 port 22 rdomain ""
+Connection from 172.21.0.10 port 57466 on 172.21.0.21 port 22 rdomain ""
+Connection from 172.21.0.10 port 57454 on 172.21.0.21 port 22 rdomain ""
+Accepted password for admin from 172.21.0.10 port 57452 ssh2
+User child is on pid 810
+Connection from 10.20.0.20 port 53360 on 10.20.0.20 port 22 rdomain ""
+Accepted password for admin from 172.21.0.10 port 57454 ssh2
+Accepted password for admin from 172.21.0.10 port 57466 ssh2
+User child is on pid 812
+User child is on pid 813
+Invalid user ubuntu from 10.20.0.20 port 53360
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 47284 ssh2
-Connection from 172.21.0.10 port 47298 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 47298
+Failed password for invalid user ubuntu from 10.20.0.20 port 53360 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 53360 [preauth]
+Connection from 10.20.0.20 port 53362 on 10.20.0.20 port 22 rdomain ""
+Failed password for admin from 10.20.0.20 port 53362 ssh2
+Connection closed by authenticating user admin 10.20.0.20 port 53362 [preauth]
+Connection from 10.20.0.20 port 53370 on 10.20.0.20 port 22 rdomain ""
+Invalid user ubuntu from 10.20.0.20 port 53370
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 47298 ssh2
-Connection from 172.21.0.10 port 47302 on 172.21.0.21 port 22 rdomain ""
-Failed password for deploy from 172.21.0.10 port 47302 ssh2
-Connection from 172.21.0.10 port 47312 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 47312 ssh2
-Connection from 172.21.0.10 port 47326 on 172.21.0.21 port 22 rdomain ""
-Failed password for admin from 172.21.0.10 port 47326 ssh2
-Connection from 172.21.0.10 port 47330 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 47330 ssh2
-Connection from 172.21.0.10 port 47332 on 172.21.0.21 port 22 rdomain ""
-Invalid user ubuntu from 172.21.0.10 port 47332
+Failed password for invalid user ubuntu from 10.20.0.20 port 53370 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 53370 [preauth]
+Connection from 10.20.0.20 port 53384 on 10.20.0.20 port 22 rdomain ""
+Failed password for admin from 10.20.0.20 port 53384 ssh2
+Connection closed by authenticating user admin 10.20.0.20 port 53384 [preauth]
+Connection from 10.20.0.20 port 53390 on 10.20.0.20 port 22 rdomain ""
+Failed password for labuser from 10.20.0.20 port 53390 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 53390 [preauth]
+Connection from 10.20.0.20 port 53406 on 10.20.0.20 port 22 rdomain ""
+Invalid user operator from 10.20.0.20 port 53406
 Could not get shadow information for NOUSER
-Failed password for invalid user ubuntu from 172.21.0.10 port 47332 ssh2
-Connection from 172.21.0.10 port 58602 on 172.21.0.21 port 22 rdomain ""
-Failed password for admin from 172.21.0.10 port 58602 ssh2
-Connection from 172.21.0.10 port 58618 on 172.21.0.21 port 22 rdomain ""
-Failed password for labuser from 172.21.0.10 port 58618 ssh2
-Connection from 172.21.0.10 port 58620 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 58620
+Failed password for invalid user operator from 10.20.0.20 port 53406 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 53406 [preauth]
+Connection from 10.20.0.20 port 55870 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 55870
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 58620 ssh2
-Connection from 172.21.0.10 port 58628 on 172.21.0.21 port 22 rdomain ""
-Invalid user user from 172.21.0.10 port 58628
+Failed password for invalid user test from 10.20.0.20 port 55870 ssh2
+Connection closed by invalid user test 10.20.0.20 port 55870 [preauth]
+Connection from 10.20.0.20 port 55882 on 10.20.0.20 port 22 rdomain ""
+Failed password for root from 10.20.0.20 port 55882 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 55882 [preauth]
+Connection from 10.20.0.20 port 55886 on 10.20.0.20 port 22 rdomain ""
+Failed password for admin from 10.20.0.20 port 55886 ssh2
+Connection closed by authenticating user admin 10.20.0.20 port 55886 [preauth]
+Connection from 10.20.0.20 port 55898 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 55898
 Could not get shadow information for NOUSER
-Failed password for invalid user user from 172.21.0.10 port 58628 ssh2
-Connection from 172.21.0.10 port 58642 on 172.21.0.21 port 22 rdomain ""
-Invalid user operator from 172.21.0.10 port 58642
+Failed password for invalid user test from 10.20.0.20 port 55898 ssh2
+Connection closed by invalid user test 10.20.0.20 port 55898 [preauth]
+Connection from 10.20.0.20 port 55904 on 10.20.0.20 port 22 rdomain ""
+Invalid user user from 10.20.0.20 port 55904
 Could not get shadow information for NOUSER
-Failed password for invalid user operator from 172.21.0.10 port 58642 ssh2
-Connection from 172.21.0.10 port 58652 on 172.21.0.21 port 22 rdomain ""
-Invalid user user from 172.21.0.10 port 58652
+Failed password for invalid user user from 10.20.0.20 port 55904 ssh2
+Connection closed by invalid user user 10.20.0.20 port 55904 [preauth]
+Connection from 10.20.0.20 port 55914 on 10.20.0.20 port 22 rdomain ""
+Failed password for root from 10.20.0.20 port 55914 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 55914 [preauth]
+Connection from 10.20.0.20 port 55922 on 10.20.0.20 port 22 rdomain ""
+Invalid user pi from 10.20.0.20 port 55922
 Could not get shadow information for NOUSER
-Failed password for invalid user user from 172.21.0.10 port 58652 ssh2
-Connection from 172.21.0.10 port 58666 on 172.21.0.21 port 22 rdomain ""
-Invalid user test from 172.21.0.10 port 58666
+Failed password for invalid user pi from 10.20.0.20 port 55922 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 55922 [preauth]
+Connection from 10.20.0.20 port 55930 on 10.20.0.20 port 22 rdomain ""
+Invalid user operator from 10.20.0.20 port 55930
 Could not get shadow information for NOUSER
-Failed password for invalid user test from 172.21.0.10 port 58666 ssh2
-Connection from 172.21.0.10 port 58680 on 172.21.0.21 port 22 rdomain ""
-Failed password for deploy from 172.21.0.10 port 58680 ssh2
-Connection from 172.21.0.10 port 58686 on 172.21.0.21 port 22 rdomain ""
-Invalid user test from 172.21.0.10 port 58686
+Failed password for invalid user operator from 10.20.0.20 port 55930 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 55930 [preauth]
+Connection from 10.20.0.20 port 55938 on 10.20.0.20 port 22 rdomain ""
+Invalid user user from 10.20.0.20 port 55938
 Could not get shadow information for NOUSER
-Failed password for invalid user test from 172.21.0.10 port 58686 ssh2
-Connection from 172.21.0.10 port 58696 on 172.21.0.21 port 22 rdomain ""
-Invalid user operator from 172.21.0.10 port 58696
+Failed password for invalid user user from 10.20.0.20 port 55938 ssh2
+Connection closed by invalid user user 10.20.0.20 port 55938 [preauth]
+Connection from 10.20.0.20 port 55944 on 10.20.0.20 port 22 rdomain ""
+Invalid user ubuntu from 10.20.0.20 port 55944
 Could not get shadow information for NOUSER
-Failed password for invalid user operator from 172.21.0.10 port 58696 ssh2
-Connection from 172.21.0.10 port 58704 on 172.21.0.21 port 22 rdomain ""
-Failed password for labuser from 172.21.0.10 port 58704 ssh2
-Connection from 172.21.0.10 port 58714 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 58714 ssh2
-Connection from 172.21.0.10 port 58726 on 172.21.0.21 port 22 rdomain ""
-Invalid user ubuntu from 172.21.0.10 port 58726
+Failed password for invalid user ubuntu from 10.20.0.20 port 55944 ssh2
+Connection closed by invalid user ubuntu 10.20.0.20 port 55944 [preauth]
+Connection from 10.20.0.20 port 55948 on 10.20.0.20 port 22 rdomain ""
+Invalid user pi from 10.20.0.20 port 55948
 Could not get shadow information for NOUSER
-Failed password for invalid user ubuntu from 172.21.0.10 port 58726 ssh2
-Connection from 172.21.0.10 port 58738 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 58738 ssh2
-Connection from 172.21.0.10 port 58740 on 172.21.0.21 port 22 rdomain ""
-Failed password for labuser from 172.21.0.10 port 58740 ssh2
-Connection from 172.21.0.10 port 42164 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 42164
+Failed password for invalid user pi from 10.20.0.20 port 55948 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 55948 [preauth]
+Connection from 10.20.0.20 port 55950 on 10.20.0.20 port 22 rdomain ""
+Invalid user pi from 10.20.0.20 port 55950
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 42164 ssh2
-Connection from 172.21.0.10 port 42166 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 42166
+Failed password for invalid user pi from 10.20.0.20 port 55950 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 55950 [preauth]
+Connection from 10.20.0.20 port 55962 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 55962
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 42166 ssh2
-Connection from 172.21.0.10 port 42180 on 172.21.0.21 port 22 rdomain ""
-Failed password for admin from 172.21.0.10 port 42180 ssh2
-Connection from 172.21.0.10 port 42182 on 172.21.0.21 port 22 rdomain ""
-Failed password for labuser from 172.21.0.10 port 42182 ssh2
-Connection from 172.21.0.10 port 42192 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 42192 ssh2
-Connection from 172.21.0.10 port 42194 on 172.21.0.21 port 22 rdomain ""
-Failed password for deploy from 172.21.0.10 port 42194 ssh2
-Connection from 172.21.0.10 port 42196 on 172.21.0.21 port 22 rdomain ""
-Failed password for deploy from 172.21.0.10 port 42196 ssh2
-Connection from 172.21.0.10 port 42200 on 172.21.0.21 port 22 rdomain ""
-Invalid user test from 172.21.0.10 port 42200
+Failed password for invalid user test from 10.20.0.20 port 55962 ssh2
+Connection closed by invalid user test 10.20.0.20 port 55962 [preauth]
+Connection from 10.20.0.20 port 55966 on 10.20.0.20 port 22 rdomain ""
+Failed password for admin from 10.20.0.20 port 55966 ssh2
+Connection closed by authenticating user admin 10.20.0.20 port 55966 [preauth]
+Connection from 10.20.0.20 port 55974 on 10.20.0.20 port 22 rdomain ""
+Failed password for root from 10.20.0.20 port 55974 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 55974 [preauth]
+Connection from 10.20.0.20 port 44692 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 44692
 Could not get shadow information for NOUSER
-Failed password for invalid user test from 172.21.0.10 port 42200 ssh2
-Connection from 172.21.0.10 port 42206 on 172.21.0.21 port 22 rdomain ""
-Invalid user user from 172.21.0.10 port 42206
+Failed password for invalid user test from 10.20.0.20 port 44692 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44692 [preauth]
+Connection from 10.20.0.20 port 44702 on 10.20.0.20 port 22 rdomain ""
+Invalid user user from 10.20.0.20 port 44702
 Could not get shadow information for NOUSER
-Failed password for invalid user user from 172.21.0.10 port 42206 ssh2
-Connection from 172.21.0.10 port 42214 on 172.21.0.21 port 22 rdomain ""
-Invalid user ubuntu from 172.21.0.10 port 42214
+Failed password for invalid user user from 10.20.0.20 port 44702 ssh2
+Connection closed by invalid user user 10.20.0.20 port 44702 [preauth]
+Connection from 10.20.0.20 port 44704 on 10.20.0.20 port 22 rdomain ""
+Failed password for root from 10.20.0.20 port 44704 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 44704 [preauth]
+Connection from 10.20.0.20 port 44720 on 10.20.0.20 port 22 rdomain ""
+Invalid user operator from 10.20.0.20 port 44720
 Could not get shadow information for NOUSER
-Failed password for invalid user ubuntu from 172.21.0.10 port 42214 ssh2
-Connection from 172.21.0.10 port 42216 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 42216 ssh2
-Connection from 172.21.0.10 port 42226 on 172.21.0.21 port 22 rdomain ""
-Invalid user test from 172.21.0.10 port 42226
+Failed password for invalid user operator from 10.20.0.20 port 44720 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 44720 [preauth]
+Connection from 10.20.0.20 port 44722 on 10.20.0.20 port 22 rdomain ""
+Failed password for deploy from 10.20.0.20 port 44722 ssh2
+Connection closed by authenticating user deploy 10.20.0.20 port 44722 [preauth]
+Connection from 10.20.0.20 port 44730 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 44730
 Could not get shadow information for NOUSER
-Failed password for invalid user test from 172.21.0.10 port 42226 ssh2
-Connection from 172.21.0.10 port 42240 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 42240
+Failed password for invalid user test from 10.20.0.20 port 44730 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44730 [preauth]
+Connection from 10.20.0.20 port 44740 on 10.20.0.20 port 22 rdomain ""
+Failed password for deploy from 10.20.0.20 port 44740 ssh2
+Connection closed by authenticating user deploy 10.20.0.20 port 44740 [preauth]
+Connection from 10.20.0.20 port 44746 on 10.20.0.20 port 22 rdomain ""
+Invalid user user from 10.20.0.20 port 44746
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 42240 ssh2
-Connection from 172.21.0.10 port 42248 on 172.21.0.21 port 22 rdomain ""
-Invalid user operator from 172.21.0.10 port 42248
+Failed password for invalid user user from 10.20.0.20 port 44746 ssh2
+Connection closed by invalid user user 10.20.0.20 port 44746 [preauth]
+Connection from 10.20.0.20 port 44750 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 44750
 Could not get shadow information for NOUSER
-Failed password for invalid user operator from 172.21.0.10 port 42248 ssh2
-Connection from 172.21.0.10 port 42260 on 172.21.0.21 port 22 rdomain ""
-Invalid user operator from 172.21.0.10 port 42260
+Failed password for invalid user test from 10.20.0.20 port 44750 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44750 [preauth]
+Connection from 10.20.0.20 port 44758 on 10.20.0.20 port 22 rdomain ""
+Invalid user operator from 10.20.0.20 port 44758
 Could not get shadow information for NOUSER
-Failed password for invalid user operator from 172.21.0.10 port 42260 ssh2
-Connection from 172.21.0.10 port 42268 on 172.21.0.21 port 22 rdomain ""
-Invalid user ubuntu from 172.21.0.10 port 42268
+Failed password for invalid user operator from 10.20.0.20 port 44758 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 44758 [preauth]
+Connection from 10.20.0.20 port 44770 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 44770
 Could not get shadow information for NOUSER
-Failed password for invalid user ubuntu from 172.21.0.10 port 42268 ssh2
-Connection from 172.21.0.10 port 45662 on 172.21.0.21 port 22 rdomain ""
-Invalid user pi from 172.21.0.10 port 45662
+Failed password for invalid user test from 10.20.0.20 port 44770 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44770 [preauth]
+Connection from 10.20.0.20 port 44780 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 44780
 Could not get shadow information for NOUSER
-Failed password for invalid user pi from 172.21.0.10 port 45662 ssh2
-Connection from 172.21.0.10 port 45678 on 172.21.0.21 port 22 rdomain ""
-Failed password for labuser from 172.21.0.10 port 45678 ssh2
-Connection from 172.21.0.10 port 45694 on 172.21.0.21 port 22 rdomain ""
-Failed password for root from 172.21.0.10 port 45694 ssh2
-Connection from 172.21.0.10 port 45696 on 172.21.0.21 port 22 rdomain ""
-Invalid user ubuntu from 172.21.0.10 port 45696
+Failed password for invalid user test from 10.20.0.20 port 44780 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44780 [preauth]
+Connection from 10.20.0.20 port 44794 on 10.20.0.20 port 22 rdomain ""
+Failed password for admin from 10.20.0.20 port 44794 ssh2
+Connection closed by authenticating user admin 10.20.0.20 port 44794 [preauth]
+Connection from 10.20.0.20 port 44798 on 10.20.0.20 port 22 rdomain ""
+Invalid user test from 10.20.0.20 port 44798
 Could not get shadow information for NOUSER
-Failed password for invalid user ubuntu from 172.21.0.10 port 45696 ssh2
-Connection from 172.21.0.10 port 45702 on 172.21.0.21 port 22 rdomain ""
-Invalid user user from 172.21.0.10 port 45702
+Failed password for invalid user test from 10.20.0.20 port 44798 ssh2
+Connection closed by invalid user test 10.20.0.20 port 44798 [preauth]
+Connection from 10.20.0.20 port 42840 on 10.20.0.20 port 22 rdomain ""
+Invalid user operator from 10.20.0.20 port 42840
 Could not get shadow information for NOUSER
-Failed password for invalid user user from 172.21.0.10 port 45702 ssh2
-Connection from 172.21.0.10 port 45706 on 172.21.0.21 port 22 rdomain ""
-Invalid user operator from 172.21.0.10 port 45706
+Failed password for invalid user operator from 10.20.0.20 port 42840 ssh2
+Connection closed by invalid user operator 10.20.0.20 port 42840 [preauth]
+Connection from 10.20.0.20 port 42850 on 10.20.0.20 port 22 rdomain ""
+Invalid user user from 10.20.0.20 port 42850
 Could not get shadow information for NOUSER
-Failed password for invalid user operator from 172.21.0.10 port 45706 ssh2
-beginning MaxStartups throttling
-drop connection #50 from [172.21.0.10]:45714 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45730 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45742 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45746 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45750 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45752 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45764 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45768 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45782 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45792 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:45800 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48038 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48040 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48044 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48052 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48060 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48064 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48070 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48078 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48082 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48086 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48092 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48096 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48100 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48114 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48124 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48126 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48136 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:48152 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57708 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57722 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57738 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57750 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57756 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57770 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57778 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57786 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57788 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57792 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57806 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57810 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57826 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57834 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57846 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57856 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57872 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57884 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36638 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36646 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36652 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36664 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36680 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36692 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36698 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36706 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36710 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36726 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36728 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36732 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36738 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36750 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36754 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36766 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:36774 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33790 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33802 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33814 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33830 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33846 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33856 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33870 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33872 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33876 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33886 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33902 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33916 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33926 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33936 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33938 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33946 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33950 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33960 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:33974 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40446 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40458 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40474 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40486 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40496 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40498 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40508 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40524 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40528 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40534 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40550 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40556 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40560 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40574 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40578 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40594 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40600 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:40612 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44348 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44350 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44360 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44376 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44388 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44392 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44394 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44410 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44414 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44422 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44428 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44440 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44450 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44460 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44470 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44476 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44486 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44488 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41178 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41188 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41196 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41212 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41228 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41238 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41254 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41262 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41270 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41282 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41288 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41298 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41310 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41314 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41328 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41338 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41354 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41362 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:41374 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57926 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57936 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57944 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57946 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57958 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57960 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57974 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57988 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:57996 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58010 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58012 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58016 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58030 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58034 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58040 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58048 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58064 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:58066 on [172.21.0.21]:22 past MaxStartups
-drop connection #50 from [172.21.0.10]:44972 on [172.21.0.21]:22 past MaxStartups
+Failed password for invalid user user from 10.20.0.20 port 42850 ssh2
+Connection closed by invalid user user 10.20.0.20 port 42850 [preauth]
+Connection from 10.20.0.20 port 42862 on 10.20.0.20 port 22 rdomain ""
+Failed password for root from 10.20.0.20 port 42862 ssh2
+Connection closed by authenticating user root 10.20.0.20 port 42862 [preauth]
+Connection from 10.20.0.20 port 42866 on 10.20.0.20 port 22 rdomain ""
+Failed password for deploy from 10.20.0.20 port 42866 ssh2
+Connection closed by authenticating user deploy 10.20.0.20 port 42866 [preauth]
+Connection from 10.20.0.20 port 42882 on 10.20.0.20 port 22 rdomain ""
+Failed password for labuser from 10.20.0.20 port 42882 ssh2
+Connection closed by authenticating user labuser 10.20.0.20 port 42882 [preauth]
+Connection from 10.20.0.20 port 42888 on 10.20.0.20 port 22 rdomain ""
+Invalid user pi from 10.20.0.20 port 42888
+Could not get shadow information for NOUSER
+Failed password for invalid user pi from 10.20.0.20 port 42888 ssh2
+Connection closed by invalid user pi 10.20.0.20 port 42888 [preauth]
+Connection from 10.20.0.20 port 42890 on 10.20.0.20 port 22 rdomain ""
+Accepted password for labuser from 10.20.0.20 port 42890 ssh2
+User child is on pid 898
+Connection closed by 10.20.0.20 port 42890
+Transferred: sent 2296, received 1120 bytes
+Closing connection to 10.20.0.20 port 42890
+Connection from 172.21.0.10 port 37172 on 172.21.0.21 port 22 rdomain ""
+Accepted password for admin from 172.21.0.10 port 37172 ssh2
+Read error from remote host 172.21.0.10 port 57452: Connection reset by peer
+User child is on pid 900
+Connection from 10.20.0.20 port 42892 on 10.20.0.20 port 22 rdomain ""
+Accepted password for labuser from 10.20.0.20 port 42892 ssh2
+User child is on pid 903
+Starting session: command for labuser from 10.20.0.20 port 42892 id 0
+Close session: user labuser from 10.20.0.20 port 42892 id 0
+Connection closed by 10.20.0.20 port 42892
+Transferred: sent 2600, received 1280 bytes
+Closing connection to 10.20.0.20 port 42892
+Read error from remote host 172.21.0.10 port 37172: Connection reset by peer
+Read error from remote host 172.21.0.10 port 57466: Connection reset by peer
+Connection from 172.21.0.10 port 37516 on 172.21.0.21 port 22 rdomain ""
+Accepted password for admin from 172.21.0.10 port 37516 ssh2
+User child is on pid 908
+Read error from remote host 172.21.0.10 port 37516: Connection reset by peer
+Connection from 172.21.0.10 port 46402 on 172.21.0.21 port 22 rdomain ""
+Read error from remote host 172.21.0.10 port 57454: Connection reset by peer
+Accepted password for admin from 172.21.0.10 port 46402 ssh2
+User child is on pid 911
+Read error from remote host 172.21.0.10 port 46402: Connection reset by peer

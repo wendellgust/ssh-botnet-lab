@@ -4,23 +4,14 @@ Target:   victim1
 
 Host          Failed    Accepted
 ──────────────────────────
-victim1       5         4       
-victim2       45        11      
-victim3       27        1       
-victim4       42        2       
-victim5       132       2       
+victim1       9         0       
+victim2       50        0       
+victim3       0         0       
+victim4       0         0       
+victim5       0         0       
 honeypot      0         0       
 
-Found: 8  Compromised: 6  Networks: 3
+Found: 2  Compromised: 0  Networks: 1
 
-  ✓ 172.21.0.20      compromised   labuser:password123   via direct
-  ✓ 172.21.0.21      compromised   admin:admin           via direct
-  ✓ 10.10.0.10       compromised   labuser:internal123   via 172.21.0.20
-  ✗ 10.10.0.20       attacking     —                     via direct
-  ✗ 10.10.0.50       attacking     —                     via direct
-  ✓ 10.20.0.10       compromised   root:rootdeep         via 172.21.0.21
-  ✓ 10.20.0.11       compromised   labuser:deepnet123    via 172.21.0.21
-  ✓ 10.20.0.20       compromised   deploy:deploy123      via 172.21.0.21
-
-  ⚠ PIVOT_DETECTED: lateral movement through 172.21.0.20
-  ⚠ PIVOT_DETECTED: lateral movement through 172.21.0.21
+  ✗ 172.21.0.20      attacking     —                     via direct
+  ✗ 172.21.0.21      failed        —                     via direct

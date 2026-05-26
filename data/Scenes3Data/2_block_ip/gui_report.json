@@ -24,16 +24,16 @@
         {
             "ip": "10.20.0.11",
             "state": "compromised",
-            "user": "root",
-            "pwd": "rootdeep",
+            "user": "labuser",
+            "pwd": "deepnet123",
             "via": "172.21.0.21",
             "net": "10.20."
         },
         {
             "ip": "10.20.0.20",
             "state": "compromised",
-            "user": "deploy",
-            "pwd": "deploy123",
+            "user": "admin",
+            "pwd": "admin",
             "via": "172.21.0.21",
             "net": "10.20."
         }

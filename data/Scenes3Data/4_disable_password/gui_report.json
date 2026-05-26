@@ -14,6 +14,14 @@
             "net": "172.21."
         },
         {
+            "ip": "10.20.0.11",
+            "state": "compromised",
+            "user": "root",
+            "pwd": "rootdeep",
+            "via": "172.21.0.21",
+            "net": "10.20."
+        },
+        {
             "ip": "10.20.0.10",
             "state": "compromised",
             "user": "labuser",
@@ -24,16 +32,8 @@
         {
             "ip": "10.20.0.20",
             "state": "compromised",
-            "user": "labuser",
-            "pwd": "password123",
-            "via": "172.21.0.21",
-            "net": "10.20."
-        },
-        {
-            "ip": "10.20.0.11",
-            "state": "compromised",
-            "user": "root",
-            "pwd": "rootdeep",
+            "user": "deploy",
+            "pwd": "deploy123",
             "via": "172.21.0.21",
             "net": "10.20."
         }
