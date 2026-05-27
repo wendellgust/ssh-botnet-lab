@@ -477,7 +477,7 @@ table.host-tbl tr.fail td{color:#44475a}
       <div class="hdr-title">SSH BOTNET LAB</div>
       <div class="hdr-sub">FEUP SSR — Real-Time Propagation Monitor</div>
     </div>
-    <button class="btn credits-btn" onclick="openCredits()" style="font-size:10px;padding:3px 10px">&#128100; Credits</button>
+    <button class="btn credits-btn" onclick="openCredits()" style="font-size:10px;padding:3px 10px">Credits</button>
   </div>
   <div class="stat-bar">
     <div class="stat"><span class="pulse" id="pulse"></span><span id="status-text">Idle</span></div>
@@ -594,7 +594,22 @@ table.host-tbl tr.fail td{color:#44475a}
       <button class="modal-close" onclick="closeModal('modal-topo')">&#x2715;</button>
     </div>
     <div class="modal-body" id="topo-body">
-      <p style="color:#6272a4;font-size:12px;text-align:center;padding:40px 0">Select a scenario first.</p>
+      <div class="modal-section">
+        <h3>S1 — Single Flat Network</h3>
+        <img class="topo-img" src="/topology?n=1" alt="Topology S1"/>
+      </div>
+      <div class="modal-section">
+        <h3>S2 — Single Pivot</h3>
+        <img class="topo-img" src="/topology?n=2" alt="Topology S2"/>
+      </div>
+      <div class="modal-section">
+        <h3>S3 — Parallel Pivots</h3>
+        <img class="topo-img" src="/topology?n=3" alt="Topology S3"/>
+      </div>
+      <div class="modal-section">
+        <h3>S4 — Deep Chain</h3>
+        <img class="topo-img" src="/topology?n=4" alt="Topology S4"/>
+      </div>
     </div>
   </div>
 </div>
@@ -1126,14 +1141,6 @@ function openDefend() {
 }
 
 function openTopology() {
-  const n = activeScenario;
-  const body = document.getElementById('topo-body');
-  if (!n) {
-    body.innerHTML = '<p style="color:#6272a4;font-size:12px;text-align:center;padding:40px 0">Select a scenario first (S1–S4).</p>';
-  } else {
-    const labels = {1:'S1 — Single Flat Network',2:'S2 — Single Pivot',3:'S3 — Parallel Pivots',4:'S4 — Deep Chain'};
-    body.innerHTML = `<div class="modal-section"><h3>${labels[n]}</h3><img class="topo-img" src="/topology?n=${n}" alt="Topology S${n}"/></div>`;
-  }
   document.getElementById('modal-topo').classList.add('open');
 }
 
