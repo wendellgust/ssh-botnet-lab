@@ -217,7 +217,7 @@ podman compose down --rmi all -v
 
 ## Credits
 
-FEUP SSR 2024/25 — Group 2
+FEUP SSR 2025/26 — Group 2
 
 | Name | Email |
 |---|---|
