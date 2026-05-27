@@ -212,3 +212,16 @@ podman compose down --rmi all -v
 | No raw sockets | Rootless Podman blocks them |
 | No real attack tools | No hydra, metasploit, or nmap in containers |
 | Safety check in botnet | `botnet.py` refuses non-lab IP ranges |
+
+---
+
+## Credits
+
+FEUP SSR 2024/25 — Group 2
+
+| Name | Email |
+|---|---|
+| Anna Poglitsch | up202511830@edu.fe.up.pt |
+| David Azevedo da Silva | up202104721@edu.fe.up.pt |
+| Rúben Jordão Oliveira | up202205106@edu.fe.up.pt |
+| Wendell Gustavo Ferreira Pinto | up202200049@edu.fe.up.pt |

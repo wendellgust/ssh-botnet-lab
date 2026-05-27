@@ -457,6 +457,16 @@ table.host-tbl tr.fail td{color:#44475a}
 .btn.report-btn:hover{background:#1a0a2e}
 .btn.defend-btn{border-color:#14b8a6;color:#14b8a6}
 .btn.defend-btn:hover{background:#0a1e1e}
+.btn.topo-btn{border-color:#8be9fd;color:#8be9fd}
+.btn.topo-btn:hover{background:#0a1e2e}
+.btn.credits-btn{border-color:#ffb86c;color:#ffb86c}
+.btn.credits-btn:hover{background:#1e1500}
+.modal.modal-wide{width:900px}
+.topo-img{width:100%;border-radius:4px;border:1px solid #1e2235;display:block}
+.credits-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
+.credit-card{background:#0a0f1e;border:1px solid #1e2235;border-radius:6px;padding:14px}
+.credit-name{font-size:13px;color:#f8f8f2;margin-bottom:4px;font-weight:bold}
+.credit-email{font-size:10px;color:#6272a4}
 </style>
 </head>
 <body>
@@ -486,6 +496,8 @@ table.host-tbl tr.fail td{color:#44475a}
   <button class="btn" onclick="resetView()">&#8635; Reset</button>
   <button class="btn report-btn" onclick="openReport()">&#128203; Report</button>
   <button class="btn defend-btn" onclick="openDefend()">&#128737; Defenses</button>
+  <button class="btn topo-btn" onclick="openTopology()">&#128247; Topology</button>
+  <button class="btn credits-btn" onclick="openCredits()">&#128100; Credits</button>
   <span class="speed-label">Delay:</span>
   <select id="delay-sel">
     <option value="0.2">Fast (0.2s)</option>
@@ -568,6 +580,52 @@ table.host-tbl tr.fail td{color:#44475a}
         <p style="font-size:10px;color:#6272a4;margin:0 0 14px">Select a defense then click a victim container to apply it live. Effects immediately influence whether the botnet can compromise that host.</p>
       </div>
       <div class="def-grid" id="def-grid"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Topology Modal ───────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-topo" onclick="if(event.target===this)closeModal('modal-topo')">
+  <div class="modal modal-wide">
+    <div class="modal-hdr">
+      <h2>&#128247; NETWORK TOPOLOGY</h2>
+      <button class="modal-close" onclick="closeModal('modal-topo')">&#x2715;</button>
+    </div>
+    <div class="modal-body" id="topo-body">
+      <p style="color:#6272a4;font-size:12px;text-align:center;padding:40px 0">Select a scenario first.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── Credits Modal ────────────────────────────────────────────── -->
+<div class="modal-overlay" id="modal-credits" onclick="if(event.target===this)closeModal('modal-credits')">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h2>&#128100; CREDITS</h2>
+      <button class="modal-close" onclick="closeModal('modal-credits')">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>FEUP SSR 2024/25 — Group 2</h3>
+        <div class="credits-grid">
+          <div class="credit-card">
+            <div class="credit-name">Anna Poglitsch</div>
+            <div class="credit-email">up202511830@edu.fe.up.pt</div>
+          </div>
+          <div class="credit-card">
+            <div class="credit-name">David Azevedo da Silva</div>
+            <div class="credit-email">up202104721@edu.fe.up.pt</div>
+          </div>
+          <div class="credit-card">
+            <div class="credit-name">Rúben Jordão Oliveira</div>
+            <div class="credit-email">up202205106@edu.fe.up.pt</div>
+          </div>
+          <div class="credit-card">
+            <div class="credit-name">Wendell Gustavo Ferreira Pinto</div>
+            <div class="credit-email">up202200049@edu.fe.up.pt</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1065,6 +1123,22 @@ function openDefend() {
   renderDefenseGrid();
 }
 
+function openTopology() {
+  const n = activeScenario;
+  const body = document.getElementById('topo-body');
+  if (!n) {
+    body.innerHTML = '<p style="color:#6272a4;font-size:12px;text-align:center;padding:40px 0">Select a scenario first (S1–S4).</p>';
+  } else {
+    const labels = {1:'S1 — Single Flat Network',2:'S2 — Single Pivot',3:'S3 — Parallel Pivots',4:'S4 — Deep Chain'};
+    body.innerHTML = `<div class="modal-section"><h3>${labels[n]}</h3><img class="topo-img" src="/topology?n=${n}" alt="Topology S${n}"/></div>`;
+  }
+  document.getElementById('modal-topo').classList.add('open');
+}
+
+function openCredits() {
+  document.getElementById('modal-credits').classList.add('open');
+}
+
 function renderDefenseGrid() {
   const grid = document.getElementById('def-grid');
   grid.innerHTML = DEFENSE_DEFS.map(def => {
@@ -1221,6 +1295,20 @@ class Handler(http.server.BaseHTTPRequestHandler):
             self.send_header('Content-Length', str(len(body)))
             self.end_headers()
             self.wfile.write(body)
+
+        elif path == '/topology':
+            n = params.get('n', ['1'])[0]
+            img_path = _PROJECT_ROOT / f'docs/charts/TopologyScene{n}.png'
+            if img_path.exists():
+                body = img_path.read_bytes()
+                self.send_response(200)
+                self.send_header('Content-Type', 'image/png')
+                self.send_header('Content-Length', str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+            else:
+                self.send_response(404)
+                self.end_headers()
 
         else:
             self.send_response(404)
