@@ -472,9 +472,12 @@ table.host-tbl tr.fail td{color:#44475a}
 <body>
 
 <div class="hdr">
-  <div>
-    <div class="hdr-title">SSH BOTNET LAB</div>
-    <div class="hdr-sub">FEUP SSR — Real-Time Propagation Monitor</div>
+  <div style="display:flex;align-items:center;gap:14px">
+    <div>
+      <div class="hdr-title">SSH BOTNET LAB</div>
+      <div class="hdr-sub">FEUP SSR — Real-Time Propagation Monitor</div>
+    </div>
+    <button class="btn credits-btn" onclick="openCredits()" style="font-size:10px;padding:3px 10px">&#128100; Credits</button>
   </div>
   <div class="stat-bar">
     <div class="stat"><span class="pulse" id="pulse"></span><span id="status-text">Idle</span></div>
@@ -497,7 +500,6 @@ table.host-tbl tr.fail td{color:#44475a}
   <button class="btn report-btn" onclick="openReport()">&#128203; Report</button>
   <button class="btn defend-btn" onclick="openDefend()">&#128737; Defenses</button>
   <button class="btn topo-btn" onclick="openTopology()">&#128247; Topology</button>
-  <button class="btn credits-btn" onclick="openCredits()">&#128100; Credits</button>
   <span class="speed-label">Delay:</span>
   <select id="delay-sel">
     <option value="0.2">Fast (0.2s)</option>
