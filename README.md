@@ -79,7 +79,7 @@ Open **http://localhost:5000**. Click **S1–S4** to select a scenario — conta
 
 ### 2b. Fully automated mode (no GUI needed)
 
-Runs all phases unattended — build, brute-force, lateral movement, C2, detection report:
+Runs all phases unattended — build, brute-force, lateral movement, C2, detection report (this use simulator.py not the botnet):
 
 ```bash
 bash scripts/auto_run.sh 2   # or 1 / 3 / 4
