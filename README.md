@@ -51,7 +51,6 @@ ssh-botnet-lab/
 │   ├── LAB_GUIDE.md            Full lab guide — architecture, scenarios, attack/defense deep-dive
 │   ├── LAB_GUIDE_To_Undestain.md  Step-by-step understanding guide — each phase explained
 │   ├── DATA_COLLECTION.md      What data to collect and how for the report
-│   ├── kaliSSR.md              Quick Q&A reference notes
 │   ├── charts/                 Generated PNG diagrams and charts
 │   └── report/                 Lab report outputs
 │
