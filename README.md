@@ -48,6 +48,10 @@ ssh-botnet-lab/
 │   └── visualize_defense_data.py  Plot defense comparison charts
 │
 ├── docs/                       Documentation and generated assets
+│   ├── LAB_GUIDE.md            Full lab guide — architecture, scenarios, attack/defense deep-dive
+│   ├── LAB_GUIDE_To_Undestain.md  Step-by-step understanding guide — each phase explained
+│   ├── DATA_COLLECTION.md      What data to collect and how for the report
+│   ├── kaliSSR.md              Quick Q&A reference notes
 │   ├── charts/                 Generated PNG diagrams and charts
 │   └── report/                 Lab report outputs
 │
@@ -57,6 +61,16 @@ ssh-botnet-lab/
     ├── Scenes3Data/
     └── Scenes4Data/
 ```
+
+---
+
+## Documentation
+
+| File | Purpose |
+|---|---|
+| [`docs/LAB_GUIDE.md`](docs/LAB_GUIDE.md) | Complete reference — architecture, all four scenarios, attack phases, detection rules, countermeasures, troubleshooting |
+| [`docs/LAB_GUIDE_To_Undestain.md`](docs/LAB_GUIDE_To_Undestain.md) | Step-by-step guide with explanations — each phase explained, what to observe, and why it works |
+| [`docs/DATA_COLLECTION.md`](docs/DATA_COLLECTION.md) | Checklist of every piece of evidence to collect per scenario and how to extract it |
 
 ---
 
